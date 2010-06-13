@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2010 Maciej Kaniewski (mk@firegnom.com).
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 3 of the License, or
+     (at your option) any later version.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software Foundation,
+     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+  
+     Contributors:
+      Maciej Kaniewski (mk@firegnom.com) - initial API and implementation
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_height="wrap_content"
+	android:layout_width="fill_parent" android:minWidth="300sp"
+	android:paddingBottom="5sp" android:paddingLeft="5sp"
+	android:paddingRight="5sp">
+	<Spinner android:id="@+id/script_editor_spinner" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:entries="@array/script_editor_defaults"></Spinner>
+	<EditText android:id="@+id/script_editor_text"
+		android:layout_width="fill_parent" android:scrollHorizontally="true"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_height="fill_parent" android:lines="5" android:gravity="top" />
+
+	<TableLayout android:id="@+id/TableLayout01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<Button android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/script_editor_execute_button"
+				android:text="Execute"></Button>
+			<Button android:id="@+id/script_editor_cancel_button" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="Cancel"></Button>
+		</TableRow>
+	</TableLayout>
+
+
+
+
+
+
+</LinearLayout>

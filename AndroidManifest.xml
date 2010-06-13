@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2010 Maciej Kaniewski (mk@firegnom.com).
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 3 of the License, or
+     (at your option) any later version.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software Foundation,
+     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+  
+     Contributors:
+      Maciej Kaniewski (mk@firegnom.com) - initial API and implementation
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.firegnom.valkyrie" android:versionCode="405" android:versionName="0.4.5">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name="LoginActivity" 
+		android:theme="@style/Theme.NoBackground">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name="GameActivity"/>
+		<activity android:name="FightActivity"/>
+		<activity android:name="CreatePlayerActivity"/>
+		<activity android:name="Preferences"/>
+		<activity android:name="LoaderActivity"/>
+		<activity android:name="PackageLoaderActivity" android:noHistory="true"/>
+		<activity android:name="PackageDownloadActivity" android:noHistory="true"/>
+		<activity android:name="Chat"/>
+		<activity android:name="Exception"/>
+		<service android:name=".service.ValkyrieService"
+			android:process=":remote">
+			<intent-filter>
+				<action android:name="com.firegnom.valkyrie.service.ILoginService" />
+				<action android:name="com.firegnom.valkyrie.service.IGameService" />
+				<action android:name="com.firegnom.valkyrie.service.IChatService" />
+				<action android:name="com.firegnom.valkyrie.service.IResourceLoaderService" />
+			</intent-filter>
+		</service>
+	</application>
+	<uses-sdk
+    android:minSdkVersion="3"
+    
+    android:targetSdkVersion="4"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+</manifest> 

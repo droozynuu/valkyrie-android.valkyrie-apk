@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2010 Maciej Kaniewski (mk@firegnom.com).
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 3 of the License, or
+     (at your option) any later version.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software Foundation,
+     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+  
+     Contributors:
+      Maciej Kaniewski (mk@firegnom.com) - initial API and implementation
+-->
+<resources>
+    <string name="are_you_sure_you_want_to_attack_playername_">are you sure you want to attack __playerName__ ?</string>
+    <string name="pathfinding_how_to_get_there">Sorry but i can\'t find a way to get there, try coming closer.</string>
+    <string name="app_name">Valkyrie</string>
+    <string name="login_username">Username:</string>
+    <string name="login_password">Password:</string>
+    <string name="login_login">Login</string>
+    <string name="valkyrie_service_started">Valkyrie service started</string>
+    <string name="valkyrie_service_label">Valkyrie service label</string>
+    
+    <string name="create_player_text">This will be a screen where you create your player right now it is enough to press button below.</string>
+    <string name="create_player_button">Create</string>
+    
+    
+    <string name="download_packages_intro_text">New Image Packs avilable.\nDo you want to download and install image packages from Internet? This process will take a long time especially installing (on G1 pack_1 takes 75 seconds  and pack_2 35 seconds to install). If you decide not to download no problem engine will download all required images one by one when necessary.\nDownload is done in the service so you can do other stuff meanwhile.</string>
+    
+    
+    
+    
+</resources>

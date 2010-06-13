@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2010 Maciej Kaniewski (mk@firegnom.com).
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 3 of the License, or
+     (at your option) any later version.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software Foundation,
+     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+  
+     Contributors:
+      Maciej Kaniewski (mk@firegnom.com) - initial API and implementation
+-->
+<resources>
+    <string name="map_preferences">Map options</string>
+    
+    <string name="map_preferences_show_move_matrix">Show moves</string>
+    <string name="map_preferences_show_move_matrix_sumarry">Show moves on the map</string>
+   
+    <string name="map_preferences_follow_player">Follow Player</string>
+    <string name="map_preferences_follow_player_sumarry">Follow player</string>
+    
+    <string name="map_preferences_movestyle">Display path as ...</string>
+    <string name="map_preferences_movestyle_summary">Select style to display path</string>
+    <string name="map_preferences_movestyle_dialog_title">Path type</string>
+    <string name="map_preferences_movestyle_default">Point</string>
+    
+    <string name="preferences_performance">Performance</string>
+    <string name="preferences_performance_player_sorting">Disable player sorting</string>
+    <string name="preferences_performance_player_sorting_sumarry">this will increase performance on maps with loads of players.</string>
+    <string name="preferences_performance_draw_visibility_range">Draw range</string>
+    <string name="preferences_performance_draw_visibility_range_sumarry">Draw visibility range require full screen update.</string>
+    <string name="preferences_performance_change_move_images">Draw move animation</string>
+    <string name="preferences_performance_change_move_images_sumarry">If unselected no more moves animations</string>
+    <string name="preferences_performance_jumpy_moves">Jumpy moves</string>
+    <string name="preferences_performance_jumpy_moves_sumarry">Best for performance looks terrible</string>
+    <string name="preferences_performance_full_invalidate">Full screen refresh</string>
+    <string name="preferences_performance_full_invalidate_sumarry"></string>
+    
+    
+    
+    
+    
+</resources>

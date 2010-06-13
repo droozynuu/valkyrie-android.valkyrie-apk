@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2010 Maciej Kaniewski (mk@firegnom.com).
+  
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 3 of the License, or
+     (at your option) any later version.
+  
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+  
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software Foundation,
+     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+  
+     Contributors:
+      Maciej Kaniewski (mk@firegnom.com) - initial API and implementation
+-->
+<resources>
+    <string name="player_create_knight_desc">Knight : description will be here</string>
+    <string name="player_create_archer_desc">Archer : description will be here</string>
+    <string name="player_create_barbarian_desc">Barbarian : description will be here</string>
+    <string name="player_create_ninja_desc">Ninja : description will be here</string>
+    <string name="player_create_wizard_desc">Wizard : description will be here</string>
+</resources>
