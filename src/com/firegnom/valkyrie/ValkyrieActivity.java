@@ -37,7 +37,8 @@ public class ValkyrieActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ExceptionHandler.register(this, Exception.class);
+		if (android.os.Build.VERSION.RELEASE != "2.2")
+			ExceptionHandler.register(this, Exception.class);
 	}
 
 }
