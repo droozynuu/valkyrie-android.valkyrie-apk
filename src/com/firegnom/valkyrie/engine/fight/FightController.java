@@ -45,75 +45,60 @@ import com.firegnom.valkyrie.graphics.DrawableFeature;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class FightController.
- */
 public class FightController {
-	
-	/** The map. */
 	FightMap map;
-	
-	/** The executor. */
 	ScheduledThreadPoolExecutor executor;
 
-	/** The Constant TAG. */
 	protected static final String TAG = FightController.class.getName();
-	
-	/** The can move. */
 	boolean canMove = false;
-	
-	/** The screen width. */
 	int screenWidth = 0;
-	
-	/** The screen height. */
 	int screenHeight = 0;
-	
-	/** The paint. */
 	Paint paint;
-	
-	/** The background. */
 	Picture background = null;
-	
-	/** The range. */
 	Picture range = null;
-	
-	/** The limit scroll dist. */
 	int limitScrollDist = 30;
-	
-	/** The action. */
 	public FightAction action;
 
-	/** The picture size. */
 	int pictureSize = 96;
-	
-	/** The s x. */
 	private float sX;
-	
-	/** The s y. */
 	private float sY;
-	
-	/** The turn thread. */
 	TurnThread turnThread;
-	
-	/** The features. */
 	ArrayList<DrawableFeature> features;
 
-	/** The view. */
 	View view;
-	
-	/** The context. */
 	Context context;
 
-	/** The enemy. */
 	public Player enemy;
-	
-	/** The time left. */
 	private int timeLeft = 1000;
 
-	/**
-	 * Instantiates a new fight controller.
-	 */
+	public void connect(View v, Context c) {
+		view = v;
+		context = c;
+	}
+
+	public void init() {
+		if (map == null) {
+			map = new FightMap();
+		}
+
+		turnThread.startTurn(new ProgressObserver() {
+			@Override
+			public void progressChanged(int progress) {
+				// Log.d(TAG,"progress changed :"+progress);
+				((FightActivity) context).progress.setProgress(progress);
+				timeLeft = progress;
+			}
+		}, timeLeft);
+	}
+
+	public void finish() {
+	}
+
+	public void disconnect() {
+		view = null;
+		context = null;
+	}
+
 	public FightController() {
 		features = new ArrayList<DrawableFeature>();
 		turnThread = new TurnThread();
@@ -127,49 +112,18 @@ public class FightController {
 		executor = new ScheduledThreadPoolExecutor(1);
 	}
 
-	/**
-	 * Change action.
-	 *
-	 * @param action the action
-	 */
-	public void changeAction(final FightAction action) {
-		if (this.action != null) {
-			if (this.action.isActive()) {
-				Gui.toast("Other Action is already active", view, context);
-				return;
-			}
-			this.action.deactivated();
-		}
-		this.action = action;
-		this.action.activated();
+	public Position getScreenPosition(Player user) {
+		Position p = user.fightPosition;
+		Position ret = new Position();
+		ret.x = ((p.x * map.tileWidth) + map.tileWidth / 2)
+				+ user.pictureXoffset;
+		ret.y = ((p.y * map.tileHeight) + map.tileHeight / 2)
+				+ user.pictureYoffset;
+		return ret;
 	}
 
-	/**
-	 * Connect.
-	 *
-	 * @param v the v
-	 * @param c the c
-	 */
-	public void connect(final View v, final Context c) {
-		view = v;
-		context = c;
-	}
-
-	/**
-	 * Disconnect.
-	 */
-	public void disconnect() {
-		view = null;
-		context = null;
-	}
-
-	/**
-	 * Do draw.
-	 *
-	 * @param canvas the canvas
-	 */
-	public void doDraw(final Canvas canvas) {
-		final Player user = GameController.getInstance().user;
+	public void doDraw(Canvas canvas) {
+		Player user = GameController.getInstance().user;
 		if (background == null) {
 			renderBackground();
 		}
@@ -179,7 +133,7 @@ public class FightController {
 			range.draw(canvas);
 		}
 		// Position p = getScreenPosition(user);
-		for (final DrawableFeature feature : features) {
+		for (DrawableFeature feature : features) {
 			feature.draw(canvas);
 		}
 		// canvas.drawPath(path, paint)
@@ -190,19 +144,70 @@ public class FightController {
 
 	}
 
-	/**
-	 * Do scroll.
-	 *
-	 * @param distanceX the distance x
-	 * @param distanceY the distance y
-	 * @return true, if successful
-	 */
-	public boolean doScroll(final float distanceX, final float distanceY) {
+	public void prepareRange() {
+		range = new Picture();
+		Canvas canvas = range.beginRecording(3 * map.tileWidth,
+				3 * map.tileHeight);
+		Log.d(TAG, "finding range");
+		Position fightPosition = GameController.getInstance().user.fightPosition;
+		Set<Position> l = map.findRange(null, fightPosition.x, fightPosition.y,
+				5);
+
+		for (Position p : l) {
+			canvas.drawRect(p.x * map.tileWidth, p.y * map.tileHeight, p.x
+					* map.tileWidth + map.tileWidth, p.y * map.tileHeight
+					+ map.tileHeight, paint);
+		}
+
+		// for (int x = 0;x < 3;x++){
+		// for (int y = 0;y < 3;y++){
+		// canvas.drawRect(x*map.tileWidth, y*map.tileHeight,
+		// x*map.tileWidth+map.tileWidth, y*map.tileHeight+map.tileHeight,
+		// paint);
+		// }
+		// }
+
+		range.endRecording();
+		view.invalidate();
+
+	}
+
+	private void renderBackground() {
+		background = new Picture();
+		ResourceLoader rl = new ResourceLoader();
+		Bitmap image = rl.getBitmapResource("tileset2,7,4.png", true);
+		Canvas c = background.beginRecording(screenWidth, screenHeight - 50);
+		for (int i = 0; i < map.width; i++) {
+			for (int j = 0; j < map.height; j++) {
+				c.drawBitmap(image, i * map.tileWidth, j * map.tileHeight, null);
+			}
+		}
+
+		// for (int j = 0; j < map.width; j++) {
+		// c.drawLine(j*map.tileWidth, 0, j*map.tileWidth,
+		// map.height*map.tileHeight, paint);
+		// }
+		//
+		// for (int j = 0; j < map.height; j++) {
+		// c.drawLine(0, j*map.tileHeight,
+		// map.width*map.tileWidth,j*map.tileHeight, paint);
+		// }
+
+		background.endRecording();
+
+	}
+
+	public void setScreenSize(int w, int h) {
+		screenWidth = w;
+		screenHeight = h;
+	}
+
+	public boolean doScroll(float distanceX, float distanceY) {
 		int xmin = 0 - 96, xmax = map.width * map.tileWidth + screenWidth + 96, ymin = 0 - 96, ymax = map.height
 				* map.tileHeight + screenHeight + 96;
 		if (limitScrollDist > 0) {
 			// Position ppos = user.getOnscreenPosition(zone);
-			final Position ppos = new Position(0, 0);
+			Position ppos = new Position(0, 0);
 
 			ppos.x -= 96 / 2;
 			ppos.y -= 96 / 2;
@@ -236,9 +241,27 @@ public class FightController {
 		return true;
 	}
 
-	/**
-	 * Exit.
-	 */
+	public boolean onSingleTapUp(MotionEvent e) {
+		int x = (int) (((-1 * sX) + e.getX()) / map.tileWidth);
+		int y = (int) (((-1 * sY) + e.getY() - FightActivity.progressHeight) / map.tileHeight);
+		if (action != null) {
+			action.onSingleTapUp(x, y);
+		}
+		return true;
+	}
+
+	public void changeAction(FightAction action) {
+		if (this.action != null) {
+			if (this.action.isActive()) {
+				Gui.toast("Other Action is already active", view, context);
+				return;
+			}
+			this.action.deactivated();
+		}
+		this.action = action;
+		this.action.activated();
+	}
+
 	public void exit() {
 		sX = 0;
 		sY = 0;
@@ -251,119 +274,6 @@ public class FightController {
 		((FightActivity) context).finish();
 	}
 
-	/**
-	 * Finish.
-	 */
-	public void finish() {
-	}
-
-	/**
-	 * Gets the screen position.
-	 *
-	 * @param user the user
-	 * @return the screen position
-	 */
-	public Position getScreenPosition(final Player user) {
-		final Position p = user.fightPosition;
-		final Position ret = new Position();
-		ret.x = ((p.x * map.tileWidth) + map.tileWidth / 2)
-				+ user.pictureXoffset;
-		ret.y = ((p.y * map.tileHeight) + map.tileHeight / 2)
-				+ user.pictureYoffset;
-		return ret;
-	}
-
-	/**
-	 * Inits the.
-	 */
-	public void init() {
-		if (map == null) {
-			map = new FightMap();
-		}
-
-		turnThread.startTurn(new ProgressObserver() {
-			@Override
-			public void progressChanged(final int progress) {
-				// Log.d(TAG,"progress changed :"+progress);
-				((FightActivity) context).progress.setProgress(progress);
-				timeLeft = progress;
-			}
-		}, timeLeft);
-	}
-
-	/**
-	 * On single tap up.
-	 *
-	 * @param e the e
-	 * @return true, if successful
-	 */
-	public boolean onSingleTapUp(final MotionEvent e) {
-		final int x = (int) (((-1 * sX) + e.getX()) / map.tileWidth);
-		final int y = (int) (((-1 * sY) + e.getY() - FightActivity.progressHeight) / map.tileHeight);
-		if (action != null) {
-			action.onSingleTapUp(x, y);
-		}
-		return true;
-	}
-
-	/**
-	 * Post invalidate.
-	 */
-	public void postInvalidate() {
-		if (view == null) {
-			return;
-		}
-		view.postInvalidate();
-	}
-
-	/**
-	 * Post invalidate.
-	 *
-	 * @param i the i
-	 */
-	public void postInvalidate(final int i) {
-		if (view == null) {
-			return;
-		}
-		view.postInvalidateDelayed(i);
-	}
-
-	/**
-	 * Post invalidate.
-	 *
-	 * @param pl the pl
-	 */
-	public void postInvalidate(final Player pl) {
-		if (view == null) {
-			return;
-		}
-		final Position pos = getScreenPosition(pl);
-		postInvalidateScroll(pl.animation.getBitmap().setX(pos.x).setY(pos.y)
-				.getBounds());
-
-	}
-
-	/**
-	 * Post invalidate.
-	 *
-	 * @param bounds the bounds
-	 */
-	public void postInvalidate(final Rect bounds) {
-		if (view == null) {
-			return;
-		}
-		view.postInvalidate(bounds.left, bounds.top, bounds.right,
-				bounds.bottom);
-	}
-
-	/**
-	 * Post invalidate scroll.
-	 *
-	 * @param rLeft the r left
-	 * @param rTop the r top
-	 * @param rRight the r right
-	 * @param rBottom the r bottom
-	 */
 	public void postInvalidateScroll(int rLeft, int rTop, int rRight,
 			int rBottom) {
 		if (view == null) {
@@ -376,85 +286,41 @@ public class FightController {
 		view.postInvalidate(rLeft, rTop, rRight, rBottom);
 	}
 
-	/**
-	 * Post invalidate scroll.
-	 *
-	 * @param bounds the bounds
-	 */
-	public void postInvalidateScroll(final Rect bounds) {
+	public void postInvalidateScroll(Rect bounds) {
 		postInvalidateScroll(bounds.left, bounds.top, bounds.right,
 				bounds.bottom);
 	}
 
-	/**
-	 * Prepare range.
-	 */
-	public void prepareRange() {
-		range = new Picture();
-		final Canvas canvas = range.beginRecording(3 * map.tileWidth,
-				3 * map.tileHeight);
-		Log.d(TAG, "finding range");
-		final Position fightPosition = GameController.getInstance().user.fightPosition;
-		final Set<Position> l = map.findRange(null, fightPosition.x,
-				fightPosition.y, 5);
-
-		for (final Position p : l) {
-			canvas.drawRect(p.x * map.tileWidth, p.y * map.tileHeight, p.x
-					* map.tileWidth + map.tileWidth, p.y * map.tileHeight
-					+ map.tileHeight, paint);
+	public void postInvalidate(int i) {
+		if (view == null) {
+			return;
 		}
-
-		// for (int x = 0;x < 3;x++){
-		// for (int y = 0;y < 3;y++){
-		// canvas.drawRect(x*map.tileWidth, y*map.tileHeight,
-		// x*map.tileWidth+map.tileWidth, y*map.tileHeight+map.tileHeight,
-		// paint);
-		// }
-		// }
-
-		range.endRecording();
-		view.invalidate();
-
+		view.postInvalidateDelayed(i);
 	}
 
-	/**
-	 * Render background.
-	 */
-	private void renderBackground() {
-		background = new Picture();
-		final ResourceLoader rl = new ResourceLoader();
-		final Bitmap image = rl.getBitmapResource("tileset2,7,4.png", true);
-		final Canvas c = background.beginRecording(screenWidth,
-				screenHeight - 50);
-		for (int i = 0; i < map.width; i++) {
-			for (int j = 0; j < map.height; j++) {
-				c.drawBitmap(image, i * map.tileWidth, j * map.tileHeight, null);
-			}
+	public void postInvalidate() {
+		if (view == null) {
+			return;
 		}
-
-		// for (int j = 0; j < map.width; j++) {
-		// c.drawLine(j*map.tileWidth, 0, j*map.tileWidth,
-		// map.height*map.tileHeight, paint);
-		// }
-		//
-		// for (int j = 0; j < map.height; j++) {
-		// c.drawLine(0, j*map.tileHeight,
-		// map.width*map.tileWidth,j*map.tileHeight, paint);
-		// }
-
-		background.endRecording();
-
+		view.postInvalidate();
 	}
 
-	/**
-	 * Sets the screen size.
-	 *
-	 * @param w the w
-	 * @param h the h
-	 */
-	public void setScreenSize(final int w, final int h) {
-		screenWidth = w;
-		screenHeight = h;
+	public void postInvalidate(Rect bounds) {
+		if (view == null) {
+			return;
+		}
+		view.postInvalidate(bounds.left, bounds.top, bounds.right,
+				bounds.bottom);
+	}
+
+	public void postInvalidate(Player pl) {
+		if (view == null) {
+			return;
+		}
+		Position pos = getScreenPosition(pl);
+		postInvalidateScroll(pl.animation.getBitmap().setX(pos.x).setY(pos.y)
+				.getBounds());
+
 	}
 
 }

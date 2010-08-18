@@ -48,55 +48,28 @@ import com.firegnom.valkyrie.map.pathfinding.ParcelablePath;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.net.protocol.PlayerStats;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Player.
- */
 public class Player implements Mover, Comparable<Player>, DrawableFeature {
-	
-	/** The TAG. */
-	private final String TAG = Player.class.getName();
-	
-	/** The name. */
+	private String TAG = Player.class.getName();
 	public String name;
-	
-	/** The display name. */
 	public String displayName;
-	
-	/** The position. */
 	public Position position;
-	
-	/** The stats. */
 	public PlayerStats stats;
 
-	/** The animation. */
 	public DirectionalAnimation animation;
 
-	/** The fight position. */
 	public Position fightPosition = new Position(0, 0);
 
-	/** The fight move x. */
 	public double fightMoveX = 0;
-	
-	/** The fight move y. */
 	public double fightMoveY = 0;
 
-	/** The paths. */
 	public LinkedBlockingQueue<Path> paths;
 
-	/** The player class. */
 	private int playerClass;
 
-	/** The health paint. */
 	public static Paint healthPaint;
-	
-	/** The health paint out. */
 	public static Paint healthPaintOut;
-	
-	/** The ghost. */
 	public static Paint ghost;
 
-	/** The fight mode. */
 	public boolean fightMode = false;
 
 	static {
@@ -134,63 +107,36 @@ public class Player implements Mover, Comparable<Player>, DrawableFeature {
 	// {DIR_SW,DIR_W,DIR_NW}
 	// };
 
-	/** The MOV e_ speed. */
 	public static int MOVE_SPEED = 80;
-	
-	/** The direction. */
 	public short direction;
-	
-	/** The picture size. */
 	public int pictureSize = 96;
-	
-	/** The picture xoffset. */
 	public int pictureXoffset = -pictureSize + 45;
-	
-	/** The picture yoffset. */
 	public int pictureYoffset = -pictureSize + 20;
 
-	/** The move tile set. */
 	public StringTileSet moveTileSet;
 	// public Bitmap[][] movesTiles;
-	/** The mover thread. */
 	public MoverThread moverThread;
-	
-	/** The move_position. */
 	public short move_position = 0;
-	
-	/** The position_trans. */
 	Position position_trans;
 	// ResourceLoader rl ;
 
-	/** The actions. */
 	ArrayList<ContextAction> actions;
 
-	/** The on screen position. */
-	private final Position onScreenPosition = new Position();
-
-	/** The h. */
-	Hit h = new Hit();
-
-	/**
-	 * Instantiates a new player.
-	 *
-	 * @param name the name
-	 */
-	public Player(final String name) {
+	public Player(String name) {
 		paths = new LinkedBlockingQueue<Path>(10);
 		this.name = name;
 		position = new Position();
 		position_trans = new Position(0, 0);
 		direction = Dir.E;
 		actions = new ArrayList<ContextAction>();
-		final ContextAction info = new ContextAction();
+		ContextAction info = new ContextAction();
 		info.container = name;
 		info.name = "Info";
 		info.type = ContextAction.ACTION_MANAGER;
 		info.actionId = ActionManager.INFO;
 		actions.add(info);
 
-		final ContextAction attack = new ContextAction();
+		ContextAction attack = new ContextAction();
 		attack.container = name;
 		attack.name = "Attack";
 		attack.type = ContextAction.ACTION_MANAGER;
@@ -201,19 +147,147 @@ public class Player implements Mover, Comparable<Player>, DrawableFeature {
 		h.setText("Miss");
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(final Player another) {
-		return position.y - another.position.y;
+	public void setPlayerClass(int playerClass) {
+		this.playerClass = playerClass;
+		// TODO Auto-generated method stub
+		animation = new DirectionalAnimation(PlayerClass.IMAGES[playerClass],
+				(short) 8, 96, 96, 0, 0);
+	}
+
+	public int getPlayerClass() {
+		return playerClass;
+	}
+
+	public void startMoverThread() {
+		moverThread = new MoverThread(this, false);
+		moverThread.start();
+	}
+
+	private Position onScreenPosition = new Position();
+
+	public Position getOnscreenPosition(Zone z) {
+		onScreenPosition.x = z.getXCoords(this.position.x) + pictureXoffset
+				- position_trans.x;
+		onScreenPosition.y = z.getYCoords(this.position.y) + pictureYoffset
+				- position_trans.y;
+		return onScreenPosition;
+	}
+
+	public Position getOnscreenPositionCenter(Zone z) {
+		if (z == null) {
+			Log.w(TAG, "getOnscreenPositionCenter no zone loaded");
+			return null;
+		}
+		Position p = getOnscreenPosition(z);
+		p.x += pictureSize / 2;
+		p.y += pictureSize / 2;
+		return p;
+	}
+
+	public Path getPathTo(int x, int y, GameController sc) {
+		return sc.zone.finder.findPath(this, position.x, position.y, x, y);
+	}
+
+	public Bitmap getPicture() {
+		// if (moverThread.moveing){
+		return moveTileSet.getBitmap(move_position, direction,
+				GameController.getInstance().rl);
+		// ResourceLoader.emptyBitmapCache();
+		// return movesTiles[direction][move_position];
+		// }
+		// return null;
+
+	}
+
+	public Path goTo(int x, int y, View v) {
+		int cX = position.x, cY = position.y;
+		if (moverThread.isMoveing()) {
+			return null;
+		}
+		if (!paths.isEmpty()) {
+			return null;
+		}
+		if (moverThread.p != null) {
+			cX = moverThread.p.getX(moverThread.p.getLength() - 1);
+			cY = moverThread.p.getY(moverThread.p.getLength() - 1);
+		}
+
+		GameController sc = GameController.getInstance();
+		Path p = sc.zone.finder.findPath(this, cX, cY, x, y);
+		Log.d(TAG, "Player go to path");
+		if (p == null) {
+			Toast.makeText(
+					v.getContext(),
+					v.getResources().getString(
+							R.string.pathfinding_how_to_get_there),
+					Toast.LENGTH_SHORT).show();
+			;
+			return null;
+		}
+		try {
+			paths.put(p);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			sc.service.move(new ParcelablePath(p), playerClass);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return p;
+	}
+
+	public void setMoveTileSet(StringTileSet tilestet) {
+		this.moveTileSet = tilestet;
+		// tilestet.downloadAll(rl);
+	}
+
+	public void setPosition(int x, int y) {
+		synchronized (position) {
+			position.x = (short) x;
+			position.y = (short) y;
+		}
+	}
+
+	public void setFightPosition(int x, int y) {
+		synchronized (fightPosition) {
+
+			animation.getBitmap().setX(x);
+			animation.getBitmap().setY(y);
+
+			fightPosition.x = (short) x;
+			fightPosition.y = (short) y;
+		}
+	}
+
+	public void showMe(GameController sc) {
+		sc.sX = -getOnscreenPosition(sc.zone).x + sc.screenWidth / 2
+				- pictureSize / 2;
+		sc.sY = -getOnscreenPosition(sc.zone).y + sc.screenHeight / 2
+				- pictureSize / 2;
+		sc.renderScreen();
+	}
+
+	public Position getMovePositions() {
+		if (moverThread != null && moverThread.isMoveing()) {
+			return new Position(moverThread.getPath().getX(
+					moverThread.getPath().getLength() - 1), moverThread
+					.getPath().getY(moverThread.getPath().getLength() - 1));
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Destination.
-	 *
-	 * @return the position
+	 * Use only to stop players not user !!!
 	 */
+	public void destroy() {
+		moverThread.interrupt();
+	}
+
 	public Position destination() {
 		if (moverThread.destination == null) {
 			return position;
@@ -221,20 +295,21 @@ public class Player implements Mover, Comparable<Player>, DrawableFeature {
 		return moverThread.destination;
 	}
 
-	/**
-	 * Use only to stop players not user !!!.
-	 */
-	public void destroy() {
-		moverThread.interrupt();
+	@Override
+	public int compareTo(Player another) {
+		return position.y - another.position.y;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#draw(android.graphics.Canvas)
-	 */
-	@Override
-	public void draw(final Canvas c) {
+	public ArrayList<ContextAction> getActions() {
+		return actions;
+	}
 
-		final GameController gc = GameController.getInstance();
+	Hit h = new Hit();
+
+	@Override
+	public void draw(Canvas c) {
+
+		GameController gc = GameController.getInstance();
 		Position p;
 		if (fightMode) {
 			p = gc.fightController.getScreenPosition(this);
@@ -254,11 +329,11 @@ public class Player implements Mover, Comparable<Player>, DrawableFeature {
 			c.drawRect(p.x + 10, p.y + 15, p.x + 14, p.y + 85, healthPaintOut);
 			c.drawRect(p.x + 10, p.y + 15, p.x + 14, p.y + 85, healthPaint);
 
-			animation.setX((p.x)).setY((p.y)).draw(c);
+			animation.setX((int) (p.x)).setY((int) (p.y)).draw(c);
 
 		} else {
 
-			final Bitmap playerImage = getPicture();
+			Bitmap playerImage = getPicture();
 			if (playerImage == null) {
 				c.drawRect(p.x, p.y, p.x + 96, p.y + 96, gc.outOfMemoryPaint);
 			} else {
@@ -271,227 +346,10 @@ public class Player implements Mover, Comparable<Player>, DrawableFeature {
 
 	}
 
-	/**
-	 * Gets the actions.
-	 *
-	 * @return the actions
-	 */
-	public ArrayList<ContextAction> getActions() {
-		return actions;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#getBounds()
-	 */
 	@Override
 	public Rect getBounds() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * Gets the move positions.
-	 *
-	 * @return the move positions
-	 */
-	public Position getMovePositions() {
-		if (moverThread != null && moverThread.isMoveing()) {
-			return new Position(moverThread.getPath().getX(
-					moverThread.getPath().getLength() - 1), moverThread
-					.getPath().getY(moverThread.getPath().getLength() - 1));
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Gets the onscreen position.
-	 *
-	 * @param z the z
-	 * @return the onscreen position
-	 */
-	public Position getOnscreenPosition(final Zone z) {
-		onScreenPosition.x = z.getXCoords(this.position.x) + pictureXoffset
-				- position_trans.x;
-		onScreenPosition.y = z.getYCoords(this.position.y) + pictureYoffset
-				- position_trans.y;
-		return onScreenPosition;
-	}
-
-	/**
-	 * Gets the onscreen position center.
-	 *
-	 * @param z the z
-	 * @return the onscreen position center
-	 */
-	public Position getOnscreenPositionCenter(final Zone z) {
-		if (z == null) {
-			Log.w(TAG, "getOnscreenPositionCenter no zone loaded");
-			return null;
-		}
-		final Position p = getOnscreenPosition(z);
-		p.x += pictureSize / 2;
-		p.y += pictureSize / 2;
-		return p;
-	}
-
-	/**
-	 * Gets the path to.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param sc the sc
-	 * @return the path to
-	 */
-	public Path getPathTo(final int x, final int y, final GameController sc) {
-		return sc.zone.finder.findPath(this, position.x, position.y, x, y);
-	}
-
-	/**
-	 * Gets the picture.
-	 *
-	 * @return the picture
-	 */
-	public Bitmap getPicture() {
-		// if (moverThread.moveing){
-		return moveTileSet.getBitmap(move_position, direction,
-				GameController.getInstance().rl);
-		// ResourceLoader.emptyBitmapCache();
-		// return movesTiles[direction][move_position];
-		// }
-		// return null;
-
-	}
-
-	/**
-	 * Gets the player class.
-	 *
-	 * @return the player class
-	 */
-	public int getPlayerClass() {
-		return playerClass;
-	}
-
-	/**
-	 * Go to.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param v the v
-	 * @return the path
-	 */
-	public Path goTo(final int x, final int y, final View v) {
-		int cX = position.x, cY = position.y;
-		if (moverThread.isMoveing()) {
-			return null;
-		}
-		if (!paths.isEmpty()) {
-			return null;
-		}
-		if (moverThread.p != null) {
-			cX = moverThread.p.getX(moverThread.p.getLength() - 1);
-			cY = moverThread.p.getY(moverThread.p.getLength() - 1);
-		}
-
-		final GameController sc = GameController.getInstance();
-		final Path p = sc.zone.finder.findPath(this, cX, cY, x, y);
-		Log.d(TAG, "Player go to path");
-		if (p == null) {
-			Toast.makeText(
-					v.getContext(),
-					v.getResources().getString(
-							R.string.pathfinding_how_to_get_there),
-					Toast.LENGTH_SHORT).show();
-			;
-			return null;
-		}
-		try {
-			paths.put(p);
-		} catch (final InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			sc.service.move(new ParcelablePath(p), playerClass);
-		} catch (final RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return p;
-	}
-
-	/**
-	 * Sets the fight position.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 */
-	public void setFightPosition(final int x, final int y) {
-		synchronized (fightPosition) {
-
-			animation.getBitmap().setX(x);
-			animation.getBitmap().setY(y);
-
-			fightPosition.x = (short) x;
-			fightPosition.y = (short) y;
-		}
-	}
-
-	/**
-	 * Sets the move tile set.
-	 *
-	 * @param tilestet the new move tile set
-	 */
-	public void setMoveTileSet(final StringTileSet tilestet) {
-		this.moveTileSet = tilestet;
-		// tilestet.downloadAll(rl);
-	}
-
-	/**
-	 * Sets the player class.
-	 *
-	 * @param playerClass the new player class
-	 */
-	public void setPlayerClass(final int playerClass) {
-		this.playerClass = playerClass;
-		// TODO Auto-generated method stub
-		animation = new DirectionalAnimation(PlayerClass.IMAGES[playerClass],
-				(short) 8, 96, 96, 0, 0);
-	}
-
-	/**
-	 * Sets the position.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 */
-	public void setPosition(final int x, final int y) {
-		synchronized (position) {
-			position.x = (short) x;
-			position.y = (short) y;
-		}
-	}
-
-	/**
-	 * Show me.
-	 *
-	 * @param sc the sc
-	 */
-	public void showMe(final GameController sc) {
-		sc.sX = -getOnscreenPosition(sc.zone).x + sc.screenWidth / 2
-				- pictureSize / 2;
-		sc.sY = -getOnscreenPosition(sc.zone).y + sc.screenHeight / 2
-				- pictureSize / 2;
-		sc.renderScreen();
-	}
-
-	/**
-	 * Start mover thread.
-	 */
-	public void startMoverThread() {
-		moverThread = new MoverThread(this, false);
-		moverThread.start();
 	}
 
 }

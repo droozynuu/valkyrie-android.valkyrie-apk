@@ -30,52 +30,87 @@ import com.firegnom.valkyrie.map.pathfinding.ParcelablePath;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.service.IGameServiceCallback;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GameServiceCallback.
- */
 public class GameServiceCallback extends IGameServiceCallback.Stub {
 
-	/** The TAG. */
-	private final String TAG = GameServiceCallback.class.getName();
+	private String TAG = GameServiceCallback.class.getName();
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#disconnected()
-	 */
+	@Override
+	public void playerMoved(String username, int playerClass, ParcelablePath pa)
+			throws RemoteException {
+		GameController gc = GameController.getInstance();
+		Log.d(TAG, "playerMoved");
+		Player pl = gc.players.get(username);
+		Path p = pa.path;
+		if (pl == null) {
+			pl = new Player(username);
+			pl.setMoveTileSet(new StringTileSet(
+					PlayerClass.IMAGES[playerClass], 96, 96, 768, 768));
+			pl.position.x = p.getX(0);
+			pl.position.y = p.getY(0);
+			pl.setPlayerClass(playerClass);
+			gc.players.put(username, pl);
+			pl.startMoverThread();
+		}
+		pl.paths.add(p);
+	}
+
 	@Override
 	public void disconnected() throws RemoteException {
-		final GameController gc = GameController.getInstance();
+		GameController gc = GameController.getInstance();
 		gc.goToLogin();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#downloadChanged(int)
-	 */
 	@Override
-	public void downloadChanged(final int bytes) throws RemoteException {
-		final GameController gc = GameController.getInstance();
-		GameController.networkDownload = bytes;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerDisconnected(java.lang.String)
-	 */
-	@Override
-	public void playerDisconnected(final String username)
-			throws RemoteException {
-		final GameController gc = GameController.getInstance();
+	public void playerDisconnected(String username) throws RemoteException {
+		GameController gc = GameController.getInstance();
 		Log.d(TAG, "playerDisconnected");
 		gc.players.remove(username);
 		gc.postInvalidate();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerInfoReciaved(int, java.lang.String, int, int)
-	 */
 	@Override
-	public void playerInfoReciaved(final int playerClass, final String zone,
-			final int x, final int y) throws RemoteException {
-		final GameController gc = GameController.getInstance();
+	public void downloadChanged(int bytes) throws RemoteException {
+		GameController gc = GameController.getInstance();
+		gc.networkDownload = bytes;
+	}
+
+	@Override
+	public void uploadChanged(int bytes) throws RemoteException {
+		GameController gc = GameController.getInstance();
+		gc.networkUpload = bytes;
+	}
+
+	@Override
+	public void positionChanged(String userName, int x, int y, int playerClass)
+			throws RemoteException {
+		GameController gc = GameController.getInstance();
+		Player pl = gc.players.get(userName);
+		if (pl == null) {
+			pl = new Player(userName);
+			pl.setMoveTileSet(new StringTileSet(
+					PlayerClass.IMAGES[playerClass], 96, 96, 768, 768));
+			pl.position.x = x;
+			pl.position.y = y;
+			gc.players.put(userName, pl);
+			pl.startMoverThread();
+		}
+		if (!pl.destination().equals(new Position(x, y))) {
+			pl.destroy();
+			pl = new Player(userName);
+			pl.setPlayerClass(playerClass);
+			pl.moveTileSet = new StringTileSet(
+					PlayerClass.IMAGES[pl.getPlayerClass()], 96, 96, 768, 768);
+			pl.position = new Position(x, y);
+			pl.startMoverThread();
+		}
+		gc.postInvalidate();
+
+	}
+
+	@Override
+	public void playerInfoReciaved(int playerClass, String zone, int x, int y)
+			throws RemoteException {
+		GameController gc = GameController.getInstance();
 		if (gc.user.moveTileSet == null) {
 			// ResourceLoader.emptyBitmapCache();
 			// System.gc();
@@ -92,37 +127,10 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerMoved(java.lang.String, int, com.firegnom.valkyrie.map.pathfinding.ParcelablePath)
-	 */
 	@Override
-	public void playerMoved(final String username, final int playerClass,
-			final ParcelablePath pa) throws RemoteException {
-		final GameController gc = GameController.getInstance();
-		Log.d(TAG, "playerMoved");
-		Player pl = gc.players.get(username);
-		final Path p = pa.path;
-		if (pl == null) {
-			pl = new Player(username);
-			pl.setMoveTileSet(new StringTileSet(
-					PlayerClass.IMAGES[playerClass], 96, 96, 768, 768));
-			pl.position.x = p.getX(0);
-			pl.position.y = p.getY(0);
-			pl.setPlayerClass(playerClass);
-			gc.players.put(username, pl);
-			pl.startMoverThread();
-		}
-		pl.paths.add(p);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerPositionsMessageRecieaved(java.lang.String[], int[], int[], int[])
-	 */
-	@Override
-	public void playerPositionsMessageRecieaved(final String[] userNames,
-			final int[] x, final int[] y, final int[] playerClass)
-			throws RemoteException {
-		final GameController gc = GameController.getInstance();
+	public void playerPositionsMessageRecieaved(String[] userNames, int[] x,
+			int[] y, int[] playerClass) throws RemoteException {
+		GameController gc = GameController.getInstance();
 		Log.d(TAG, "playerPositionsMessageRecieaved");
 
 		for (int i = 0; i < userNames.length; i++) {
@@ -152,44 +160,5 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 		}
 		gc.players.clean();
 
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#positionChanged(java.lang.String, int, int, int)
-	 */
-	@Override
-	public void positionChanged(final String userName, final int x,
-			final int y, final int playerClass) throws RemoteException {
-		final GameController gc = GameController.getInstance();
-		Player pl = gc.players.get(userName);
-		if (pl == null) {
-			pl = new Player(userName);
-			pl.setMoveTileSet(new StringTileSet(
-					PlayerClass.IMAGES[playerClass], 96, 96, 768, 768));
-			pl.position.x = x;
-			pl.position.y = y;
-			gc.players.put(userName, pl);
-			pl.startMoverThread();
-		}
-		if (!pl.destination().equals(new Position(x, y))) {
-			pl.destroy();
-			pl = new Player(userName);
-			pl.setPlayerClass(playerClass);
-			pl.moveTileSet = new StringTileSet(
-					PlayerClass.IMAGES[pl.getPlayerClass()], 96, 96, 768, 768);
-			pl.position = new Position(x, y);
-			pl.startMoverThread();
-		}
-		gc.postInvalidate();
-
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#uploadChanged(int)
-	 */
-	@Override
-	public void uploadChanged(final int bytes) throws RemoteException {
-		final GameController gc = GameController.getInstance();
-		GameController.networkUpload = bytes;
 	}
 }

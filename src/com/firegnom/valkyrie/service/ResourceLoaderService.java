@@ -39,109 +39,28 @@ import com.firegnom.valkyrie.net.DownloadQueue;
 import com.firegnom.valkyrie.util.PacksHelper;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ResourceLoaderService.
- */
 public final class ResourceLoaderService extends IResourceLoaderService.Stub {
-	
-	/**
-	 * The Class TestRun.
-	 */
-	class TestRun extends Thread {
-		
-		/** The path. */
-		String path;
-
-		/**
-		 * Instantiates a new test run.
-		 *
-		 * @param path the path
-		 */
-		public TestRun(final String path) {
-			this.path = path;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Thread#run()
-		 */
-		@Override
-		public void run() {
-			PacksHelper.downloadPacks(path, new Observer() {
-
-				@Override
-				public void update(final Observable observable,
-						final Object data) {
-					final Download d = (Download) observable;
-					showNotification((int) d.getProgress(), d.getUrl());
-					if (d.getStatus() == Download.COMPLETE) {
-						cancelNotification();
-					}
-					if (d.getStatus() == Download.ERROR) {
-						// TODO error notification
-						cancelNotification();
-					}
-				}
-			});
-			if (loadListener != null) {
-				try {
-					loadListener.finished();
-					downloadingPacks = false;
-				} catch (final RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/** The Constant TAG. */
 	protected static final String TAG = ResourceLoaderService.class.getName();
-	
-	/** The Constant CUSTOM_VIEW_ID. */
 	private static final int CUSTOM_VIEW_ID = 2;
-	
-	/** The service. */
 	ValkyrieService service;
-	
-	/** The rl. */
 	ResourceLoader rl;
-	
-	/** The complete. */
 	boolean complete = false;
-
-	/** The error. */
 	private boolean error = false;
-	
-	/** The notification. */
-	Notification notification;
-	
-	/** The download queue. */
-	DownloadQueue downloadQueue;
-	
-	/** The listener. */
-	IQueuleChangeListener listener = null;
 
-	/** The downloading packs. */
+	Notification notification;
+	DownloadQueue downloadQueue;
+	IQueuleChangeListener listener = null;
 	private boolean downloadingPacks = false;
 
-	/** The load listener. */
-	IPackLoadListener loadListener;
-
-	/**
-	 * Instantiates a new resource loader service.
-	 *
-	 * @param service the service
-	 */
 	public ResourceLoaderService(final ValkyrieService service) {
 		this.service = service;
 		notification = new Notification(R.drawable.stat_sample, "",
 				System.currentTimeMillis());
 		rl = new ResourceLoader();
-		downloadQueue = new DownloadQueue(ResourceLoader.cacheLocation, true);
+		downloadQueue = new DownloadQueue(rl.cacheLocation, true);
 		downloadQueue.useObserver(new Observer() {
 			@Override
-			public void update(final Observable observable, final Object data) {
+			public void update(Observable observable, Object data) {
 				if (((Download) observable).getStatus() == Download.COMPLETE) {
 					// Log.d(TAG, "Remaining : "+downloadQueue.size());
 					service.serverConnection
@@ -149,7 +68,7 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 					if (listener != null) {
 						try {
 							listener.remaining(downloadQueue.size());
-						} catch (final RemoteException e) {
+						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -159,39 +78,16 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#addToDownloadQueue(java.lang.String)
-	 */
 	@Override
-	public void addToDownloadQueue(final String name) throws RemoteException {
-		try {
-			downloadQueue.add(new URL(ResourceLoader.URL + name));
-		} catch (final MalformedURLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Cancel notification.
-	 */
-	void cancelNotification() {
-		service.mNM.cancel(CUSTOM_VIEW_ID);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#download(java.lang.String, com.firegnom.valkyrie.service.ILoaderCallback)
-	 */
-	@Override
-	public void download(final String name, final ILoaderCallback callback)
+	public void download(final String name, ILoaderCallback callback)
 			throws RemoteException {
 
 		Log.d(TAG, "getBitmap");
 		complete = false;
 		error = false;
-		final boolean ret = rl.download(name, new Observer() {
+		boolean ret = rl.download(name, new Observer() {
 			@Override
-			public void update(final Observable observable, final Object data) {
+			public void update(Observable observable, Object data) {
 				error = ((AsyncDownload) observable).getStatus() == AsyncDownload.ERROR;
 				complete = ((AsyncDownload) observable).getStatus() == AsyncDownload.COMPLETE;
 				if (complete) {
@@ -219,7 +115,7 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 			while (!complete) {
 				try {
 					Thread.sleep(50);
-				} catch (final InterruptedException e) {
+				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -240,51 +136,90 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 		cancelNotification();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#downloadPacks(com.firegnom.valkyrie.service.IPackLoadListener)
-	 */
-	@Override
-	public void downloadPacks(final IPackLoadListener listener)
-			throws RemoteException {
-		Log.d(TAG, "pownloadPacks");
-		if (!downloadingPacks) {
-			downloadingPacks = true;
-			loadListener = listener;
-			new TestRun(ResourceLoader.cacheLocation).start();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#registerQueuleChangeListener(com.firegnom.valkyrie.service.IQueuleChangeListener)
-	 */
-	@Override
-	public void registerQueuleChangeListener(
-			final IQueuleChangeListener listener) throws RemoteException {
-		this.listener = listener;
-	}
-
-	/**
-	 * Show notification.
-	 *
-	 * @param percentage the percentage
-	 * @param msg the msg
-	 */
-	void showNotification(final int percentage, final String msg) {
-		final RemoteViews contentView = new RemoteViews(
-				service.getPackageName(), R.layout.custom_notification);
+	void showNotification(int percentage, String msg) {
+		RemoteViews contentView = new RemoteViews(service.getPackageName(),
+				R.layout.custom_notification);
 		contentView.setProgressBar(R.id.custom_notification_progressbar, 100,
 				percentage, false);
 		contentView.setTextViewText(R.id.custom_notification_text, msg);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT
 				| Notification.FLAG_NO_CLEAR;
 		notification.contentView = contentView;
-		final Intent notificationIntent = new Intent(service,
-				ValkyrieService.class);
-		final PendingIntent contentIntent = PendingIntent.getActivity(service,
-				0, notificationIntent, 0);
+		Intent notificationIntent = new Intent(service, ValkyrieService.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(service, 0,
+				notificationIntent, 0);
 		notification.contentIntent = contentIntent;
 		service.mNM.notify(CUSTOM_VIEW_ID, notification);
 
+	}
+
+	void cancelNotification() {
+		service.mNM.cancel(CUSTOM_VIEW_ID);
+	}
+
+	@Override
+	public void addToDownloadQueue(String name) throws RemoteException {
+		try {
+			downloadQueue.add(new URL(rl.URL + name));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void registerQueuleChangeListener(IQueuleChangeListener listener)
+			throws RemoteException {
+		this.listener = listener;
+	}
+
+	@Override
+	public void downloadPacks(IPackLoadListener listener)
+			throws RemoteException {
+		Log.d(TAG, "pownloadPacks");
+		if (!downloadingPacks) {
+			downloadingPacks = true;
+			loadListener = listener;
+			new TestRun(rl.cacheLocation).start();
+		}
+	}
+
+	IPackLoadListener loadListener;
+
+	class TestRun extends Thread {
+		String path;
+
+		public TestRun(String path) {
+			this.path = path;
+		}
+
+		@Override
+		public void run() {
+			PacksHelper.downloadPacks(path, new Observer() {
+
+				@Override
+				public void update(Observable observable, Object data) {
+					Download d = (Download) observable;
+					showNotification((int) d.getProgress(), d.getUrl());
+					if (d.getStatus() == Download.COMPLETE) {
+						cancelNotification();
+					}
+					if (d.getStatus() == Download.ERROR) {
+						// TODO error notification
+						cancelNotification();
+					}
+				}
+			});
+			if (loadListener != null) {
+				try {
+					loadListener.finished();
+					downloadingPacks = false;
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

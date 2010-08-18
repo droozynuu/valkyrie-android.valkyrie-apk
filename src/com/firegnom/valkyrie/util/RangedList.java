@@ -20,39 +20,17 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.util;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class RangedList.
- *
- * @param <E> the element type
- */
 public class RangedList<E> {
-	
-	/**
-	 * The Class Node.
-	 */
+	Node first;
+	Node last;
+
 	private class Node {
-		
-		/** The min. */
 		int min;
-		
-		/** The max. */
 		int max;
-		
-		/** The o. */
 		E o;
-		
-		/** The next. */
 		Node next;
 
-		/**
-		 * Instantiates a new node.
-		 *
-		 * @param min the min
-		 * @param max the max
-		 * @param o the o
-		 */
-		public Node(final int min, final int max, final E o) {
+		public Node(int min, int max, E o) {
 			this.min = min;
 			this.max = max;
 			this.o = o;
@@ -60,27 +38,11 @@ public class RangedList<E> {
 
 	}
 
-	/** The first. */
-	Node first;
-
-	/** The last. */
-	Node last;
-
-	/**
-	 * Instantiates a new ranged list.
-	 */
 	public RangedList() {
 	}
 
-	/**
-	 * Adds the.
-	 *
-	 * @param min the min
-	 * @param max the max
-	 * @param o the o
-	 */
-	public void add(final int min, final int max, final E o) {
-		final Node n = new Node(min, max, o);
+	public void add(int min, int max, E o) {
+		Node n = new Node(min, max, o);
 		if (last == null) {
 			first = n;
 			last = first;
@@ -90,13 +52,7 @@ public class RangedList<E> {
 		last = n;
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param val the val
-	 * @return the e
-	 */
-	public E get(final int val) {
+	public E get(int val) {
 		Node data = first;
 		while (data != null) {
 			if (data.min <= val && data.max >= val) {

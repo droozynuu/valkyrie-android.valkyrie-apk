@@ -28,81 +28,48 @@ import com.firegnom.valkyrie.action.ContextAction;
 import com.firegnom.valkyrie.common.Constants;
 import com.firegnom.valkyrie.map.Position;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PlayersTable.
- */
 public class PlayersTable {
-	
-	/** The players. */
 	Hashtable<String, Player> players;
 
-	/**
-	 * Instantiates a new players table.
-	 */
 	public PlayersTable() {
 		players = new Hashtable<String, Player>();
 	}
 
-	/**
-	 * Clean.
-	 */
-	public void clean() {
-		final Position userpos = GameController.getInstance().user.position;
-		final Position userdest = GameController.getInstance().user
-				.destination();
-		final Enumeration<Player> elements = players.elements();
-		while (elements.hasMoreElements()) {
-			final Player p = elements.nextElement();
-			if (!p.destination().inRange(userdest, Constants.VISIBILITY_RANGE)
-					|| !p.destination().inRange(userpos,
-							Constants.VISIBILITY_RANGE)) {
-				players.remove(p.name);
-				p.destroy();
-			}
-		}
-		// TODO Auto-generated method stub
+	public Player get(String username) {
+		return players.get(username);
+	}
+
+	public void put(String username, Player pl) {
+		players.put(username, pl);
+	}
+
+	public void remove(String username) {
+		players.remove(username);
 
 	}
 
-	/**
-	 * Clear.
-	 */
 	public void clear() {
 		players.clear();
 
 	}
 
-	/**
-	 * Contains player.
-	 *
-	 * @param p the p
-	 * @return true, if successful
-	 */
-	public boolean containsPlayer(final Player p) {
-		return players.containsKey(p.name);
+	public void newTab(Hashtable<String, Player> newp) {
+		players.clear();
+		players = newp;
 	}
 
-	/**
-	 * Elements.
-	 *
-	 * @return the enumeration
-	 */
 	public Enumeration<Player> elements() {
 		return players.elements();
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param p the p
-	 * @param range the range
-	 * @return the array list
-	 */
-	public ArrayList<Player> get(final Position p, final int range) {
+	public boolean containsPlayer(Player p) {
+		return players.containsKey(p.name);
+	}
 
-		final ArrayList<Player> list = new ArrayList<Player>();
-		final Enumeration<Player> elements = players.elements();
+	public ArrayList<Player> get(Position p, int range) {
+
+		ArrayList<Player> list = new ArrayList<Player>();
+		Enumeration<Player> elements = players.elements();
 		Player pl;
 		while (elements.hasMoreElements()) {
 			pl = elements.nextElement();
@@ -113,26 +80,9 @@ public class PlayersTable {
 		return list;
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param username the username
-	 * @return the player
-	 */
-	public Player get(final String username) {
-		return players.get(username);
-	}
-
-	/**
-	 * Gets the actions.
-	 *
-	 * @param p the p
-	 * @param range the range
-	 * @return the actions
-	 */
-	public ArrayList<ContextAction> getActions(final Position p, final int range) {
-		final ArrayList<ContextAction> list = new ArrayList<ContextAction>();
-		final Enumeration<Player> elements = players.elements();
+	public ArrayList<ContextAction> getActions(Position p, int range) {
+		ArrayList<ContextAction> list = new ArrayList<ContextAction>();
+		Enumeration<Player> elements = players.elements();
 		Player pl;
 		while (elements.hasMoreElements()) {
 			pl = elements.nextElement();
@@ -143,33 +93,20 @@ public class PlayersTable {
 		return list;
 	}
 
-	/**
-	 * New tab.
-	 *
-	 * @param newp the newp
-	 */
-	public void newTab(final Hashtable<String, Player> newp) {
-		players.clear();
-		players = newp;
-	}
-
-	/**
-	 * Put.
-	 *
-	 * @param username the username
-	 * @param pl the pl
-	 */
-	public void put(final String username, final Player pl) {
-		players.put(username, pl);
-	}
-
-	/**
-	 * Removes the.
-	 *
-	 * @param username the username
-	 */
-	public void remove(final String username) {
-		players.remove(username);
+	public void clean() {
+		Position userpos = GameController.getInstance().user.position;
+		Position userdest = GameController.getInstance().user.destination();
+		Enumeration<Player> elements = players.elements();
+		while (elements.hasMoreElements()) {
+			Player p = elements.nextElement();
+			if (!p.destination().inRange(userdest, Constants.VISIBILITY_RANGE)
+					|| !p.destination().inRange(userpos,
+							Constants.VISIBILITY_RANGE)) {
+				players.remove(p.name);
+				p.destroy();
+			}
+		}
+		// TODO Auto-generated method stub
 
 	}
 

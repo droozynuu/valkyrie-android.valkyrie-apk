@@ -30,33 +30,16 @@ import com.firegnom.valkyrie.util.Point;
 import com.firegnom.valkyrie.util.Rectangle;
 import com.firegnom.valkyrie.util.rtree.RTree;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MapObjectsIndex.
- */
 public class MapObjectsIndex implements IntProcedure {
-	
-	/** The actiontree. */
-	private final RTree actiontree;
-	
-	/** The map. */
-	private final TIntObjectHashMap<MapObject> map;
-	
-	/** The ret. */
+	private RTree actiontree;
+	private TIntObjectHashMap<MapObject> map;
 	private ArrayList<MapObject> ret;
-	
-	/** The retindex. */
 	private int retindex;
-	
-	/** The showeditor. */
 	public boolean showeditor = true;
 
-	/**
-	 * Instantiates a new map objects index.
-	 */
 	public MapObjectsIndex() {
 		actiontree = new RTree();
-		final Properties p = new Properties();
+		Properties p = new Properties();
 		p.setProperty("MinNodeEntries", "2");
 		p.setProperty("MaxNodeEntries", "20"); // reasonable values?
 		actiontree.init(p);
@@ -64,53 +47,31 @@ public class MapObjectsIndex implements IntProcedure {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.util.IntProcedure#execute(int)
-	 */
-	@Override
-	public boolean execute(final int id) {
-		ret.add(map.get(id));
-		retindex++;
-		return false;
+	public void put(MapObject ca) {
+		map.put(ca.getId(), ca);
+		actiontree.add(new Rectangle(ca.x, ca.y, ca.x + ca.width, ca.y
+				+ ca.height), ca.getId());
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param radius the radius
-	 * @return the array list
-	 */
-	public ArrayList<MapObject> get(final int x, final int y, final int radius) {
+	public ArrayList<MapObject> get(int x, int y, int radius) {
 		ret = new ArrayList<MapObject>();
 		retindex = 0;
 		actiontree.nearest(new Point(x, y), this, radius);
 		return ret;
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param r the r
-	 * @return the array list
-	 */
-	public ArrayList<MapObject> get(final Rectangle r) {
+	@Override
+	public boolean execute(int id) {
+		ret.add(map.get(id));
+		retindex++;
+		return false;
+	}
+
+	public ArrayList<MapObject> get(Rectangle r) {
 		ret = new ArrayList<MapObject>();
 		retindex = 0;
 		actiontree.intersects(r, this);
 
 		return ret;
-	}
-
-	/**
-	 * Put.
-	 *
-	 * @param ca the ca
-	 */
-	public void put(final MapObject ca) {
-		map.put(ca.getId(), ca);
-		actiontree.add(new Rectangle(ca.x, ca.y, ca.x + ca.width, ca.y
-				+ ca.height), ca.getId());
 	}
 }

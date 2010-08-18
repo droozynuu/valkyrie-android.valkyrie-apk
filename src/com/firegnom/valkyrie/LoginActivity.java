@@ -42,45 +42,103 @@ import com.firegnom.valkyrie.service.ILoginCallback;
 import com.firegnom.valkyrie.service.ILoginService;
 import com.firegnom.valkyrie.share.constant.GameModes;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LoginActivity.
- */
 public class LoginActivity extends ValkyrieActivity {
-	
-	/** The Constant TAG. */
 	private static final String TAG = LoginActivity.class.getName();
-	
-	/** The is exit. */
 	private boolean isExit = false;
 
-	/** The loginbutton listener. */
-	private final OnClickListener loginbuttonListener = new OnClickListener() {
-		@Override
-		public void onClick(final View v) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
+		LoginActivity.this.setContentView(R.layout.please_wait);
+		startService(new Intent(ILoginService.class.getName()));
+		bindService(new Intent(ILoginService.class.getName()), mConnection, 0);
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
+		if (mService != null) {
 			try {
-				final String username = ((EditText) (LoginActivity.this
+				mService.unregisterCallback();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		unbindService(mConnection);
+		if (isExit) {
+			Log.d(TAG, "exiting");
+			stopService(new Intent(ILoginService.class.getName()));
+		}
+		super.onDestroy();
+	};
+
+	private OnClickListener loginbuttonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			try {
+				String username = ((EditText) (LoginActivity.this
 						.findViewById(R.id.login_username_edit))).getText()
 						.toString();
 				LoginActivity.this.findViewById(R.id.login_login_button)
 						.setVisibility(View.INVISIBLE);
 				mService.login(mCallback, username, "");
-			} catch (final RemoteException e) {
+			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
 	};
 
+	private void startGame() {
+		Log.d(TAG, "startGame");
+		Intent myIntent = new Intent(getApplicationContext(),
+				GameActivity.class);
+		startActivity(myIntent);
+		finish();
+	}
+
+	private void createPlayer() {
+		Log.d(TAG, "createPlayer");
+		Intent myIntent = new Intent(getApplicationContext(),
+				CreatePlayerActivity.class);
+		startActivity(myIntent);
+		finish();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			exit();
+			return true;
+		case -1:
+			throw new ValkyrieRuntimeException("aaaaaaaaaaaa");
+		}
+		return false;
+
+	}
+
+	private void exit() {
+		isExit = true;
+		finish();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 1, 0, "Exit");
+		// menu.add(0, 4, 0, "Help");
+		// menu.add(0, -1, 0, "Crash");
+		return true;
+	}
+
 	/**
 	 * Class for interacting with the main interface of the service.
 	 */
-	ILoginService mService = null;;
-
+	ILoginService mService = null;
 	/** Another interface we use on the service. */
-	private final ServiceConnection mConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(final ComponentName className,
-				final IBinder service) {
+	private ServiceConnection mConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = ILoginService.Stub.asInterface(service);
 			try {
 				if (mService.isLoggedIn()) {
@@ -91,35 +149,30 @@ public class LoginActivity extends ValkyrieActivity {
 					}
 				} else {
 					setContentView(R.layout.login);
-					final Button button = (Button) findViewById(R.id.login_login_button);
+					Button button = (Button) findViewById(R.id.login_login_button);
 					button.setOnClickListener(loginbuttonListener);
 				}
 
-			} catch (final RemoteException e) {
+			} catch (RemoteException e) {
 			}
 		}
 
-		@Override
-		public void onServiceDisconnected(final ComponentName className) {
+		public void onServiceDisconnected(ComponentName className) {
 			mService = null;
 		}
 	};
-
-	/** The message. */
 	String message = "";
-
-	/** The m callback. */
 	protected ILoginCallback.Stub mCallback = new ILoginCallback.Stub() {
 
 		@Override
-		public void disconnected() throws RemoteException {
-			Log.d(TAG, "disconnected");
-			message = "Server not Working at the moment please again later";
+		public void loginFailed() throws RemoteException {
+			Log.d(TAG, "loginFailed");
+			message = "Login failed";
 			hand.sendEmptyMessage(0);
 		}
 
 		@Override
-		public void loggedIn(final int activity) throws RemoteException {
+		public void loggedIn(int activity) throws RemoteException {
 			Log.d(TAG, "loggedIn");
 			if (activity == GameModes.MAP_MODE) {
 				startGame();
@@ -133,113 +186,20 @@ public class LoginActivity extends ValkyrieActivity {
 		}
 
 		@Override
-		public void loginFailed() throws RemoteException {
-			Log.d(TAG, "loginFailed");
-			message = "Login failed";
+		public void disconnected() throws RemoteException {
+			Log.d(TAG, "disconnected");
+			message = "Server not Working at the moment please again later";
 			hand.sendEmptyMessage(0);
 		}
 
 	};
-	
-	/** The hand. */
 	Handler hand = new Handler() {
 		@Override
-		public void handleMessage(final Message msg) {
+		public void handleMessage(Message msg) {
 			LoginActivity.this.findViewById(R.id.login_login_button)
 					.setVisibility(View.VISIBLE);
 			Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT)
 					.show();
 		}
 	};
-
-	/**
-	 * Creates the player.
-	 */
-	private void createPlayer() {
-		Log.d(TAG, "createPlayer");
-		final Intent myIntent = new Intent(getApplicationContext(),
-				CreatePlayerActivity.class);
-		startActivity(myIntent);
-		finish();
-	}
-
-	/**
-	 * Exit.
-	 */
-	private void exit() {
-		isExit = true;
-		finish();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
-		LoginActivity.this.setContentView(R.layout.please_wait);
-		startService(new Intent(ILoginService.class.getName()));
-		bindService(new Intent(ILoginService.class.getName()), mConnection, 0);
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		menu.add(0, 1, 0, "Exit");
-		// menu.add(0, 4, 0, "Help");
-		// menu.add(0, -1, 0, "Crash");
-		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
-		if (mService != null) {
-			try {
-				mService.unregisterCallback();
-			} catch (final RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		unbindService(mConnection);
-		if (isExit) {
-			Log.d(TAG, "exiting");
-			stopService(new Intent(ILoginService.class.getName()));
-		}
-		super.onDestroy();
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-	 */
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case 1:
-			exit();
-			return true;
-		case -1:
-			throw new ValkyrieRuntimeException("aaaaaaaaaaaa");
-		}
-		return false;
-
-	}
-
-	/**
-	 * Start game.
-	 */
-	private void startGame() {
-		Log.d(TAG, "startGame");
-		final Intent myIntent = new Intent(getApplicationContext(),
-				GameActivity.class);
-		startActivity(myIntent);
-		finish();
-	}
 }

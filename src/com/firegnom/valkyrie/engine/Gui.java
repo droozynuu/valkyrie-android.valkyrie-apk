@@ -34,43 +34,24 @@ import com.firegnom.valkyrie.GameActivity;
 import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.action.ActionTask;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Gui.
- */
 public class Gui {
-	
-	/** The Constant TAG. */
 	private static final String TAG = Gui.class.getName();
+	private int answer = 0;
+	LinkedBlockingQueue<ActionTask> queue;
 
-	/**
-	 * Draw log.
-	 *
-	 * @param c the c
-	 */
-	static void drawLog(final Canvas c) {
+	// LinkedList<Message>
 
-	}
-
-	/**
-	 * Toast.
-	 *
-	 * @param resource the resource
-	 */
-	public static void toast(final int resource) {
+	public static void toast(int resource) {
 		toast(resource, GameController.getInstance().view,
 				GameController.getInstance().context);
 	}
 
-	/**
-	 * Toast.
-	 *
-	 * @param resource the resource
-	 * @param view the view
-	 * @param context the context
-	 */
-	public static void toast(final int resource, final View view,
-			final Context context) {
+	public static void toast(final String msg) {
+		toast(msg, GameController.getInstance().view,
+				GameController.getInstance().context);
+	}
+
+	public static void toast(int resource, View view, Context context) {
 		if (view == null) {
 			Log.w(TAG,
 					"toast - no view connected to controller dropping resource :"
@@ -81,25 +62,7 @@ public class Gui {
 				R.string.pathfinding_how_to_get_there), view, context);
 	}
 
-	/**
-	 * Toast.
-	 *
-	 * @param msg the msg
-	 */
-	public static void toast(final String msg) {
-		toast(msg, GameController.getInstance().view,
-				GameController.getInstance().context);
-	}
-
-	/**
-	 * Toast.
-	 *
-	 * @param msg the msg
-	 * @param view the view
-	 * @param context the context
-	 */
-	public static void toast(final String msg, final View view,
-			final Context context) {
+	public static void toast(final String msg, View view, final Context context) {
 
 		if (view == null) {
 			Log.w(TAG,
@@ -115,113 +78,30 @@ public class Gui {
 		});
 	}
 
-	/** The answer. */
-	private int answer = 0;
-
-	/** The queue. */
-	LinkedBlockingQueue<ActionTask> queue;
-
-	// LinkedList<Message>
-
-	/**
-	 * Info.
-	 *
-	 * @param msg the msg
-	 */
-	public void info(final String msg) {
-		info(null, msg, true);
-	}
-
-	/**
-	 * Info.
-	 *
-	 * @param title the title
-	 * @param msg the msg
-	 * @param blocking the blocking
-	 */
-	public void info(final String title, final String msg,
-			final boolean blocking) {
-		GameController.getInstance().view.post(new Runnable() {
-			@Override
-			public void run() {
-				final AlertDialog.Builder builder = new AlertDialog.Builder(
-						GameController.getInstance().context);
-				builder.setMessage(msg)
-						.setCancelable(false)
-						.setPositiveButton("Ok",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
-										answer = 1;
-									}
-								});
-				if (title != null) {
-					builder.setTitle(title);
-				}
-				final AlertDialog alert = builder.create();
-				alert.setOwnerActivity((GameActivity) GameController
-						.getInstance().context);
-				alert.show();
-			}
-		});
-		if (blocking) {
-			while (answer == 0) {
-				try {
-					Thread.sleep(500);
-				} catch (final InterruptedException e) {
-					answer = 0;
-					e.printStackTrace();
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Info async.
-	 *
-	 * @param msg the msg
-	 */
-	public void infoAsync(final String msg) {
-		info(null, msg, false);
-	}
-
-	/**
-	 * Question.
-	 *
-	 * @param question the question
-	 * @return true, if successful
-	 */
 	public boolean question(final String question) {
 		GameController.getInstance().view.post(new Runnable() {
 			@Override
 			public void run() {
 				// ((GameActivity)GameController.getInstance().context)
-				final AlertDialog.Builder builder = new AlertDialog.Builder(
+				AlertDialog.Builder builder = new AlertDialog.Builder(
 						GameController.getInstance().context);
 				builder.setMessage(question)
 						.setCancelable(false)
 						.setPositiveButton("Yes",
 								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
+									public void onClick(DialogInterface dialog,
+											int id) {
 										GameController.getInstance().gui.answer = 1;
 									}
 								})
 						.setNegativeButton("No",
 								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
+									public void onClick(DialogInterface dialog,
+											int id) {
 										GameController.getInstance().gui.answer = 2;
 									}
 								});
-				final AlertDialog alert = builder.create();
+				AlertDialog alert = builder.create();
 				alert.setOwnerActivity((GameActivity) GameController
 						.getInstance().context);
 				alert.show();
@@ -230,7 +110,7 @@ public class Gui {
 		while (answer == 0) {
 			try {
 				Thread.sleep(500);
-			} catch (final InterruptedException e) {
+			} catch (InterruptedException e) {
 				answer = 0;
 				e.printStackTrace();
 			}
@@ -241,6 +121,55 @@ public class Gui {
 		}
 		answer = 0;
 		return false;
+	}
+
+	public void info(final String title, final String msg, boolean blocking) {
+		GameController.getInstance().view.post(new Runnable() {
+			@Override
+			public void run() {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						GameController.getInstance().context);
+				builder.setMessage(msg)
+						.setCancelable(false)
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										answer = 1;
+									}
+								});
+				if (title != null) {
+					builder.setTitle(title);
+				}
+				AlertDialog alert = builder.create();
+				alert.setOwnerActivity((GameActivity) GameController
+						.getInstance().context);
+				alert.show();
+			}
+		});
+		if (blocking) {
+			while (answer == 0) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					answer = 0;
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	public void info(final String msg) {
+		info(null, msg, true);
+	}
+
+	public void infoAsync(final String msg) {
+		info(null, msg, false);
+	}
+
+	static void drawLog(Canvas c) {
+
 	}
 
 }

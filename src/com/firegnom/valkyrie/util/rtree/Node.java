@@ -42,7 +42,6 @@ import java.io.Serializable;
 
 import com.firegnom.valkyrie.util.Rectangle;
 
-// TODO: Auto-generated Javadoc
 /**
  * <p>
  * Used by RTree. There are no public methods in this class.
@@ -52,49 +51,25 @@ import com.firegnom.valkyrie.util.Rectangle;
  * @version 1.0b2
  */
 public class Node implements Serializable {
-	
-	/** The Constant serialVersionUID. */
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
-	/** The node id. */
 	int nodeId = 0;
-	
-	/** The mbr. */
 	Rectangle mbr = null;
-	
-	/** The entries. */
 	Rectangle[] entries = null;
-	
-	/** The ids. */
 	int[] ids = null;
-	
-	/** The level. */
 	int level;
-	
-	/** The entry count. */
 	int entryCount;
 
-	/**
-	 * Instantiates a new node.
-	 *
-	 * @param nodeId the node id
-	 * @param level the level
-	 * @param maxNodeEntries the max node entries
-	 */
-	Node(final int nodeId, final int level, final int maxNodeEntries) {
+	Node(int nodeId, int level, int maxNodeEntries) {
 		this.nodeId = nodeId;
 		this.level = level;
 		entries = new Rectangle[maxNodeEntries];
 		ids = new int[maxNodeEntries];
 	}
 
-	/**
-	 * Adds the entry.
-	 *
-	 * @param r the r
-	 * @param id the id
-	 */
-	void addEntry(final Rectangle r, final int id) {
+	void addEntry(Rectangle r, int id) {
 		ids[entryCount] = id;
 		entries[entryCount] = r.copy();
 		entryCount++;
@@ -105,13 +80,7 @@ public class Node implements Serializable {
 		}
 	}
 
-	/**
-	 * Adds the entry no copy.
-	 *
-	 * @param r the r
-	 * @param id the id
-	 */
-	void addEntryNoCopy(final Rectangle r, final int id) {
+	void addEntryNoCopy(Rectangle r, int id) {
 		ids[entryCount] = id;
 		entries[entryCount] = r;
 		entryCount++;
@@ -122,17 +91,21 @@ public class Node implements Serializable {
 		}
 	}
 
+	// Return the index of the found entry, or -1 if not found
+	int findEntry(Rectangle r, int id) {
+		for (int i = 0; i < entryCount; i++) {
+			if (id == ids[i] && r.equals(entries[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	// delete entry. This is done by setting it to null and copying the last
 	// entry into its space.
-	/**
-	 * Delete entry.
-	 *
-	 * @param i the i
-	 * @param minNodeEntries the min node entries
-	 */
-	void deleteEntry(final int i, final int minNodeEntries) {
-		final int lastIndex = entryCount - 1;
-		final Rectangle deletedRectangle = entries[i];
+	void deleteEntry(int i, int minNodeEntries) {
+		int lastIndex = entryCount - 1;
+		Rectangle deletedRectangle = entries[i];
 		entries[i] = null;
 		if (i != lastIndex) {
 			entries[i] = entries[lastIndex];
@@ -149,94 +122,10 @@ public class Node implements Serializable {
 		}
 	}
 
-	// Return the index of the found entry, or -1 if not found
-	/**
-	 * Find entry.
-	 *
-	 * @param r the r
-	 * @param id the id
-	 * @return the int
-	 */
-	int findEntry(final Rectangle r, final int id) {
-		for (int i = 0; i < entryCount; i++) {
-			if (id == ids[i] && r.equals(entries[i])) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
-	 * Gets the entry.
-	 *
-	 * @param index the index
-	 * @return the entry
-	 */
-	public Rectangle getEntry(final int index) {
-		if (index < entryCount) {
-			return entries[index];
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the entry count.
-	 *
-	 * @return the entry count
-	 */
-	public int getEntryCount() {
-		return entryCount;
-	}
-
-	/**
-	 * Gets the id.
-	 *
-	 * @param index the index
-	 * @return the id
-	 */
-	public int getId(final int index) {
-		if (index < entryCount) {
-			return ids[index];
-		}
-		return -1;
-	}
-
-	/**
-	 * Gets the level.
-	 *
-	 * @return the level
-	 */
-	public int getLevel() {
-		return level;
-	}
-
-	/**
-	 * Gets the mBR.
-	 *
-	 * @return the mBR
-	 */
-	public Rectangle getMBR() {
-		return mbr;
-	}
-
-	/**
-	 * Checks if is leaf.
-	 *
-	 * @return true, if is leaf
-	 */
-	boolean isLeaf() {
-		return (level == 1);
-	}
-
 	// oldRectangle is a rectangle that has just been deleted or made smaller.
 	// Thus, the MBR is only recalculated if the OldRectangle influenced the old
 	// MBR
-	/**
-	 * Recalculate mbr.
-	 *
-	 * @param deletedRectangle the deleted rectangle
-	 */
-	void recalculateMBR(final Rectangle deletedRectangle) {
+	void recalculateMBR(Rectangle deletedRectangle) {
 		if (mbr.edgeOverlaps(deletedRectangle)) {
 			mbr.set(entries[0].min, entries[0].max);
 
@@ -246,12 +135,28 @@ public class Node implements Serializable {
 		}
 	}
 
+	public int getEntryCount() {
+		return entryCount;
+	}
+
+	public Rectangle getEntry(int index) {
+		if (index < entryCount) {
+			return entries[index];
+		}
+		return null;
+	}
+
+	public int getId(int index) {
+		if (index < entryCount) {
+			return ids[index];
+		}
+		return -1;
+	}
+
 	/**
-	 * eliminate null entries, move all entries to the start of the source node.
-	 *
-	 * @param rtree the rtree
+	 * eliminate null entries, move all entries to the start of the source node
 	 */
-	void reorganize(final RTree rtree) {
+	void reorganize(RTree rtree) {
 		int countdownIndex = rtree.maxNodeEntries - 1;
 		for (int index = 0; index < entryCount; index++) {
 			if (entries[index] == null) {
@@ -264,5 +169,17 @@ public class Node implements Serializable {
 				entries[countdownIndex] = null;
 			}
 		}
+	}
+
+	boolean isLeaf() {
+		return (level == 1);
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public Rectangle getMBR() {
+		return mbr;
 	}
 }

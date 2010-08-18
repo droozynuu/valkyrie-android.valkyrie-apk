@@ -20,25 +20,13 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.engine;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class User.
- */
 public class User extends Player {
 
-	/**
-	 * Instantiates a new user.
-	 *
-	 * @param name the name
-	 */
-	public User(final String name) {
+	public User(String name) {
 		super(name);
 		startMoverThread();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.Player#startMoverThread()
-	 */
 	@Override
 	public void startMoverThread() {
 		moverThread = new MoverThread(this, true);

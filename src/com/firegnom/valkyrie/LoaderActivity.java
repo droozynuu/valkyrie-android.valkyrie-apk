@@ -25,85 +25,15 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LoaderActivity.
- */
 public class LoaderActivity extends ValkyrieActivity {
-	
-	/**
-	 * The Class Loader.
-	 */
-	class Loader extends Thread {
-		
-		/** The name. */
-		String name;
-		
-		/** The x. */
-		private int x;
-		
-		/** The y. */
-		private int y;
-
-		/**
-		 * Name.
-		 *
-		 * @param name the name
-		 * @return the loader
-		 */
-		public Loader name(final String name) {
-			this.name = name;
-			return this;
-		}
-
-		/**
-		 * Pos.
-		 *
-		 * @param x the x
-		 * @param y the y
-		 * @return the loader
-		 */
-		public Loader pos(final int x, final int y) {
-			this.x = x;
-			this.y = y;
-			return this;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Thread#run()
-		 */
-		@Override
-		public void run() {
-			isLoading = true;
-			// GameController.getInstance()._performLoad(name,
-			// getApplicationContext(),x,y);
-			// Intent myIntent = new Intent(getApplicationContext(),
-			// GameActivity.class);
-			isLoading = false;
-			// startActivityForResult(myIntent, 0);
-			finish();
-
-		}
-	}
-
-	/** The Constant MAP_NAME. */
 	public static final String MAP_NAME = "MAP_NAME";
-	
-	/** The Constant X_NAME. */
 	public static final String X_NAME = "X_NAME";
-	
-	/** The Constant Y_NAME. */
 	public static final String Y_NAME = "Y_NAME";
-	
-	/** The is loading. */
 	public static boolean isLoading = false;
 
 	// private GameView m ;
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
 	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		final Intent intent = getIntent();
 		final String name = intent.getStringExtra(MAP_NAME);
@@ -121,6 +51,36 @@ public class LoaderActivity extends ValkyrieActivity {
 		// SplashView s = new SplashView(getApplicationContext());
 		if (!isLoading) {
 			setContentView(R.layout.please_wait);
+		}
+	}
+
+	class Loader extends Thread {
+		String name;
+		private int x;
+		private int y;
+
+		public Loader name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Loader pos(int x, int y) {
+			this.x = x;
+			this.y = y;
+			return this;
+		}
+
+		@Override
+		public void run() {
+			isLoading = true;
+			// GameController.getInstance()._performLoad(name,
+			// getApplicationContext(),x,y);
+			// Intent myIntent = new Intent(getApplicationContext(),
+			// GameActivity.class);
+			isLoading = false;
+			// startActivityForResult(myIntent, 0);
+			finish();
+
 		}
 	}
 

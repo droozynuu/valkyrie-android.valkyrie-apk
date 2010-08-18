@@ -29,112 +29,50 @@ import android.widget.Toast;
 import com.firegnom.valkyrie.GameActivity;
 import com.firegnom.valkyrie.scripting.SGui;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class SGuiImpl.
- */
 public class SGuiImpl implements SGui {
-	
-	/** The context. */
 	private final Context context;
-	
-	/** The v. */
 	private final View v;
-	
-	/** The answer. */
 	private int answer = 0;
 
-	/**
-	 * Instantiates a new s gui impl.
-	 *
-	 * @param context the context
-	 * @param v the v
-	 */
-	public SGuiImpl(final Context context, final View v) {
+	public SGuiImpl(Context context, View v) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.v = v;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.scripting.SGui#info(java.lang.String)
-	 */
 	@Override
-	public void info(final String msg) {
-		info(null, msg);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.scripting.SGui#info(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void info(final String title, final String msg) {
+	public void toast(final String msg) {
 		v.post(new Runnable() {
 			@Override
 			public void run() {
-				final AlertDialog.Builder builder = new AlertDialog.Builder(
-						context);
-				builder.setMessage(msg)
-						.setCancelable(false)
-						.setPositiveButton("Ok",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
-										answer = 1;
-									}
-								});
-				if (title != null) {
-					builder.setTitle(title);
-				}
-				final AlertDialog alert = builder.create();
-				alert.setOwnerActivity((GameActivity) context);
-				alert.show();
+				Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 			}
 		});
-		while (answer == 0) {
-			try {
-				Thread.sleep(500);
-			} catch (final InterruptedException e) {
-				answer = 0;
-				e.printStackTrace();
-			}
-		}
-
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.scripting.SGui#question(java.lang.String)
-	 */
 	@Override
 	public boolean question(final String question) {
 		v.post(new Runnable() {
 			@Override
 			public void run() {
-				final AlertDialog.Builder builder = new AlertDialog.Builder(
-						context);
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setMessage(question)
 						.setCancelable(false)
 						.setPositiveButton("Yes",
 								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
+									public void onClick(DialogInterface dialog,
+											int id) {
 										answer = 1;
 									}
 								})
 						.setNegativeButton("No",
 								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
+									public void onClick(DialogInterface dialog,
+											int id) {
 										answer = 2;
 									}
 								});
-				final AlertDialog alert = builder.create();
+				AlertDialog alert = builder.create();
 				alert.setOwnerActivity((GameActivity) context);
 				alert.show();
 			}
@@ -142,7 +80,7 @@ public class SGuiImpl implements SGui {
 		while (answer == 0) {
 			try {
 				Thread.sleep(500);
-			} catch (final InterruptedException e) {
+			} catch (InterruptedException e) {
 				answer = 0;
 				e.printStackTrace();
 			}
@@ -157,17 +95,42 @@ public class SGuiImpl implements SGui {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.scripting.SGui#toast(java.lang.String)
-	 */
 	@Override
-	public void toast(final String msg) {
+	public void info(final String title, final String msg) {
 		v.post(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setMessage(msg)
+						.setCancelable(false)
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										answer = 1;
+									}
+								});
+				if (title != null) {
+					builder.setTitle(title);
+				}
+				AlertDialog alert = builder.create();
+				alert.setOwnerActivity((GameActivity) context);
+				alert.show();
 			}
 		});
+		while (answer == 0) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				answer = 0;
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public void info(final String msg) {
+		info(null, msg);
 	}
 
 }

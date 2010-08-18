@@ -26,45 +26,22 @@ import android.graphics.Rect;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.util.PathHelper;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DrawablePath.
- */
 public class DrawablePath implements DrawableFeature {
-	
-	/** The proxy. */
 	Path proxy;
-	
-	/** The tile width. */
 	int tileWidth;
-	
-	/** The tile height. */
 	int tileHeight;
 
-	/**
-	 * Instantiates a new drawable path.
-	 *
-	 * @param p the p
-	 * @param tileWidth the tile width
-	 * @param tileHeight the tile height
-	 */
-	public DrawablePath(final Path p, final int tileWidth, final int tileHeight) {
+	public DrawablePath(Path p, int tileWidth, int tileHeight) {
 		proxy = p;
 		this.tileHeight = tileHeight;
 		this.tileWidth = tileWidth;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#draw(android.graphics.Canvas)
-	 */
 	@Override
-	public void draw(final Canvas canvas) {
+	public void draw(Canvas canvas) {
 		new PathHelper().draw(proxy, canvas, tileWidth, tileHeight);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#getBounds()
-	 */
 	@Override
 	public Rect getBounds() {
 		// TODO Auto-generated method stub

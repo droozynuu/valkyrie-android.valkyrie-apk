@@ -35,24 +35,31 @@ import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.map.Position;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ScriptEditorDialog.
- */
 public class ScriptEditorDialog extends Dialog {
 
-	/** The text. */
 	EditText text;
-	
-	/** The spinner. */
 	Spinner spinner;
 
-	/**
-	 * Instantiates a new script editor dialog.
-	 *
-	 * @param context the context
-	 */
-	public ScriptEditorDialog(final Context context) {
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		// TODO Auto-generated method stub
+		if (hasFocus) {
+			GameController sc = GameController.getInstance();
+			Position eventScreenPosition = sc.longPressPosition;
+			if (eventScreenPosition != null) {
+				Position eventMapPosition = sc.zone.getMapPosition(
+						eventScreenPosition.x, eventScreenPosition.y, sc.sX,
+						sc.sY);
+				Log.d("ScriptEditorDialog", eventMapPosition.toString());
+				// "pos:m("+eventMapPosition.x+","+eventMapPosition.y+"),s("+eventScreenPosition.x+","+eventScreenPosition.y+")"
+				setTitle("pos:m(" + eventMapPosition.x + ","
+						+ eventMapPosition.y + "),s(" + eventScreenPosition.x
+						+ "," + eventScreenPosition.y + ")");
+			}
+		}
+	}
+
+	public ScriptEditorDialog(Context context) {
 		super(context);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -63,19 +70,18 @@ public class ScriptEditorDialog extends Dialog {
 
 		spinner = (Spinner) findViewById(R.id.script_editor_spinner);
 		text = (EditText) findViewById(R.id.script_editor_text);
-		final Button exec = (Button) findViewById(R.id.script_editor_execute_button);
+		Button exec = (Button) findViewById(R.id.script_editor_execute_button);
 		exec.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				final String src = text.getEditableText().toString();
+			public void onClick(View v) {
+				String src = text.getEditableText().toString();
 				dismiss();
 				GameController.getInstance().parser.parse(src);
 			}
 		});
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(final AdapterView<?> arg0,
-					final View arg1, final int arg2, final long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
 				if (text == null || arg1 == null) {
 					return;
 				}
@@ -84,40 +90,17 @@ public class ScriptEditorDialog extends Dialog {
 			}
 
 			@Override
-			public void onNothingSelected(final AdapterView<?> arg0) {
+			public void onNothingSelected(AdapterView<?> arg0) {
 
 			}
 
 		});
-		final Button cancel = (Button) findViewById(R.id.script_editor_cancel_button);
+		Button cancel = (Button) findViewById(R.id.script_editor_cancel_button);
 		cancel.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				cancel();
 			}
 		});
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Dialog#onWindowFocusChanged(boolean)
-	 */
-	@Override
-	public void onWindowFocusChanged(final boolean hasFocus) {
-		// TODO Auto-generated method stub
-		if (hasFocus) {
-			final GameController sc = GameController.getInstance();
-			final Position eventScreenPosition = sc.longPressPosition;
-			if (eventScreenPosition != null) {
-				final Position eventMapPosition = sc.zone.getMapPosition(
-						eventScreenPosition.x, eventScreenPosition.y, sc.sX,
-						sc.sY);
-				Log.d("ScriptEditorDialog", eventMapPosition.toString());
-				// "pos:m("+eventMapPosition.x+","+eventMapPosition.y+"),s("+eventScreenPosition.x+","+eventScreenPosition.y+")"
-				setTitle("pos:m(" + eventMapPosition.x + ","
-						+ eventMapPosition.y + "),s(" + eventScreenPosition.x
-						+ "," + eventScreenPosition.y + ")");
-			}
-		}
 	}
 
 }

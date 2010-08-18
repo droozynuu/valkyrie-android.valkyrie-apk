@@ -41,48 +41,83 @@ import android.widget.EditText;
 import com.firegnom.valkyrie.service.IChatService;
 import com.firegnom.valkyrie.service.IChatServiceCallback;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Chat.
- */
 public class Chat extends ListActivity implements OnKeyListener {
 
-	/** The Constant TAG. */
 	private static final String TAG = Chat.class.getName();
 
-	/** The m user text. */
 	private EditText mUserText;
 
-	/** The m adapter. */
 	private ArrayAdapter<String> mAdapter;
 
-	/** The m strings. */
-	private final ArrayList<String> mStrings = new ArrayList<String>();
+	private ArrayList<String> mStrings = new ArrayList<String>();
 
-	/** The chat service. */
 	IChatService chatService;
-	
-	/** The username. */
 	String username = null;
 
-	/** The chat connection. */
-	private final ServiceConnection chatConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(final ComponentName className,
-				final IBinder service) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
+		bindService(new Intent(IChatService.class.getName()), chatConnection, 0);
+	}
+
+	private void sendText() {
+		try {
+			String text = mUserText.getText().toString();
+			chatService.send(text);
+			writeMessage(username, text);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void writeMessage(String username, String msg) {
+		Chat.this.mAdapter.add(username + ": " + msg);
+		mUserText.setText(null);
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+			case KeyEvent.KEYCODE_ENTER:
+				sendText();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
+		try {
+			chatService.leaveChat();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		unbindService(chatConnection);
+		super.onDestroy();
+	};
+
+	private ServiceConnection chatConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.d(TAG, "onServiceConnected");
 			chatService = IChatService.Stub.asInterface(service);
 
 			try {
 				username = chatService.username();
-			} catch (final RemoteException e1) {
+			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
 			try {
 				chatService.joinChat();
-			} catch (final RemoteException e1) {
+			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -95,25 +130,30 @@ public class Chat extends ListActivity implements OnKeyListener {
 			mUserText.setOnKeyListener(Chat.this);
 			try {
 				chatService.registerCallback(callback);
-			} catch (final RemoteException e) {
+			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
 
-		@Override
-		public void onServiceDisconnected(final ComponentName className) {
+		public void onServiceDisconnected(ComponentName className) {
 			Log.d(TAG, "onServiceDisconnected");
 			chatService = null;
 		}
 	};
 
-	/** The callback. */
 	IChatServiceCallback.Stub callback = new IChatServiceCallback.Stub() {
 		@Override
-		public void chatUserJoined(final String username)
+		public void messageRecieaved(String username, String message)
 				throws RemoteException {
+			send_u = username;
+			send_m = message;
+			hand.sendEmptyMessage(0);
+		}
+
+		@Override
+		public void chatUserJoined(String username) throws RemoteException {
 			send_u = username + " joined chat";
 			send_m = "";
 			hand.sendEmptyMessage(0);
@@ -121,98 +161,19 @@ public class Chat extends ListActivity implements OnKeyListener {
 		}
 
 		@Override
-		public void chatUserLeft(final String username) throws RemoteException {
+		public void chatUserLeft(String username) throws RemoteException {
 			send_u = username + " left chat";
 			send_m = "";
 			hand.sendEmptyMessage(0);
 
 		}
-
-		@Override
-		public void messageRecieaved(final String username, final String message)
-				throws RemoteException {
-			send_u = username;
-			send_m = message;
-			hand.sendEmptyMessage(0);
-		}
 	};
-
-	/** The send_m. */
 	String send_u, send_m;
-
-	/** The hand. */
 	Handler hand = new Handler() {
 		@Override
-		public void handleMessage(final Message msg) {
+		public void handleMessage(Message msg) {
 			writeMessage(send_u, send_m);
 		}
 	};
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
-		bindService(new Intent(IChatService.class.getName()), chatConnection, 0);
-	};
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
-		try {
-			chatService.leaveChat();
-		} catch (final RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		unbindService(chatConnection);
-		super.onDestroy();
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.View.OnKeyListener#onKey(android.view.View, int, android.view.KeyEvent)
-	 */
-	@Override
-	public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			switch (keyCode) {
-			case KeyEvent.KEYCODE_DPAD_CENTER:
-			case KeyEvent.KEYCODE_ENTER:
-				sendText();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Send text.
-	 */
-	private void sendText() {
-		try {
-			final String text = mUserText.getText().toString();
-			chatService.send(text);
-			writeMessage(username, text);
-		} catch (final RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Write message.
-	 *
-	 * @param username the username
-	 * @param msg the msg
-	 */
-	private void writeMessage(final String username, final String msg) {
-		Chat.this.mAdapter.add(username + ": " + msg);
-		mUserText.setText(null);
-	}
 
 }

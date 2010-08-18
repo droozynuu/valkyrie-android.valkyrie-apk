@@ -23,23 +23,8 @@ package com.firegnom.valkyrie.graphics;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface DrawableFeature.
- */
 public interface DrawableFeature {
-	
-	/**
-	 * Draw.
-	 *
-	 * @param canvas the canvas
-	 */
 	public void draw(Canvas canvas);
 
-	/**
-	 * Gets the bounds.
-	 *
-	 * @return the bounds
-	 */
 	public Rect getBounds();
 }

@@ -24,18 +24,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.widget.ListView;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ContextActionView.
- */
 public class ContextActionView extends ListView {
 
-	/**
-	 * Instantiates a new context action view.
-	 *
-	 * @param context the context
-	 */
-	public ContextActionView(final Context context) {
+	public ContextActionView(Context context) {
 		super(context);
 		setBackgroundColor(Color.DKGRAY);
 		setCacheColorHint(Color.DKGRAY);

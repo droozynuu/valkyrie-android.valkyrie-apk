@@ -24,35 +24,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class StyledText.
- */
 public class StyledText implements DrawableFeature {
-	
-	/** The p. */
-	private final Paint p;
-	
-	/** The text. */
-	private final String text;
-	
-	/** The x. */
-	private final float x;
-	
-	/** The y. */
-	private final float y;
+	private Paint p;
+	private String text;
+	private float x;
+	private float y;
 
-	/**
-	 * Instantiates a new styled text.
-	 *
-	 * @param text the text
-	 * @param fontColor the font color
-	 * @param size the size
-	 * @param x the x
-	 * @param y the y
-	 */
-	public StyledText(final String text, final int fontColor, final int size,
-			final float x, final float y) {
+	public StyledText(String text, int fontColor, int size, float x, float y) {
 		this.text = text;
 		p = new Paint();
 		p.setColor(fontColor);
@@ -61,42 +39,25 @@ public class StyledText implements DrawableFeature {
 		this.y = y;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#draw(android.graphics.Canvas)
-	 */
 	@Override
-	public void draw(final Canvas c) {
+	public void draw(Canvas c) {
 		c.drawText(text, x, y, p);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#getBounds()
-	 */
+	Rect getTextBounds(Rect ret) {
+		p.getTextBounds(text, 0, text.length(), ret);
+		return ret;
+	}
+
+	Rect getTextBounds() {
+		Rect ret = new Rect();
+		return getTextBounds(ret);
+	}
+
 	@Override
 	public Rect getBounds() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * Gets the text bounds.
-	 *
-	 * @return the text bounds
-	 */
-	Rect getTextBounds() {
-		final Rect ret = new Rect();
-		return getTextBounds(ret);
-	}
-
-	/**
-	 * Gets the text bounds.
-	 *
-	 * @param ret the ret
-	 * @return the text bounds
-	 */
-	Rect getTextBounds(final Rect ret) {
-		p.getTextBounds(text, 0, text.length(), ret);
-		return ret;
 	}
 }

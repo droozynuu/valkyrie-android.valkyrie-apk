@@ -28,36 +28,22 @@ import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.engine.Player;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AttackAction.
- */
 public class AttackAction implements ActionTask {
-	
-	/** The action. */
 	ContextAction action;
 
-	/**
-	 * Instantiates a new attack action.
-	 *
-	 * @param action the action
-	 */
-	public AttackAction(final ContextAction action) {
+	public AttackAction(ContextAction action) {
 		this.action = action;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.action.ActionTask#execute()
-	 */
 	@Override
 	public void execute() {
-		final GameController gc = GameController.getInstance();
-		final Player p = gc.players.get(action.container);
+		GameController gc = GameController.getInstance();
+		Player p = gc.players.get(action.container);
 
 		if (gc.gui.question(gc.getString(
 				R.string.are_you_sure_you_want_to_attack_playername_).replace(
 				"__playerName__", p.name))) {
-			final Intent i = new Intent(gc.context, FightActivity.class);
+			Intent i = new Intent(gc.context, FightActivity.class);
 			i.putExtra(FightActivity.PLAYER_EXTRA, p.name);
 			gc.fightController.enemy = p;
 			gc.context.startActivity(i);

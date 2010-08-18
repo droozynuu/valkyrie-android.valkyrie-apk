@@ -24,48 +24,19 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-// TODO: Auto-generated Javadoc
 //good idea will be to add TTL how long image can stay in memory until it will be wiped out. by ImageManager
-/**
- * The Class Image.
- */
 public class Image implements DrawableFeature {
-	
-	/** The name. */
-	private final String name;
-	
-	/** The width. */
-	private final int width;
-	
-	/** The height. */
-	private final int height;
-	
-	/** The x offset. */
+	private String name;
+	private int width;
+	private int height;
 	private int xOffset = 0;
-	
-	/** The y offset. */
 	private int yOffset = 0;
-	
-	/** The y. */
 	private int x = 0, y = 0;
 
-	/** The ltu. */
 	private long ltu;
-	
-	/** The ttl. */
-	private final int ttl = 0;
+	private int ttl = 0;
 
-	/**
-	 * Instantiates a new image.
-	 *
-	 * @param name the name
-	 * @param width the width
-	 * @param height the height
-	 * @param xOffset the x offset
-	 * @param yOffset the y offset
-	 */
-	public Image(final String name, final int width, final int height,
-			final int xOffset, final int yOffset) {
+	public Image(String name, int width, int height, int xOffset, int yOffset) {
 		this.width = width;
 		this.height = height;
 		this.xOffset = xOffset;
@@ -73,13 +44,10 @@ public class Image implements DrawableFeature {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#draw(android.graphics.Canvas)
-	 */
 	@Override
-	public void draw(final Canvas c) {
-		final ImageManager im = ImageManager.getInstance();
-		final Bitmap bitmap = im.getBitmap(name);
+	public void draw(Canvas c) {
+		ImageManager im = ImageManager.getInstance();
+		Bitmap bitmap = im.getBitmap(name);
 		if (bitmap == null) {
 			c.drawRect(getX(), getY(), getX() + width, getY() + height,
 					im.outOfMemoryPaint);
@@ -89,18 +57,16 @@ public class Image implements DrawableFeature {
 		ltu = System.currentTimeMillis();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#getBounds()
+	/**
+	 * @param x
+	 *            the x to set
 	 */
-	@Override
-	public Rect getBounds() {
-		return new Rect(x + xOffset, y + yOffset, x + width + xOffset, y
-				+ height + yOffset);
+	public Image setX(int x) {
+		this.x = x;
+		return this;
 	}
 
 	/**
-	 * Gets the x.
-	 *
 	 * @return the x
 	 */
 	public int getX() {
@@ -108,34 +74,25 @@ public class Image implements DrawableFeature {
 	}
 
 	/**
-	 * Gets the y.
-	 *
+	 * @param y
+	 *            the y to set
+	 */
+	public Image setY(int y) {
+		this.y = y;
+		return this;
+	}
+
+	/**
 	 * @return the y
 	 */
 	public int getY() {
 		return y;
 	}
 
-	/**
-	 * Sets the x.
-	 *
-	 * @param x the x to set
-	 * @return the image
-	 */
-	public Image setX(final int x) {
-		this.x = x;
-		return this;
-	}
-
-	/**
-	 * Sets the y.
-	 *
-	 * @param y the y to set
-	 * @return the image
-	 */
-	public Image setY(final int y) {
-		this.y = y;
-		return this;
+	@Override
+	public Rect getBounds() {
+		return new Rect(x + xOffset, y + yOffset, x + width + xOffset, y
+				+ height + yOffset);
 	}
 
 }

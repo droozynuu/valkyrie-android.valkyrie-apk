@@ -20,34 +20,22 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.engine.fight;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TurnThread.
- */
 public class TurnThread extends Thread {
-	
-	/** The progress. */
 	public int progress = 0;
-	
-	/** The speed. */
 	public int speed = 20;
-	
-	/** The observer. */
 	ProgressObserver observer;
-	
-	/** The runing. */
-	private final boolean runing = true;
+	private boolean runing = true;
 
-	/**
-	 * Instantiates a new turn thread.
-	 */
 	public TurnThread() {
 		start();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
-	 */
+	public void startTurn(ProgressObserver po, int progress) {
+		observer = po;
+		this.progress = progress;
+
+	}
+
 	@Override
 	public void run() {
 		while (runing) {
@@ -59,24 +47,12 @@ public class TurnThread extends Thread {
 			}
 			try {
 				sleep(200);
-			} catch (final InterruptedException e) {
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
 
 		}
-	}
-
-	/**
-	 * Start turn.
-	 *
-	 * @param po the po
-	 * @param progress the progress
-	 */
-	public void startTurn(final ProgressObserver po, final int progress) {
-		observer = po;
-		this.progress = progress;
-
 	}
 }

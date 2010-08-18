@@ -34,52 +34,73 @@ import org.json.JSONObject;
 
 import com.firegnom.valkyrie.net.Download;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PacksHelper.
- */
 public class PacksHelper {
 	// static String path = "/sdcard/com.firegnom.valkyrie/cache/";
 
-	/**
-	 * Download packs.
-	 *
-	 * @param path the path
-	 */
-	public static void downloadPacks(final String path) {
-		downloadPacks(path, null);
-	}
-
-	/**
-	 * Download packs.
-	 *
-	 * @param path the path
-	 * @param o the o
-	 */
-	public static void downloadPacks(final String path, final Observer o) {
+	public static boolean packsAvilable(String path) {
 		Download packsDownload;
 		try {
 			packsDownload = new Download(new URL(
 					"http://valkyrie.firegnom.com/data/packs.json"), path, true);
-		} catch (final MalformedURLException e1) {
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+		if (!packsDownload.download()) {
+			return false;
+		}
+		File packs = new File(path + "packs.json");
+		JSONObject packsjson;
+
+		try {
+			packsjson = new JSONObject(
+					Util.convertStreamToString(new FileInputStream(packs)));
+			JSONArray packsArray = packsjson.getJSONArray("install");
+			for (int i = 0; i < packsArray.length(); i++) {
+				String pack = packsArray.getString(i);
+				if (!new File(path + pack + ".json").exists()) {
+					return true;
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public static void downloadPacks(String path) {
+		downloadPacks(path, null);
+	}
+
+	public static void downloadPacks(String path, Observer o) {
+		Download packsDownload;
+		try {
+			packsDownload = new Download(new URL(
+					"http://valkyrie.firegnom.com/data/packs.json"), path, true);
+		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 			return;
 		}
 		if (!packsDownload.download()) {
 			return;
 		}
-		final File packs = new File(path + "packs.json");
+		File packs = new File(path + "packs.json");
 		JSONObject packsjson;
 
 		try {
 			packsjson = new JSONObject(
 					Util.convertStreamToString(new FileInputStream(packs)));
-			final JSONArray packsArray = packsjson.getJSONArray("install");
+			JSONArray packsArray = packsjson.getJSONArray("install");
 			for (int i = 0; i < packsArray.length(); i++) {
-				final String pack = packsArray.getString(i);
+				String pack = packsArray.getString(i);
 				if (!new File(path + pack + ".json").exists()) {
-					final URL u = new URL("http://valkyrie.firegnom.com/data/"
-							+ pack + ".zip");
+					URL u = new URL("http://valkyrie.firegnom.com/data/" + pack
+							+ ".zip");
 					Download d;
 					if (o != null) {
 						d = new Download(u, path, true, o);
@@ -89,11 +110,11 @@ public class PacksHelper {
 
 					System.out.println(d.download());
 					System.out.println(path + pack + ".zip");
-					final NativeUnzip un = new NativeUnzip();
+					NativeUnzip un = new NativeUnzip();
 
-					final String c = new String(path + pack + ".zip");
-					final String dj = new String(path);
-					final long time = System.currentTimeMillis();
+					String c = new String(path + pack + ".zip");
+					String dj = new String(path);
+					long time = System.currentTimeMillis();
 					// un.dounzip(c,dj);
 
 					ZipUtil.unzip(new File(path + pack + ".zip"),
@@ -105,65 +126,23 @@ public class PacksHelper {
 
 			}
 
-		} catch (final JSONException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 			return;
 
-		} catch (final FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
-		} catch (final MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
-	}
-
-	/**
-	 * Packs avilable.
-	 *
-	 * @param path the path
-	 * @return true, if successful
-	 */
-	public static boolean packsAvilable(final String path) {
-		Download packsDownload;
-		try {
-			packsDownload = new Download(new URL(
-					"http://valkyrie.firegnom.com/data/packs.json"), path, true);
-		} catch (final MalformedURLException e1) {
-			e1.printStackTrace();
-			return false;
-		}
-		if (!packsDownload.download()) {
-			return false;
-		}
-		final File packs = new File(path + "packs.json");
-		JSONObject packsjson;
-
-		try {
-			packsjson = new JSONObject(
-					Util.convertStreamToString(new FileInputStream(packs)));
-			final JSONArray packsArray = packsjson.getJSONArray("install");
-			for (int i = 0; i < packsArray.length(); i++) {
-				final String pack = packsArray.getString(i);
-				if (!new File(path + pack + ".json").exists()) {
-					return true;
-				}
-			}
-		} catch (final JSONException e) {
-			e.printStackTrace();
-
-		} catch (final FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return false;
 	}
 
 }

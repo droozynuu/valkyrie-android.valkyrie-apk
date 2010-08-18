@@ -43,50 +43,19 @@ import com.firegnom.valkyrie.view.ContextActionDialog;
 import com.firegnom.valkyrie.view.GameView;
 import com.firegnom.valkyrie.view.ScriptEditorDialog;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GameActivity.
- */
 public class GameActivity extends ValkyrieActivity implements
 		OnGestureListener, OnDoubleTapListener {
-	
-	/** The Constant DIALOG_TEXT_ENTRY. */
 	public static final int DIALOG_TEXT_ENTRY = 0;
-	
-	/** The Constant DIALOG_CONTEXT_ACTION. */
 	public static final int DIALOG_CONTEXT_ACTION = 1;
-	
-	/** The Constant MESSAGE_CHARSET. */
 	public static final String MESSAGE_CHARSET = "UTF-8";
-	
-	/** The g service. */
 	IGameService gService = null;
-	
-	/** The Constant TAG. */
 	protected static final String TAG = GameActivity.class.getName();
-	
-	/** The gesture scanner. */
 	private GestureDetector gestureScanner;
-	
-	/** The m. */
 	private GameView m;
-	
-	/** The gc. */
 	GameController gc;
 
-	/**
-	 * Exit.
-	 */
-	private void exit() {
-		gc.exit(GameActivity.this);
-		finish();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
 	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate action");
 		gc = GameController.getInstance();
@@ -108,38 +77,53 @@ public class GameActivity extends ValkyrieActivity implements
 		setContentView(m);
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreateDialog(int)
-	 */
 	@Override
-	protected Dialog onCreateDialog(final int id) {
-		switch (id) {
-		case DIALOG_TEXT_ENTRY:
-			return new ScriptEditorDialog(GameActivity.this);
-		case DIALOG_CONTEXT_ACTION:
-			return new ContextActionDialog(GameActivity.this);
+	protected void onStart() {
+		super.onStart();
+		Log.d(TAG, "onStart action");
+		gc.bindServices(this);
+		if (gc.papksLoading) {
+			return;
 		}
-		return null;
+		gc.connectView(m, GameActivity.this);
+		gc.reloadPreferences();
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-	 */
+	// @Override
+	// protected void onRestart() {
+	// //change game mode
+	//
+	//
+	// }
+
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		// menu.add(0, 5, 0, "DEV-Free memory");
-		// menu.add(0, 4, 0, "DEV-Remove downloads");
-		// menu.add(0, 3, 0, "Chat");
-		menu.add(0, 2, 0, "Preferences");
-		menu.add(0, 1, 0, "Exit");
-		menu.add(0, 7, 0, "DEV-Scripting");
-		// menu.add(0, 4, 0, "About");
-		return true;
+	protected void onPause() {
+		Log.d(TAG, "onPause action");
+		super.onPause();
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.d(TAG, "onResume action");
+		if (gc.papksLoading) {
+			return;
+		}
+		gc.connectView(m, GameActivity.this);
+		m.invalidate();
+
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.d(TAG, "onStop action");
+		gc.disconnectView();
+		System.gc();
+
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -151,32 +135,21 @@ public class GameActivity extends ValkyrieActivity implements
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnDoubleTapListener#onDoubleTap(android.view.MotionEvent)
-	 */
-	@Override
-	public boolean onDoubleTap(final MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+	private void exit() {
+		gc.exit(GameActivity.this);
+		finish();
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnDoubleTapListener#onDoubleTapEvent(android.view.MotionEvent)
-	 */
 	@Override
-	public boolean onDoubleTapEvent(final MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean onTouchEvent(MotionEvent event) {
+		return gestureScanner.onTouchEvent(event);
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
-	 */
 	@Override
-	public boolean onDown(final MotionEvent e) {
+	public boolean onDown(MotionEvent e) {
 		try {
 			Thread.sleep(16);
-		} catch (final InterruptedException e1) {
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -184,22 +157,16 @@ public class GameActivity extends ValkyrieActivity implements
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.MotionEvent, android.view.MotionEvent, float, float)
-	 */
 	@Override
-	public boolean onFling(final MotionEvent e1, final MotionEvent e2,
-			final float velocityX, final float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
 		Log.d(TAG, "onFling");
 		System.gc();
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onLongPress(android.view.MotionEvent)
-	 */
 	@Override
-	public void onLongPress(final MotionEvent e) {
+	public void onLongPress(MotionEvent e) {
 
 		if (GameController.disableContext) {
 			return;
@@ -207,18 +174,65 @@ public class GameActivity extends ValkyrieActivity implements
 		gc.onLongPress(e);
 		try {
 			Thread.sleep(16);
-		} catch (final InterruptedException e1) {
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-	 */
 	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return gc.doScroll(distanceX, distanceY, m);
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+		try {
+			Thread.sleep(16);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Log.d(TAG, "onShowPress");
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		try {
+			Thread.sleep(16);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return gc.doSingleTapUp(e);
+	}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e) {
+		try {
+			Thread.sleep(16);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_TEXT_ENTRY:
+			return new ScriptEditorDialog(GameActivity.this);
+		case DIALOG_CONTEXT_ACTION:
+			return new ContextActionDialog(GameActivity.this);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 1:
 			exit();
@@ -244,122 +258,28 @@ public class GameActivity extends ValkyrieActivity implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onPause()
-	 */
 	@Override
-	protected void onPause() {
-		Log.d(TAG, "onPause action");
-		super.onPause();
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// menu.add(0, 5, 0, "DEV-Free memory");
+		// menu.add(0, 4, 0, "DEV-Remove downloads");
+		// menu.add(0, 3, 0, "Chat");
+		menu.add(0, 2, 0, "Preferences");
+		menu.add(0, 1, 0, "Exit");
+		menu.add(0, 7, 0, "DEV-Scripting");
+		// menu.add(0, 4, 0, "About");
+		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
 	@Override
-	protected void onResume() {
-		super.onResume();
-		Log.d(TAG, "onResume action");
-		if (gc.papksLoading) {
-			return;
-		}
-		gc.connectView(m, GameActivity.this);
-		m.invalidate();
-
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float)
-	 */
-	@Override
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-			final float distanceX, final float distanceY) {
-		return gc.doScroll(distanceX, distanceY, m);
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onShowPress(android.view.MotionEvent)
-	 */
-	@Override
-	public void onShowPress(final MotionEvent e) {
-		try {
-			Thread.sleep(16);
-		} catch (final InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		Log.d(TAG, "onShowPress");
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnDoubleTapListener#onSingleTapConfirmed(android.view.MotionEvent)
-	 */
-	@Override
-	public boolean onSingleTapConfirmed(final MotionEvent e) {
-		try {
-			Thread.sleep(16);
-		} catch (final InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public boolean onDoubleTap(MotionEvent e) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onSingleTapUp(android.view.MotionEvent)
-	 */
 	@Override
-	public boolean onSingleTapUp(final MotionEvent e) {
-		try {
-			Thread.sleep(16);
-		} catch (final InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return gc.doSingleTapUp(e);
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onStart()
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.d(TAG, "onStart action");
-		gc.bindServices(this);
-		if (gc.papksLoading) {
-			return;
-		}
-		gc.connectView(m, GameActivity.this);
-		gc.reloadPreferences();
-
-	}
-
-	// @Override
-	// protected void onRestart() {
-	// //change game mode
-	//
-	//
-	// }
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onStop()
-	 */
-	@Override
-	protected void onStop() {
-		super.onStop();
-		Log.d(TAG, "onStop action");
-		gc.disconnectView();
-		System.gc();
-
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent)
-	 */
-	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		return gestureScanner.onTouchEvent(event);
+	public boolean onDoubleTapEvent(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

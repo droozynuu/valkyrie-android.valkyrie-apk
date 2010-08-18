@@ -43,113 +43,48 @@ import android.widget.TextView;
 import com.firegnom.valkyrie.service.ICreateUserCallback;
 import com.firegnom.valkyrie.service.IGameService;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CreatePlayerActivity.
- */
 public class CreatePlayerActivity extends ValkyrieActivity {
-	
-	/**
-	 * The Class ImageAdapter.
-	 */
-	class ImageAdapter extends BaseAdapter {
-		
-		/** The m gallery item background. */
-		int mGalleryItemBackground;
-
-		/** The m context. */
-		private final Context mContext;
-
-		/** The m image ids. */
-		private final Integer[] mImageIds = {
-
-		R.drawable.knight, R.drawable.archer, R.drawable.barbarian,
-				R.drawable.ninja, R.drawable.wizard };
-
-		/**
-		 * Instantiates a new image adapter.
-		 *
-		 * @param c the c
-		 */
-		public ImageAdapter(final Context c) {
-			mContext = c;
-			// See res/values/attrs.xml for the <declare-styleable> that defines
-			// Gallery1.
-			final TypedArray a = obtainStyledAttributes(R.styleable.Gallery1);
-			mGalleryItemBackground = a.getResourceId(
-					R.styleable.Gallery1_android_galleryItemBackground, 0);
-			a.recycle();
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			return mImageIds.length;
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(final int position) {
-			return position;
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(final int position) {
-			return position;
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(final int position, final View convertView,
-				final ViewGroup parent) {
-			final ImageView i = new ImageView(mContext);
-
-			i.setImageResource(mImageIds[position]);
-			i.setScaleType(ImageView.ScaleType.FIT_XY);
-			i.setLayoutParams(new Gallery.LayoutParams(110, 110));
-
-			// The preferred Gallery item background
-			i.setBackgroundResource(mGalleryItemBackground);
-
-			return i;
-		}
-
-	}
-
-	/** The selected class. */
 	private int selectedClass = 0;
-	
-	/** The Constant TAG. */
 	private static final String TAG = CreatePlayerActivity.class.getName();
-
-	/** The m service. */
 	IGameService mService = null;
 
-	/** The create button listener. */
-	private final OnClickListener createButtonListener = new OnClickListener() {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
+		setContentView(R.layout.please_wait);
+		bindService(new Intent(IGameService.class.getName()), mConnection, 0);
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
+		if (mService != null) {
+			try {
+				mService.unregisterCreateUserCallback();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		unbindService(mConnection);
+		super.onDestroy();
+	}
+
+	private OnClickListener createButtonListener = new OnClickListener() {
 		@Override
-		public void onClick(final View v) {
+		public void onClick(View v) {
 			try {
 				((Button) findViewById(R.id.create_player_button))
 						.setVisibility(View.INVISIBLE);
 				mService.createUser(callback, selectedClass);
-			} catch (final RemoteException e) {
+			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	};
 
-	/** The callback. */
 	ICreateUserCallback callback = new ICreateUserCallback.Stub() {
 		@Override
 		public void goToMap() throws RemoteException {
@@ -157,24 +92,28 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		}
 	};
 
-	/** The m connection. */
-	private final ServiceConnection mConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(final ComponentName className,
-				final IBinder service) {
+	private void startGame() {
+		Log.d(TAG, "startGame");
+		Intent myIntent = new Intent(getApplicationContext(),
+				GameActivity.class);
+		startActivity(myIntent);
+		finish();
+	}
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = IGameService.Stub.asInterface(service);
 			setContentView(R.layout.create_player);
 			((Button) findViewById(R.id.create_player_button))
 					.setOnClickListener(createButtonListener);
-			final Gallery g = (Gallery) findViewById(R.id.gallery);
+			Gallery g = (Gallery) findViewById(R.id.gallery);
 			// Set the adapter to our custom adapter (below)
 			g.setAdapter(new ImageAdapter(CreatePlayerActivity.this));
 
 			// Set a item click listener, and just Toast the clicked position
 			g.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(final AdapterView parent, final View v,
-						final int position, final long id) {
+				public void onItemClick(AdapterView parent, View v,
+						int position, long id) {
 					selectedClass = position;
 					switch (position) {
 					case 0:
@@ -203,49 +142,56 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 			});
 		}
 
-		@Override
-		public void onServiceDisconnected(final ComponentName className) {
+		public void onServiceDisconnected(ComponentName className) {
 			mService = null;
 		}
 	};
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
-		setContentView(R.layout.please_wait);
-		bindService(new Intent(IGameService.class.getName()), mConnection, 0);
-	}
+	class ImageAdapter extends BaseAdapter {
+		int mGalleryItemBackground;
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
-		if (mService != null) {
-			try {
-				mService.unregisterCreateUserCallback();
-			} catch (final RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		public ImageAdapter(Context c) {
+			mContext = c;
+			// See res/values/attrs.xml for the <declare-styleable> that defines
+			// Gallery1.
+			TypedArray a = obtainStyledAttributes(R.styleable.Gallery1);
+			mGalleryItemBackground = a.getResourceId(
+					R.styleable.Gallery1_android_galleryItemBackground, 0);
+			a.recycle();
 		}
-		unbindService(mConnection);
-		super.onDestroy();
-	}
 
-	/**
-	 * Start game.
-	 */
-	private void startGame() {
-		Log.d(TAG, "startGame");
-		final Intent myIntent = new Intent(getApplicationContext(),
-				GameActivity.class);
-		startActivity(myIntent);
-		finish();
+		public int getCount() {
+			return mImageIds.length;
+		}
+
+		public Object getItem(int position) {
+			return position;
+		}
+
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ImageView i = new ImageView(mContext);
+
+			i.setImageResource(mImageIds[position]);
+			i.setScaleType(ImageView.ScaleType.FIT_XY);
+			i.setLayoutParams(new Gallery.LayoutParams(110, 110));
+
+			// The preferred Gallery item background
+			i.setBackgroundResource(mGalleryItemBackground);
+
+			return i;
+		}
+
+		private Context mContext;
+
+		private Integer[] mImageIds = {
+
+		R.drawable.knight, R.drawable.archer, R.drawable.barbarian,
+				R.drawable.ninja, R.drawable.wizard };
+
 	}
 }

@@ -20,39 +20,14 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.engine.fight;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface FightAction.
- */
 public interface FightAction {
-	
-	/**
-	 * Activated.
-	 */
-	public void activated();
-
-	/**
-	 * Deactivated.
-	 */
-	public void deactivated();
-
-	/**
-	 * Finished.
-	 */
-	public void finished();
-
-	/**
-	 * Checks if is active.
-	 *
-	 * @return true, if is active
-	 */
 	public boolean isActive();
 
-	/**
-	 * On single tap up.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 */
+	public void activated();
+
+	public void deactivated();
+
 	public void onSingleTapUp(int x, int y);
+
+	public void finished();
 }

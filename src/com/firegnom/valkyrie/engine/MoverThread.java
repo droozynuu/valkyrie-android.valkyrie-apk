@@ -27,74 +27,31 @@ import com.firegnom.valkyrie.common.Dir;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MoverThread.
- */
 public class MoverThread extends Thread {
-	
-	/** The pl. */
 	WeakReference<Player> pl;
-	
-	/** The p. */
 	Path p = null;
-	
-	/** The gc. */
 	GameController gc = GameController.getInstance();
-	
-	/** The is user. */
 	boolean isUser;
-	
-	/** The moveing. */
 	boolean moveing = false;
-	
-	/** The destination. */
 	public Position destination = null;
 
-	/**
-	 * Instantiates a new mover thread.
-	 *
-	 * @param player the player
-	 * @param isUser the is user
-	 */
 	public MoverThread(final Player player, final boolean isUser) {
 		this.isUser = isUser;
 		this.pl = new WeakReference<Player>(player);
 	}
 
-	/**
-	 * Gets the path.
-	 *
-	 * @return the path
-	 */
 	public Path getPath() {
 		return p;
 	}
 
-	/**
-	 * Checks if is moveing.
-	 *
-	 * @return true, if is moveing
-	 */
 	public boolean isMoveing() {
 		return moveing;
 	}
 
-	/**
-	 * Post invalidate.
-	 */
 	synchronized private void postInvalidate() {
 		gc.postInvalidate();
 	}
 
-	/**
-	 * Post invalidate.
-	 *
-	 * @param rLeft the r left
-	 * @param rTop the r top
-	 * @param rRight the r right
-	 * @param rBottom the r bottom
-	 */
 	synchronized private void postInvalidate(final int rLeft, final int rTop,
 			final int rRight, final int rBottom) {
 		if (GameController.followPlayer || GameController.fullInvalidate) {
@@ -105,9 +62,6 @@ public class MoverThread extends Thread {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
-	 */
 	@Override
 	public void run() {
 

@@ -41,80 +41,37 @@ import com.firegnom.valkyrie.net.AsyncDownload;
 import com.firegnom.valkyrie.service.ILoaderCallback;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ResourceLoader.
- */
 public class ResourceLoader {
 	// public static final String SD_CACHE_FOLDER =
 	// "/sdcard/com.firegnom.valkyrie/cache/";
 	// TODO test maybe will be faster
-	/** The Constant SD_CACHE_FOLDER. */
 	public static final String SD_CACHE_FOLDER = "/data/data/com.firegnom.valkyrie/cache/";
-	
-	/** The Constant DATA_CACHE_FOLDER. */
 	public static final String DATA_CACHE_FOLDER = "/data/data/com.firegnom.valkyrie/cache/";
-	
-	/** The Constant URL. */
 	public static final String URL = "http://valkyrie.firegnom.com/data/";
-	
-	/** The Constant TAG. */
 	private static final String TAG = ResourceLoader.class.getName();
-	
-	/** The Constant SERVICE_TIMEOUT. */
 	private static final int SERVICE_TIMEOUT = 200;
 
-	/** The bitmap cache. */
 	public static HashMap<String, Bitmap> bitmapCache = new HashMap<String, Bitmap>();
 
-	/** The cache location. */
 	public static String cacheLocation = null;
+	IResourceLoaderService mService;
 
-	/**
-	 * Delete dir.
-	 *
-	 * @param dir the dir
-	 * @return true, if successful
-	 */
-	public static boolean deleteDir(final File dir) {
-		if (dir.isDirectory()) {
-			final String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				final boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-
-		// The directory is now empty so delete it
-		return dir.delete();
+	public void freeService() {
+		mService = null;
 	}
 
-	/**
-	 * Empty bitmap cache.
-	 */
-	public static void emptyBitmapCache() {
-		for (final Entry<String, Bitmap> s : bitmapCache.entrySet()) {
-			s.getValue().recycle();
-		}
-		bitmapCache = new HashMap<String, Bitmap>();
-		System.gc();
-	}
+	public ResourceLoader(IResourceLoaderService mService) {
+		Log.d(TAG, "ResourceLoader - create");
 
-	/**
-	 * Gets the path.
-	 *
-	 * @return the path
-	 */
-	public static String getPath() {
+		this.mService = mService;
 		initCacheLocation();
-		return cacheLocation;
+		// emptyCache();
 	}
 
-	/**
-	 * Inits the cache location.
-	 */
+	public ResourceLoader() {
+		initCacheLocation();
+	}
+
 	private static void initCacheLocation() {
 		File cache = new File(SD_CACHE_FOLDER);
 		if (cache.exists()) {
@@ -146,189 +103,30 @@ public class ResourceLoader {
 
 	}
 
-	/** The m service. */
-	IResourceLoaderService mService;
-
-	/** The lastloadedref. */
-	String lastloadedref = "";
-
-	/** The last loadedimg. */
-	Bitmap lastLoadedimg = null;
-
-	/** The answer. */
-	boolean answer = false;
-
-	/** The failed. */
-	boolean failed = false;
-	
-	/** The callback. */
-	ILoaderCallback.Stub callback = new ILoaderCallback.Stub() {
-		@Override
-		public void loadComplete() throws RemoteException {
-			Log.d(TAG, "loadComplete");
-			answer = true;
+	public InputStream getResourceAsStream(String ref, boolean download) {
+		InputStream in = getResourceFromCache(ref);
+		if (in == null && download) {
+			downloadService(ref);
+			in = getResourceFromCache(ref);
 		}
-
-		@Override
-		public void loadFailed() throws RemoteException {
-			Log.d(TAG, "loadFailed");
-			failed = true;
-
-		}
-	};
-
-	/**
-	 * Instantiates a new resource loader.
-	 */
-	public ResourceLoader() {
-		initCacheLocation();
+		return in;
 	}
 
-	/**
-	 * Instantiates a new resource loader.
-	 *
-	 * @param mService the m service
-	 */
-	public ResourceLoader(final IResourceLoaderService mService) {
-		Log.d(TAG, "ResourceLoader - create");
-
-		this.mService = mService;
-		initCacheLocation();
-		// emptyCache();
+	public InputStream getResourceAsStreamDownload(String ref) {
+		deleteFile(ref);
+		downloadService(ref);
+		return getResourceFromCache(ref);
 	}
 
-	/**
-	 * Adds the to download queue.
-	 *
-	 * @param ref the ref
-	 */
-	public void addToDownloadQueue(final String ref) {
-		if (mService == null) {
-			return;
-		}
-		try {
-			mService.addToDownloadQueue(ref);
-		} catch (final RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Delete file.
-	 *
-	 * @param ref the ref
-	 */
-	private void deleteFile(final String ref) {
+	private void deleteFile(String ref) {
 		new File(cacheLocation + ref).delete();
 
 	}
 
-	/**
-	 * Download.
-	 *
-	 * @param name the name
-	 * @param o the o
-	 * @return true, if successful
-	 */
-	public boolean download(final String name, final Observer o) {
-		final InputStream in = getResourceFromCache(name);
-		if (in == null) {
-			Log.d(TAG, "url: " + URL + name);
-			try {
-				new AsyncDownload(new URL(URL + name), cacheLocation, o);
-			} catch (final MalformedURLException e) {
-				throw new ValkyrieRuntimeException(e);
-			}
-			return false;
-		}
-		return true;
-	}
+	String lastloadedref = "";
+	Bitmap lastLoadedimg = null;
 
-	/**
-	 * Download service.
-	 *
-	 * @param name the name
-	 * @return true, if successful
-	 */
-	public boolean downloadService(final String name) {
-		int time = 0;
-		answer = false;
-		failed = false;
-		while (mService == null) {
-			if (time >= SERVICE_TIMEOUT) {
-				throw new ValkyrieRuntimeException("Service timeout");
-			}
-			try {
-				Thread.sleep(100);
-			} catch (final InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			time++;
-		}
-		try {
-			mService.download(name, callback);
-		} catch (final RemoteException e1) {
-			answer = false;
-			e1.printStackTrace();
-			return false;
-		}
-
-		while (!answer) {
-			try {
-				Thread.sleep(100);
-			} catch (final InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return !failed;
-
-	}
-
-	/**
-	 * Download service.
-	 *
-	 * @param imageName the image name
-	 * @param maxX the max x
-	 * @param maxY the max y
-	 */
-	public void downloadService(final String imageName, final int maxX,
-			final int maxY) {
-		for (int x = 0; x < maxX; x++) {
-			for (int y = 0; y < maxY; y++) {
-				downloadService(imageName + "," + x + "," + y + ".png");
-			}
-		}
-	}
-
-	/**
-	 * Empty cache.
-	 */
-	public void emptyCache() {
-		final File dir = new File(cacheLocation);
-		deleteDir(dir);
-		initCacheLocation();
-
-	}
-
-	/**
-	 * Free service.
-	 */
-	public void freeService() {
-		mService = null;
-	}
-
-	/**
-	 * Gets the bitmap resource.
-	 *
-	 * @param ref the ref
-	 * @param waitForDownload the wait for download
-	 * @return the bitmap resource
-	 */
-	public Bitmap getBitmapResource(final String ref,
-			final boolean waitForDownload) {
+	public Bitmap getBitmapResource(String ref, boolean waitForDownload) {
 		// BitmapFactory.Options options = new BitmapFactory.Options();
 		// options.inSampleSize = 10;
 		// options.inPurgeable = true;
@@ -373,7 +171,7 @@ public class ResourceLoader {
 				}
 				ret = copy.copy(Config.ARGB_4444, false);
 				copy.recycle();
-			} catch (final OutOfMemoryError e) {
+			} catch (OutOfMemoryError e) {
 				e.printStackTrace();
 				ResourceLoader.emptyBitmapCache();
 				System.gc();
@@ -388,7 +186,7 @@ public class ResourceLoader {
 					}
 					ret = copy.copy(Config.ARGB_4444, false);
 					copy.recycle();
-				} catch (final OutOfMemoryError e) {
+				} catch (OutOfMemoryError e) {
 					e.printStackTrace();
 				}
 			}
@@ -404,51 +202,138 @@ public class ResourceLoader {
 		return ret;
 	}
 
-	/**
-	 * Gets the resource as stream.
-	 *
-	 * @param ref the ref
-	 * @param download the download
-	 * @return the resource as stream
-	 */
-	public InputStream getResourceAsStream(final String ref,
-			final boolean download) {
-		InputStream in = getResourceFromCache(ref);
-		if (in == null && download) {
-			downloadService(ref);
-			in = getResourceFromCache(ref);
+	public static void emptyBitmapCache() {
+		for (Entry<String, Bitmap> s : bitmapCache.entrySet()) {
+			s.getValue().recycle();
 		}
-		return in;
+		bitmapCache = new HashMap<String, Bitmap>();
+		System.gc();
 	}
 
-	/**
-	 * Gets the resource as stream download.
-	 *
-	 * @param ref the ref
-	 * @return the resource as stream download
-	 */
-	public InputStream getResourceAsStreamDownload(final String ref) {
-		deleteFile(ref);
-		downloadService(ref);
-		return getResourceFromCache(ref);
-	}
-
-	/**
-	 * Gets the resource from cache.
-	 *
-	 * @param ref the ref
-	 * @return the resource from cache
-	 */
-	private InputStream getResourceFromCache(final String ref) {
+	private InputStream getResourceFromCache(String ref) {
 		try {
-			final File file = new File(cacheLocation, ref);
+			File file = new File(cacheLocation, ref);
 			if (!file.exists()) {
 				return null;
 			}
 			return new FileInputStream(file);
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	public void emptyCache() {
+		File dir = new File(cacheLocation);
+		deleteDir(dir);
+		initCacheLocation();
+
+	}
+
+	public static boolean deleteDir(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+
+		// The directory is now empty so delete it
+		return dir.delete();
+	}
+
+	public void addToDownloadQueue(String ref) {
+		if (mService == null) {
+			return;
+		}
+		try {
+			mService.addToDownloadQueue(ref);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean downloadService(String name) {
+		int time = 0;
+		answer = false;
+		failed = false;
+		while (mService == null) {
+			if (time >= SERVICE_TIMEOUT) {
+				throw new ValkyrieRuntimeException("Service timeout");
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			time++;
+		}
+		try {
+			mService.download(name, callback);
+		} catch (RemoteException e1) {
+			answer = false;
+			e1.printStackTrace();
+			return false;
+		}
+
+		while (!answer) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return !failed;
+
+	}
+
+	boolean answer = false;
+	boolean failed = false;
+	ILoaderCallback.Stub callback = new ILoaderCallback.Stub() {
+		@Override
+		public void loadFailed() throws RemoteException {
+			Log.d(TAG, "loadFailed");
+			failed = true;
+
+		}
+
+		@Override
+		public void loadComplete() throws RemoteException {
+			Log.d(TAG, "loadComplete");
+			answer = true;
+		}
+	};
+
+	public boolean download(String name, Observer o) {
+		InputStream in = getResourceFromCache(name);
+		if (in == null) {
+			Log.d(TAG, "url: " + URL + name);
+			try {
+				new AsyncDownload(new URL(URL + name), cacheLocation, o);
+			} catch (MalformedURLException e) {
+				throw new ValkyrieRuntimeException(e);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	public void downloadService(String imageName, int maxX, int maxY) {
+		for (int x = 0; x < maxX; x++) {
+			for (int y = 0; y < maxY; y++) {
+				downloadService(imageName + "," + x + "," + y + ".png");
+			}
+		}
+	}
+
+	public static String getPath() {
+		initCacheLocation();
+		return cacheLocation;
 	}
 
 }

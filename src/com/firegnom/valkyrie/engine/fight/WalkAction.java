@@ -30,24 +30,12 @@ import com.firegnom.valkyrie.graphics.DrawablePath;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class WalkAction.
- */
 public class WalkAction implements FightAction {
 
-	/** The Constant TAG. */
 	private static final String TAG = WalkAction.class.getName();
-	
-	/** The active. */
 	private boolean active = false;
-	
-	/** The dp. */
 	private DrawablePath dp;
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.fight.FightAction#activated()
-	 */
 	@Override
 	public void activated() {
 		GameController.getInstance().fightController.prepareRange();
@@ -60,9 +48,6 @@ public class WalkAction implements FightAction {
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.fight.FightAction#deactivated()
-	 */
 	@Override
 	public void deactivated() {
 		GameController.getInstance().fightController.view.post(new Runnable() {
@@ -75,47 +60,15 @@ public class WalkAction implements FightAction {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.fight.FightAction#finished()
-	 */
 	@Override
-	public void finished() {
-		final GameController gc = GameController.getInstance();
-		active = false;
-		gc.fightController.features.remove(dp);
-		gc.fightController.postInvalidate();
-		gc.fightController.action = null;
-		gc.user.animation.stop();
-		GameController.getInstance().fightController.view.post(new Runnable() {
-			@Override
-			public void run() {
-				((FightActivity) GameController.getInstance().fightController.context).walkB
-						.setBackgroundResource(R.drawable.walk);
-			}
-		});
-
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.fight.FightAction#isActive()
-	 */
-	@Override
-	public boolean isActive() {
-		return active;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.engine.fight.FightAction#onSingleTapUp(int, int)
-	 */
-	@Override
-	public void onSingleTapUp(final int x, final int y) {
+	public void onSingleTapUp(int x, int y) {
 		if (active) {
 			return;
 		}
 		active = true;
-		final GameController gc = GameController.getInstance();
+		GameController gc = GameController.getInstance();
 		gc.fightController.range = null;
-		final Path p = gc.fightController.map.findPath(x, y, gc.user);
+		Path p = gc.fightController.map.findPath(x, y, gc.user);
 		if (p == null) {
 			Gui.toast(R.string.pathfinding_how_to_get_there,
 					gc.fightController.view, gc.fightController.context);
@@ -133,6 +86,29 @@ public class WalkAction implements FightAction {
 		// gc.fightController.executor.execute(new MovePathTask(p,
 		// gc.user,gc.fightController.executor));
 		gc.fightController.view.invalidate();
+	}
+
+	@Override
+	public void finished() {
+		GameController gc = GameController.getInstance();
+		active = false;
+		gc.fightController.features.remove(dp);
+		gc.fightController.postInvalidate();
+		gc.fightController.action = null;
+		gc.user.animation.stop();
+		GameController.getInstance().fightController.view.post(new Runnable() {
+			@Override
+			public void run() {
+				((FightActivity) GameController.getInstance().fightController.context).walkB
+						.setBackgroundResource(R.drawable.walk);
+			}
+		});
+
+	}
+
+	@Override
+	public boolean isActive() {
+		return active;
 	}
 
 }

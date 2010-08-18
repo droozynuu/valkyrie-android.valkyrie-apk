@@ -28,17 +28,10 @@ import android.widget.Button;
 
 import com.firegnom.valkyrie.engine.GameController;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PackageLoaderActivity.
- */
 public class PackageLoaderActivity extends ValkyrieActivity {
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
 	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.download_packages);
 		if (GameController.getInstance().packsDownloading) {
@@ -50,7 +43,7 @@ public class PackageLoaderActivity extends ValkyrieActivity {
 		((Button) findViewById(R.id.download_packages_button_no))
 				.setOnClickListener(new OnClickListener() {
 					@Override
-					public void onClick(final View v) {
+					public void onClick(View v) {
 						GameController.getInstance().downloadPackages = false;
 						GameController.getInstance().papksLoading = false;
 						startActivity(new Intent(PackageLoaderActivity.this,
@@ -61,7 +54,7 @@ public class PackageLoaderActivity extends ValkyrieActivity {
 		((Button) findViewById(R.id.download_packages_button_yes))
 				.setOnClickListener(new OnClickListener() {
 					@Override
-					public void onClick(final View v) {
+					public void onClick(View v) {
 						// PackageLoaderActivity.this.setContentView(R.layout.please_wait);
 						startActivity(new Intent(PackageLoaderActivity.this,
 								PackageDownloadActivity.class));

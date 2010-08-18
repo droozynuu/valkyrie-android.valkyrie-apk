@@ -22,20 +22,20 @@ package com.firegnom.valkyrie.util;
 
 import java.io.InputStream;
 
-// TODO: Auto-generated Javadoc
 /**
- * A location from which resources can be loaded.
- *
+ * A location from which resources can be loaded
+ * 
  * @author kevin
  */
 public interface ResourceLocation {
 
 	/**
-	 * Get a resource as an input stream.
-	 *
-	 * @param ref The reference to the resource to retrieve
+	 * Get a resource as an input stream
+	 * 
+	 * @param ref
+	 *            The reference to the resource to retrieve
 	 * @return A stream from which the resource can be read or null if the
-	 * resource can't be found in this location
+	 *         resource can't be found in this location
 	 */
 	public InputStream getResourceAsStream(String ref);
 

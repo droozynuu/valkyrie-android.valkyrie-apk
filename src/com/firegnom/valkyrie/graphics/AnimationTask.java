@@ -24,31 +24,15 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.firegnom.valkyrie.engine.GameController;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AnimationTask.
- */
 public class AnimationTask implements Runnable {
-	
-	/** The pl. */
 	DirectionalAnimation pl;
-	
-	/** The e. */
 	ScheduledThreadPoolExecutor e;
 
-	/**
-	 * Instantiates a new animation task.
-	 *
-	 * @param pl the pl
-	 */
-	public AnimationTask(final DirectionalAnimation pl) {
+	public AnimationTask(DirectionalAnimation pl) {
 		this.pl = pl;
 		// this.e = e;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
 	@Override
 	public void run() {
 		pl.nextFrame();

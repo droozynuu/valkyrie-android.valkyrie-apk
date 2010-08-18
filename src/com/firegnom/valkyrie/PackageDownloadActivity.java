@@ -35,34 +35,42 @@ import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.service.IPackLoadListener;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PackageDownloadActivity.
- */
 public class PackageDownloadActivity extends ValkyrieActivity {
 
-	/** The Constant TAG. */
 	protected static final String TAG = PackageDownloadActivity.class.getName();
-	
-	/** The Constant GO_TO_GAME. */
 	protected static final int GO_TO_GAME = 0;
-	
-	/** The resource loader service. */
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.please_wait_1);
+		if (resourceLoaderService == null) {
+			bindService(new Intent(IResourceLoaderService.class.getName()),
+					resourceLoaderConnection, Context.BIND_AUTO_CREATE);
+		}
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		unbindService(resourceLoaderConnection);
+		resourceLoaderService = null;
+		finish();
+		super.onDestroy();
+	}
+
 	public IResourceLoaderService resourceLoaderService;
-	
-	/** The resource loader connection. */
-	private final ServiceConnection resourceLoaderConnection = new ServiceConnection() {
+	private ServiceConnection resourceLoaderConnection = new ServiceConnection() {
 
 		@Override
-		public void onServiceConnected(final ComponentName name,
-				final IBinder service) {
+		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.d(TAG, "resourceLoaderService onServiceConnected");
 			resourceLoaderService = IResourceLoaderService.Stub
 					.asInterface(service);
 			try {
 				GameController.getInstance().packsDownloading = true;
 				resourceLoaderService.downloadPacks(loadListener);
-			} catch (final RemoteException e) {
+			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -70,25 +78,21 @@ public class PackageDownloadActivity extends ValkyrieActivity {
 		}
 
 		@Override
-		public void onServiceDisconnected(final ComponentName name) {
+		public void onServiceDisconnected(ComponentName name) {
 			Log.d(TAG, "resourceLoaderService onServiceDisconnected");
 			resourceLoaderService = null;
 		}
 
 	};
-
-	/** The load listener. */
 	IPackLoadListener.Stub loadListener = new IPackLoadListener.Stub() {
 		@Override
 		public void finished() throws RemoteException {
 			mHandler.sendEmptyMessage(GO_TO_GAME);
 		}
 	};
-	
-	/** The m handler. */
-	private final Handler mHandler = new Handler() {
+	private Handler mHandler = new Handler() {
 		@Override
-		public void handleMessage(final Message msg) {
+		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case GO_TO_GAME:
 				GameController.getInstance().papksLoading = false;
@@ -101,30 +105,5 @@ public class PackageDownloadActivity extends ValkyrieActivity {
 			}
 		}
 	};
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.please_wait_1);
-		if (resourceLoaderService == null) {
-			bindService(new Intent(IResourceLoaderService.class.getName()),
-					resourceLoaderConnection, Context.BIND_AUTO_CREATE);
-		}
-
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		unbindService(resourceLoaderConnection);
-		resourceLoaderService = null;
-		finish();
-		super.onDestroy();
-	}
 
 }

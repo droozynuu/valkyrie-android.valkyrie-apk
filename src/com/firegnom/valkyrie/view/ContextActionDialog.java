@@ -39,100 +39,21 @@ import android.widget.TextView;
 import com.firegnom.valkyrie.action.ContextAction;
 import com.firegnom.valkyrie.engine.GameController;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ContextActionDialog.
- */
 public class ContextActionDialog extends Dialog {
-	
-	/**
-	 * The Class MyListAdapter.
-	 */
-	public class MyListAdapter extends BaseAdapter {
-		// Sample data set. children[i] contains the children (String[]) for
-		// groups[i].
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return arrayList.size();
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(final int position) {
-			// TODO Auto-generated method stub
-			return arrayList.get(position);
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(final int position) {
-			// TODO Auto-generated method stub
-			return arrayList.get(position).getId();
-		}
-
-		/* (non-Javadoc)
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(final int position, final View convertView,
-				final ViewGroup parent) {
-			final LinearLayout ll = new LinearLayout(parent.getContext());
-			final AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-					ViewGroup.LayoutParams.FILL_PARENT, 64);
-			ll.setLayoutParams(lp);
-			ll.setOrientation(LinearLayout.VERTICAL);
-			ll.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-			// textView.setLayoutParams(lp);
-			final TextView textView = new TextView(parent.getContext());
-			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-			textView.setTextSize(16);
-			textView.setTextColor(Color.GREEN);
-			textView.setPadding(36, 0, 0, 0);
-			textView.setText(arrayList.get(position).name);
-			final TextView textView1 = new TextView(parent.getContext());
-
-			textView1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-			textView1.setTextSize(10);
-			textView1.setPadding(36, 0, 0, 0);
-			textView1.setText(arrayList.get(position).container);
-			ll.addView(textView);
-			ll.addView(textView1);
-			return ll;
-		}
-
-	}
-
-	/** The array list. */
 	ArrayList<ContextAction> arrayList;
-
-	/** The context action view. */
 	ContextActionView contextActionView;
 
-	/**
-	 * Instantiates a new context action dialog.
-	 *
-	 * @param context the context
-	 */
-	public ContextActionDialog(final Context context) {
+	public ContextActionDialog(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		setTitle("Avilable actions");
 		contextActionView = new ContextActionView(context);
 		contextActionView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(final AdapterView<?> arg0, final View arg1,
-					final int arg2, final long arg3) {
-				final GameController sc = GameController.getInstance();
-				final ContextAction action = arrayList.get(arg2);
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				GameController sc = GameController.getInstance();
+				ContextAction action = arrayList.get(arg2);
 				switch (action.type) {
 				case ContextAction.DEBUG_SCRIPT_EDITOR:
 					// FIXME connect this call to action call show dialog using
@@ -163,19 +84,66 @@ public class ContextActionDialog extends Dialog {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Dialog#onWindowFocusChanged(boolean)
-	 */
 	@Override
-	public void onWindowFocusChanged(final boolean hasFocus) {
+	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
 		if (hasFocus) {
-			final GameController gc = GameController.getInstance();
+			GameController gc = GameController.getInstance();
 			arrayList = gc.zone.contextActions.get(gc.longPressPosition.x
 					+ (-1 * gc.sX), gc.longPressPosition.y + (-1 * gc.sY), 50);
 			arrayList.addAll(gc.players.getActions(gc.longPressPositionMap, 4));
 			contextActionView.setAdapter(new MyListAdapter());
 		}
+	}
+
+	public class MyListAdapter extends BaseAdapter {
+		// Sample data set. children[i] contains the children (String[]) for
+		// groups[i].
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return arrayList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return arrayList.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return arrayList.get(position).getId();
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LinearLayout ll = new LinearLayout(parent.getContext());
+			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+					ViewGroup.LayoutParams.FILL_PARENT, 64);
+			ll.setLayoutParams(lp);
+			ll.setOrientation(LinearLayout.VERTICAL);
+			ll.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+			// textView.setLayoutParams(lp);
+			TextView textView = new TextView(parent.getContext());
+			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+			textView.setTextSize(16);
+			textView.setTextColor(Color.GREEN);
+			textView.setPadding(36, 0, 0, 0);
+			textView.setText(arrayList.get(position).name);
+			TextView textView1 = new TextView(parent.getContext());
+
+			textView1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+			textView1.setTextSize(10);
+			textView1.setPadding(36, 0, 0, 0);
+			textView1.setText(arrayList.get(position).container);
+			ll.addView(textView);
+			ll.addView(textView1);
+			return ll;
+		}
+
 	}
 
 }

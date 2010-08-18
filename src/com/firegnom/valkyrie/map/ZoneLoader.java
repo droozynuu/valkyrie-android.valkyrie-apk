@@ -22,35 +22,10 @@ package com.firegnom.valkyrie.map;
 
 import android.content.Context;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface ZoneLoader.
- */
 public interface ZoneLoader {
-	
-	/**
-	 * Load.
-	 *
-	 * @param name the name
-	 * @return the zone
-	 */
-	Zone load(String name);
+	Zone load(String name, int version);
 
-	/**
-	 * Load.
-	 *
-	 * @param name the name
-	 * @param c the c
-	 * @return the zone
-	 */
 	Zone load(String name, Context c);
 
-	/**
-	 * Load.
-	 *
-	 * @param name the name
-	 * @param version the version
-	 * @return the zone
-	 */
-	Zone load(String name, int version);
+	Zone load(String name);
 }

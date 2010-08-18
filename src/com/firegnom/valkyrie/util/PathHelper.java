@@ -28,18 +28,9 @@ import android.graphics.Paint;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.map.pathfinding.Step;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PathHelper.
- */
 public class PathHelper {
-	
-	/** The m paint. */
 	Paint mPaint;
 
-	/**
-	 * Instantiates a new path helper.
-	 */
 	public PathHelper() {
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
@@ -51,21 +42,12 @@ public class PathHelper {
 		mPaint.setStrokeWidth(10);
 	}
 
-	/**
-	 * Draw.
-	 *
-	 * @param p the p
-	 * @param c the c
-	 * @param tileWidth the tile width
-	 * @param tileHeight the tile height
-	 */
-	public void draw(final Path p, final Canvas c, final int tileWidth,
-			final int tileHeight) {
-		final android.graphics.Path pa = new android.graphics.Path();
+	public void draw(Path p, Canvas c, int tileWidth, int tileHeight) {
+		android.graphics.Path pa = new android.graphics.Path();
 		if (p == null) {
 			return;
 		}
-		final Iterator<Step> i = p.steps.iterator();
+		Iterator<Step> i = p.steps.iterator();
 		Step step;
 		if (i.hasNext()) {
 			step = i.next();

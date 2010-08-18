@@ -20,32 +20,19 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.map.tiled;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class TiledLoaderException.
- */
 public class TiledLoaderException extends Exception {
 
-	/** The Constant serialVersionUID. */
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new tiled loader exception.
-	 *
-	 * @param string the string
-	 */
-	public TiledLoaderException(final String string) {
+	public TiledLoaderException(String string) {
 		super(string);
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Instantiates a new tiled loader exception.
-	 *
-	 * @param string the string
-	 * @param e the e
-	 */
-	public TiledLoaderException(final String string, final Exception e) {
+	public TiledLoaderException(String string, Exception e) {
 		// TODO Auto-generated constructor stub
 		super(string, e);
 	}

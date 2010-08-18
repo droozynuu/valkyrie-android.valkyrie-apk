@@ -38,23 +38,21 @@
 
 package com.firegnom.valkyrie.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * Interface that defines a procedure to be executed, that takes an int
- * parameter.
- *
+ * parameter
+ * 
  * @author aled.morris@infomatiq.co.uk
  * @version 1.0b2
  */
 public interface IntProcedure {
-	
 	/**
-	 * Execute.
-	 *
-	 * @param id integer value
+	 * @param id
+	 *            integer value
+	 * 
 	 * @return flag to indicate whether to continue executing the procedure.
-	 * Return true to continue executing, or false to prevent any more
-	 * calls to this method.
+	 *         Return true to continue executing, or false to prevent any more
+	 *         calls to this method.
 	 */
 	public boolean execute(int id);
 }

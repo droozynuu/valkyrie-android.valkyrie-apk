@@ -25,42 +25,36 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-// TODO: Auto-generated Javadoc
 /**
- * A resource loading location that searches somewhere on the classpath.
- *
+ * A resource loading location that searches somewhere on the classpath
+ * 
  * @author kevin
  */
 public class FileSystemLocation implements ResourceLocation {
-	
-	/** The root of the file system to search. */
-	private final File root;
+	/** The root of the file system to search */
+	private File root;
 
 	/**
-	 * Create a new resoruce location based on the file system.
-	 *
-	 * @param root The root of the file system to search
+	 * Create a new resoruce location based on the file system
+	 * 
+	 * @param root
+	 *            The root of the file system to search
 	 */
-	public FileSystemLocation(final File root) {
+	public FileSystemLocation(File root) {
 		this.root = root;
 	}
 
 	/**
-	 * Gets the resource as stream.
-	 *
-	 * @param ref the ref
-	 * @return the resource as stream
 	 * @see ResourceLocation#getResourceAsStream(String)
 	 */
-	@Override
-	public InputStream getResourceAsStream(final String ref) {
+	public InputStream getResourceAsStream(String ref) {
 		try {
 			File file = new File(root, ref);
 			if (!file.exists()) {
 				file = new File(ref);
 			}
 			return new FileInputStream(file);
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 	}

@@ -42,37 +42,20 @@ import com.firegnom.valkyrie.engine.fight.RunAwayAction;
 import com.firegnom.valkyrie.engine.fight.WalkAction;
 import com.firegnom.valkyrie.view.FightView;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class FightActivity.
- */
 public class FightActivity extends ValkyrieActivity implements
 		OnGestureListener {
 
-	/** The progress. */
 	public ProgressBar progress;
-	
-	/** The Constant progressHeight. */
 	public static final int progressHeight = 5;
-	
-	/** The Constant PLAYER_EXTRA. */
 	public static final String PLAYER_EXTRA = "PLAYER_EXTRA";
-	
-	/** The enemy name. */
 	private String enemyName;
-	
-	/** The walk b. */
 	public Button walkB;
 
-	/** The gesture scanner. */
 	private GestureDetector gestureScanner;
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
-	 */
 	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		final Intent i = getIntent();
+	protected void onCreate(Bundle savedInstanceState) {
+		Intent i = getIntent();
 		if (i.getExtras().containsKey(PLAYER_EXTRA)) {
 			enemyName = i.getExtras().getString(PLAYER_EXTRA);
 		}
@@ -81,7 +64,7 @@ public class FightActivity extends ValkyrieActivity implements
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		final LinearLayout ll = new LinearLayout(this);
+		LinearLayout ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		ll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.FILL_PARENT));
@@ -96,25 +79,25 @@ public class FightActivity extends ValkyrieActivity implements
 		progress.setMax(1000);
 
 		ll.addView(progress);
-		final View m = new FightView(this.getApplicationContext());
+		View m = new FightView(this.getApplicationContext());
 
-		final DisplayMetrics dm = new DisplayMetrics();
+		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		final int height = dm.heightPixels;
-		final int width = dm.widthPixels;
+		int height = dm.heightPixels;
+		int width = dm.widthPixels;
 
 		m.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, height
 				- 55 + progressHeight));
-		final LinearLayout ll1 = new LinearLayout(this);
+		LinearLayout ll1 = new LinearLayout(this);
 		ll1.setOrientation(LinearLayout.HORIZONTAL);
 		ll1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		final Button b = new Button(this);
+		Button b = new Button(this);
 		b.setLayoutParams(new LayoutParams(50, 50));
 		b.setBackgroundResource(R.drawable.attack);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				GameController.getInstance().fightController
 						.changeAction(new NotImplementedAction());
 			}
@@ -126,40 +109,40 @@ public class FightActivity extends ValkyrieActivity implements
 		// b1.setText("W");
 		walkB.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				GameController.getInstance().fightController
 						.changeAction(new WalkAction());
 			}
 		});
 		ll1.addView(walkB);
-		final Button b2 = new Button(this);
+		Button b2 = new Button(this);
 		b2.setLayoutParams(new LayoutParams(50, 50));
 		b2.setBackgroundResource(R.drawable.magic);
 		b2.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				GameController.getInstance().fightController
 						.changeAction(new NotImplementedAction());
 			}
 		});
 		ll1.addView(b2);
-		final Button b4 = new Button(this);
+		Button b4 = new Button(this);
 		b4.setLayoutParams(new LayoutParams(50, 50));
 		b4.setBackgroundResource(R.drawable.inventory);
 		b4.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				GameController.getInstance().fightController
 						.changeAction(new NotImplementedAction());
 			}
 		});
 		ll1.addView(b4);
-		final Button b3 = new Button(this);
+		Button b3 = new Button(this);
 		b3.setLayoutParams(new LayoutParams(50, 50));
 		b3.setBackgroundResource(R.drawable.exit);
 		b3.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(final View v) {
+			public void onClick(View v) {
 				GameController.getInstance().fightController
 						.changeAction(new RunAwayAction());
 			}
@@ -175,41 +158,52 @@ public class FightActivity extends ValkyrieActivity implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
-	 */
 	@Override
-	public boolean onDown(final MotionEvent e) {
+	public boolean onTouchEvent(MotionEvent event) {
+		return gestureScanner.onTouchEvent(event);
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return GameController.getInstance().fightController.doScroll(distanceX,
+				distanceY);
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.MotionEvent, android.view.MotionEvent, float, float)
-	 */
 	@Override
-	public boolean onFling(final MotionEvent e1, final MotionEvent e2,
-			final float velocityX, final float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onLongPress(android.view.MotionEvent)
-	 */
 	@Override
-	public void onLongPress(final MotionEvent e) {
+	public void onLongPress(MotionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
+	@Override
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return GameController.getInstance().fightController.onSingleTapUp(e);
+	}
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		final GameController gc = GameController.getInstance();
+		GameController gc = GameController.getInstance();
 		gc.user.fightMode = true;
 		gc.fightController.enemy.fightMode = true;
 		gc.fightController.enemy.fightPosition.setXY(7, 7);
@@ -220,41 +214,6 @@ public class FightActivity extends ValkyrieActivity implements
 		gc.fightController.enemy.animation.changeDir(Dir.W);
 
 		super.onResume();
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float)
-	 */
-	@Override
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-			final float distanceX, final float distanceY) {
-		return GameController.getInstance().fightController.doScroll(distanceX,
-				distanceY);
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onShowPress(android.view.MotionEvent)
-	 */
-	@Override
-	public void onShowPress(final MotionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onSingleTapUp(android.view.MotionEvent)
-	 */
-	@Override
-	public boolean onSingleTapUp(final MotionEvent e) {
-		return GameController.getInstance().fightController.onSingleTapUp(e);
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent)
-	 */
-	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		return gestureScanner.onTouchEvent(event);
 	}
 
 }

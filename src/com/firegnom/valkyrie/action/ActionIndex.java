@@ -30,43 +30,20 @@ import com.firegnom.valkyrie.util.Point;
 import com.firegnom.valkyrie.util.Rectangle;
 import com.firegnom.valkyrie.util.rtree.RTree;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ActionIndex.
- */
 public class ActionIndex implements IntProcedure {
-	
-	/** The actiontree. */
-	private final RTree actiontree;
-	
-	/** The map. */
-	private final TIntObjectHashMap<ContextAction> map;
-	
-	/** The ret. */
+	private RTree actiontree;
+	private TIntObjectHashMap<ContextAction> map;
 	private ArrayList<ContextAction> ret;
-	
-	/** The retindex. */
 	private int retindex;
-	
-	/** The max items. */
 	public int maxItems = 20;
-	
-	/** The Constant MAX_NUMBER_OF_ACTIONS. */
 	public static final int MAX_NUMBER_OF_ACTIONS = 250;
-	
-	/** The showeditor. */
 	public boolean showeditor = false;
-	
-	/** The Constant editor. */
 	private final static ContextAction editor = new ContextAction().setName(
 			"script editor").setType(ContextAction.DEBUG_SCRIPT_EDITOR);
 
-	/**
-	 * Instantiates a new action index.
-	 */
 	public ActionIndex() {
 		actiontree = new RTree();
-		final Properties p = new Properties();
+		Properties p = new Properties();
 		// p.setProperty("TreeVariant", "Linear");
 		p.setProperty("MinNodeEntries", "2");
 		p.setProperty("MaxNodeEntries", "20"); // reasonable values?
@@ -75,26 +52,13 @@ public class ActionIndex implements IntProcedure {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.util.IntProcedure#execute(int)
-	 */
-	@Override
-	public boolean execute(final int id) {
-		ret.add(map.get(id));
-		retindex++;
-		return false;
+	public void put(ContextAction ca) {
+		map.put(ca.getId(), ca);
+		actiontree.add(new Rectangle(ca.x, ca.y, ca.x + ca.width, ca.y
+				+ ca.height), ca.getId());
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param radius the radius
-	 * @return the array list
-	 */
-	public ArrayList<ContextAction> get(final int x, final int y,
-			final int radius) {
+	public ArrayList<ContextAction> get(int x, int y, int radius) {
 		ret = new ArrayList<ContextAction>();
 		retindex = 0;
 		actiontree.nearest(new Point(x, y), this, radius);
@@ -104,13 +68,14 @@ public class ActionIndex implements IntProcedure {
 		return ret;
 	}
 
-	/**
-	 * Gets the.
-	 *
-	 * @param r the r
-	 * @return the array list
-	 */
-	public ArrayList<ContextAction> get(final Rectangle r) {
+	@Override
+	public boolean execute(int id) {
+		ret.add(map.get(id));
+		retindex++;
+		return false;
+	}
+
+	public ArrayList<ContextAction> get(Rectangle r) {
 		ret = new ArrayList<ContextAction>();
 		retindex = 0;
 
@@ -119,16 +84,5 @@ public class ActionIndex implements IntProcedure {
 			ret.add(editor);
 		}
 		return ret;
-	}
-
-	/**
-	 * Put.
-	 *
-	 * @param ca the ca
-	 */
-	public void put(final ContextAction ca) {
-		map.put(ca.getId(), ca);
-		actiontree.add(new Rectangle(ca.x, ca.y, ca.x + ca.width, ca.y
-				+ ca.height), ca.getId());
 	}
 }

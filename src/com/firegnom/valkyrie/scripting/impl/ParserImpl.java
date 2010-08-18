@@ -32,32 +32,52 @@ import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.scripting.Parser;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ParserImpl.
- */
 public class ParserImpl implements Parser {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.firegnom.valkyrie.scripting.impl.Parser#parse(java.lang.String)
+	 */
+	public void parse(final String src) {
+		try {
+			parse(src.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			postMessage(e.toString());
+		}
+	}
+
+	public void postMessage(final String msg) {
+		GameController.getInstance().getView().post((new Runnable() {
+			public void run() {
+				Toast.makeText(
+						GameController.getInstance().getView().getContext(),
+						msg.toString(), 20000).show();
+			}
+		}));
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.firegnom.valkyrie.scripting.impl.Parser#parse(byte[])
 	 */
-	@Override
 	public void parse(final byte[] src) {
 		(new Thread() {
 			@Override
 			public void run() {
 				try {
-					final GameController sc = GameController.getInstance();
-					final Position eventScreenPosition = sc.longPressPosition;
+					GameController sc = GameController.getInstance();
+					Position eventScreenPosition = sc.longPressPosition;
 					Position eventMapPosition = null;
 					if (eventScreenPosition != null) {
 						eventMapPosition = sc.zone.getMapPosition(
 								eventScreenPosition.x, eventScreenPosition.y,
 								sc.sX, sc.sY);
 					}
-					final Interpreter i = new Interpreter();
+					Interpreter i = new Interpreter();
 					i.set("sc",
 							new SGameControllerImpl(sc, sc.getContext(), sc
 									.getView()));
@@ -65,43 +85,11 @@ public class ParserImpl implements Parser {
 					i.set("player", new SPlayerImpl(sc.getView()));
 					i.set("p", eventMapPosition);
 					i.eval(new InputStreamReader(new ByteArrayInputStream(src)));
-				} catch (final bsh.EvalError e) {
+				} catch (bsh.EvalError e) {
 					postMessage(e.toString());
 					Log.d("console", e.toString());
 				}
 			}
 		}).start();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.firegnom.valkyrie.scripting.impl.Parser#parse(java.lang.String)
-	 */
-	@Override
-	public void parse(final String src) {
-		try {
-			parse(src.getBytes("UTF-8"));
-		} catch (final UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			postMessage(e.toString());
-		}
-	}
-
-	/**
-	 * Post message.
-	 *
-	 * @param msg the msg
-	 */
-	public void postMessage(final String msg) {
-		GameController.getInstance().getView().post((new Runnable() {
-			@Override
-			public void run() {
-				Toast.makeText(
-						GameController.getInstance().getView().getContext(),
-						msg.toString(), 20000).show();
-			}
-		}));
 	}
 }

@@ -39,74 +39,35 @@ import com.firegnom.valkyrie.util.RangedList;
 import com.firegnom.valkyrie.util.Rectangle;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Zone.
- */
 public class Zone implements Pathfindable {
 
-	/** The Constant MOVE_MATRIX. */
 	public static final String MOVE_MATRIX = "_moveMatrix";
-	
-	/** The Constant MAX_MOVES_PATH. */
 	public static final int MAX_MOVES_PATH = 15;
-	
-	/** The draw objects. */
-	private final boolean drawObjects = true;
+	private boolean drawObjects = true;
 
-	/** The width. */
 	public int width;
-	
-	/** The height. */
 	public int height;
-	
-	/** The tile width. */
 	public int tileWidth;
-	
-	/** The tile height. */
 	public int tileHeight;
 
-	/** The tiles location. */
 	public String tilesLocation;
-	
-	/** The context actions. */
 	public ActionIndex contextActions;
-	
-	/** The map objects. */
 	public MapObjectsIndex mapObjects;
 
-	/** The props. */
 	public Properties props;
 
-	/** The tile sets. */
 	public RangedList<StringTileSet> tileSets;
-	
-	/** The layers. */
 	public ArrayList<Layer> layers;
-	
-	/** The active tiles. */
 	public TIntObjectHashMap<String> activeTiles;
 	// protected ArrayList objectGroups;
 
-	/** The version. */
 	public int version;
-	
-	/** The name. */
 	public String name;
 
-	/** The move matrix. */
 	public short[][] moveMatrix;
-	
-	/** The id. */
 	public int id;
-	
-	/** The finder. */
 	public AStarPathFinder finder;
-	
-	/** The move matrix first gid. */
 	public int moveMatrixFirstGid;
-	
-	/** The Constant MOVE_MATRIX_TILE_MATRIX. */
 	public static final short[][] MOVE_MATRIX_TILE_MATRIX = {
 	/* 0 */{ 1, 1, 1, 1 },
 	/* 1 */{ 1, 0, 0, 0 },
@@ -123,30 +84,10 @@ public class Zone implements Pathfindable {
 	/* 12 */{ 1, 1, 1, 0 },
 	/* 13 */{ 1, 0, 0, 1 },
 	/* 14 */{ 0, 1, 1, 0 } };
-	
-	/** The PATHFINDE r_ ma x_ complicity. */
 	private static int PATHFINDER_MAX_COMPLICITY = 800;
 
-	/** The p. */
-	Picture p = new Picture();
-
-	/** The paint. */
-	Paint paint = new Paint();
-
-	/** The c. */
-	Canvas c;
-
-	/**
-	 * Instantiates a new zone.
-	 *
-	 * @param name the name
-	 * @param width2 the width2
-	 * @param height2 the height2
-	 * @param tileWidth2 the tile width2
-	 * @param tileHeight2 the tile height2
-	 */
-	public Zone(final String name, final int width2, final int height2,
-			final int tileWidth2, final int tileHeight2) {
+	public Zone(String name, int width2, int height2, int tileWidth2,
+			int tileHeight2) {
 		this.name = name;
 		// this.version = version;
 		mapObjects = new MapObjectsIndex();
@@ -163,174 +104,62 @@ public class Zone implements Pathfindable {
 		activeTiles = new TIntObjectHashMap<String>();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#blocked(com.firegnom.valkyrie.map.pathfinding.Mover, int, int)
-	 */
-	@Override
-	public boolean blocked(final Mover mover, final int x, final int y) {
-		return moveMatrix[x][y] != 0;
-	}
-
-	/**
-	 * Builds the move matrix.
-	 *
-	 * @param l the l
-	 */
-	public void buildMoveMatrix(final Layer l) {
-		final int firstGid = moveMatrixFirstGid;
-		final short[][] moveMatrix = new short[l.width * 2][l.height * 2];
-
-		for (int x = 0; x < l.width; x++) {
-			for (int y = 0; y < l.height; y++) {
-				final int mx = 2 * x, my = 2 * y;
-				if (l.data[x][y] == 0) {
-					moveMatrix[mx][my] = 0;
-					moveMatrix[mx + 1][my] = 0;
-					moveMatrix[mx][my + 1] = 0;
-					moveMatrix[mx + 1][my + 1] = 0;
-					continue;
-				}
-				final int tileid = l.data[x][y] - firstGid;
-				moveMatrix[mx][my] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][0];
-				moveMatrix[mx + 1][my] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][1];
-				moveMatrix[mx][my + 1] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][2];
-				moveMatrix[mx + 1][my + 1] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][3];
-			}
-		}
-		this.moveMatrix = moveMatrix;
-	}
-
-	/**
-	 * Find a tile for a given global tile id.
-	 *
-	 * @param gid The global tile id we're looking for
-	 * @return The tileset in which that tile lives or null if the gid is not
-	 * defined
-	 */
-	public StringTileSet findTileSet(final int gid) {
-		return tileSets.get(gid);
-	}
-
-	/**
-	 * Return on screen coordinates from move matrix position.
-	 *
-	 * @param x position in move matrix
-	 * @param y position in move matrix
-	 * @return position x,y on screen
-	 */
-	public Position getCoords(final int x, final int y) {
-		return new Position(getXCoords(x), getYCoords(y));
-
-	}
-
 	// Functions used in path finding algorithm
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getCost(com.firegnom.valkyrie.map.pathfinding.Mover, int, int, int, int)
-	 */
 	@Override
-	public float getCost(final Mover mover, final int sx, final int sy,
-			final int tx, final int ty) {
+	public float getCost(Mover mover, int sx, int sy, int tx, int ty) {
 		return 1;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getHeightInTiles()
-	 */
 	@Override
 	public int getHeightInTiles() {
 		return height * 2;
 	}
 
-	/**
-	 * Gets the map position.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param sX the s x
-	 * @param sY the s y
-	 * @return the map position
-	 */
-	public Position getMapPosition(final int x, final int y, final int sX,
-			final int sY) {
-		final Position p = new Position();
-		p.x = (((-1 * sX) + x) / tileWidth * 2);
-		p.y = (((-1 * sY) + y) / tileHeight * 2);
-		return p;
-	}
-
-	/**
-	 * Gets the map position.
-	 *
-	 * @param p the p
-	 * @param sX the s x
-	 * @param sY the s y
-	 * @return the map position
-	 */
-	public Position getMapPosition(final Position p, final int sX, final int sY) {
-		return getMapPosition(p.x, p.y, sX, sY);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getWidthInTiles()
-	 */
 	@Override
 	public int getWidthInTiles() {
 		return width * 2;
 	}
 
-	/**
-	 * Return on screen x coordinate from move matrix position x.
-	 *
-	 * @param x position in move matrix
-	 * @return the x coords
-	 */
-	public int getXCoords(final int x) {
-		return ((x * this.tileWidth / 2) + (this.tileWidth / 4));
-	}
-
-	/**
-	 * Return on screen y coordinate from move matrix position y.
-	 *
-	 * @param y position in move matrix
-	 * @return the y coords
-	 */
-	public int getYCoords(final int y) {
-		return y * this.tileHeight / 2 + this.tileHeight / 4;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#pathFinderVisited(int, int)
-	 */
 	@Override
-	public void pathFinderVisited(final int x, final int y) {
+	public void pathFinderVisited(int x, int y) {
+	}
+
+	@Override
+	public boolean blocked(Mover mover, int x, int y) {
+		return moveMatrix[x][y] != 0;
 	}
 
 	/**
-	 * Render zone.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @param screenWidth the screen width
-	 * @param screenHeight the screen height
-	 * @param rl the rl
-	 * @return the picture
+	 * Find a tile for a given global tile id
+	 * 
+	 * @param gid
+	 *            The global tile id we're looking for
+	 * @return The tileset in which that tile lives or null if the gid is not
+	 *         defined
 	 */
-	public Picture renderZone(final int x, final int y, final int screenWidth,
-			final int screenHeight, final ResourceLoader rl) {
-		final int startx = (x * -1) / this.tileWidth;
-		final int canvasX = (x) % this.tileWidth;
-		final int starty = (y * -1) / this.tileHeight;
-		final int canvasY = (y) % this.tileHeight;
+	public StringTileSet findTileSet(int gid) {
+		return tileSets.get(gid);
+	}
+
+	Picture p = new Picture();
+	Paint paint = new Paint();
+	Canvas c;
+
+	public Picture renderZone(int x, int y, int screenWidth, int screenHeight,
+			ResourceLoader rl) {
+		int startx = (x * -1) / this.tileWidth;
+		int canvasX = (x) % this.tileWidth;
+		int starty = (y * -1) / this.tileHeight;
+		int canvasY = (y) % this.tileHeight;
 		int endx = startx + screenWidth / tileWidth + 2;
 		int endy = starty + screenHeight / tileHeight + 2;
 		endx = (endx >= width) ? width : endx;
 		endy = (endy >= width) ? width : endy;
-		final GameController sc = GameController.getInstance();
+		GameController sc = GameController.getInstance();
 
 		c = p.beginRecording(screenWidth + 2 * tileWidth, screenHeight + 2
 				* tileHeight);
-		int gid, x1, y1, il = 0;
-		final int len = layers.size();
+		int gid, x1, y1, il = 0, len = layers.size();
 		Layer l;
 		for (il = 0; il < len; il++) {
 			l = layers.get(il);
@@ -342,11 +171,11 @@ public class Zone implements Pathfindable {
 				for (y1 = starty; y1 < endy; y1++) {
 					try {
 						gid = l.data[x1][y1];
-					} catch (final ArrayIndexOutOfBoundsException e) {
+					} catch (ArrayIndexOutOfBoundsException e) {
 						gid = 0;
 					}
 					if (gid > 0) {
-						final Bitmap img = rl.getBitmapResource(
+						Bitmap img = rl.getBitmapResource(
 								activeTiles.get(l.data[x1][y1]), false);
 						if (img != null) {
 							c.drawBitmap(img, ((x1 - startx) * tileWidth)
@@ -368,12 +197,10 @@ public class Zone implements Pathfindable {
 		// draw map objects ;
 		if (drawObjects) {
 
-			final ArrayList<MapObject> objects = mapObjects
-					.get(new Rectangle(-1 * x, -1 * y, -1 * x + screenWidth, -1
-							* y + screenHeight));
-			for (final MapObject mapObject : objects) {
-				final Bitmap img = sc.rl.getBitmapResource(mapObject.image,
-						false);
+			ArrayList<MapObject> objects = mapObjects.get(new Rectangle(-1 * x,
+					-1 * y, -1 * x + screenWidth, -1 * y + screenHeight));
+			for (MapObject mapObject : objects) {
+				Bitmap img = sc.rl.getBitmapResource(mapObject.image, false);
 				if (img != null) {
 					c.drawBitmap(
 							sc.rl.getBitmapResource(mapObject.image, false),
@@ -389,6 +216,77 @@ public class Zone implements Pathfindable {
 
 		p.endRecording();
 		return p;
+	}
+
+	public void buildMoveMatrix(Layer l) {
+		int firstGid = moveMatrixFirstGid;
+		short[][] moveMatrix = new short[l.width * 2][l.height * 2];
+
+		for (int x = 0; x < l.width; x++) {
+			for (int y = 0; y < l.height; y++) {
+				int mx = 2 * x, my = 2 * y;
+				if (l.data[x][y] == 0) {
+					moveMatrix[mx][my] = 0;
+					moveMatrix[mx + 1][my] = 0;
+					moveMatrix[mx][my + 1] = 0;
+					moveMatrix[mx + 1][my + 1] = 0;
+					continue;
+				}
+				int tileid = l.data[x][y] - firstGid;
+				moveMatrix[mx][my] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][0];
+				moveMatrix[mx + 1][my] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][1];
+				moveMatrix[mx][my + 1] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][2];
+				moveMatrix[mx + 1][my + 1] = Zone.MOVE_MATRIX_TILE_MATRIX[tileid][3];
+			}
+		}
+		this.moveMatrix = moveMatrix;
+	}
+
+	/**
+	 * Return on screen coordinates from move matrix position
+	 * 
+	 * @param x
+	 *            position in move matrix
+	 * @param y
+	 *            position in move matrix
+	 * @return position x,y on screen
+	 */
+	public Position getCoords(int x, int y) {
+		return new Position(getXCoords(x), getYCoords(y));
+
+	}
+
+	/**
+	 * Return on screen x coordinate from move matrix position x
+	 * 
+	 * @param x
+	 *            position in move matrix
+	 * @return
+	 */
+	public int getXCoords(int x) {
+		return ((x * this.tileWidth / 2) + (this.tileWidth / 4));
+	}
+
+	/**
+	 * Return on screen y coordinate from move matrix position y
+	 * 
+	 * @param y
+	 *            position in move matrix
+	 * @return
+	 */
+	public int getYCoords(int y) {
+		return y * this.tileHeight / 2 + this.tileHeight / 4;
+	}
+
+	public Position getMapPosition(int x, int y, int sX, int sY) {
+		Position p = new Position();
+		p.x = (int) (((-1 * sX) + x) / tileWidth * 2);
+		p.y = (int) (((-1 * sY) + y) / tileHeight * 2);
+		return p;
+	}
+
+	public Position getMapPosition(Position p, int sX, int sY) {
+		return getMapPosition(p.x, p.y, sX, sY);
 	}
 
 }

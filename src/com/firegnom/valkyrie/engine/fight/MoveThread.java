@@ -26,35 +26,18 @@ import com.firegnom.valkyrie.engine.Player;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.map.pathfinding.Step;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MoveThread.
- */
 public class MoveThread extends Thread {
-	
-	/** The player. */
 	Player player;
-	
-	/** The path. */
 	Path path;
 
-	/**
-	 * Instantiates a new move thread.
-	 *
-	 * @param player the player
-	 * @param path the path
-	 */
-	public MoveThread(final Player player, final Path path) {
+	public MoveThread(Player player, Path path) {
 		this.player = player;
 		this.path = path;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
-	 */
 	@Override
 	public void run() {
-		final FightController fc = GameController.getInstance().fightController;
+		FightController fc = GameController.getInstance().fightController;
 		// Step = path.;
 
 		Step st = path.steps.poll();
@@ -73,7 +56,7 @@ public class MoveThread extends Thread {
 				fc.postInvalidate();
 				try {
 					sleep(60);
-				} catch (final InterruptedException e) {
+				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

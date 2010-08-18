@@ -26,43 +26,14 @@ import android.graphics.Paint;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ImageManager.
- */
 public class ImageManager extends Thread {
-	
-	/** The Constant instance. */
 	private static final ImageManager instance = new ImageManager();
+	public Paint outOfMemoryPaint;
 
-	/**
-	 * Gets the single instance of ImageManager.
-	 *
-	 * @return single instance of ImageManager
-	 */
 	public static ImageManager getInstance() {
 		return instance;
 	}
 
-	/** The out of memory paint. */
-	public Paint outOfMemoryPaint;
-
-	/** The service. */
-	IResourceLoaderService service;
-
-	// //this will take care of cleaning unused images based on their ttl and
-	// last usage time
-	// public void run() {
-	//
-	//
-	// };
-
-	/** The rl. */
-	ResourceLoader rl;
-
-	/**
-	 * Instantiates a new image manager.
-	 */
 	private ImageManager() {
 		outOfMemoryPaint = new Paint();
 		outOfMemoryPaint.setAntiAlias(true);
@@ -71,19 +42,21 @@ public class ImageManager extends Thread {
 		outOfMemoryPaint.setStyle(Paint.Style.FILL);
 	}
 
-	/**
-	 * Connect service.
-	 *
-	 * @param service the service
-	 */
-	public void connectService(final IResourceLoaderService service) {
+	// //this will take care of cleaning unused images based on their ttl and
+	// last usage time
+	// public void run() {
+	//
+	//
+	// };
+
+	IResourceLoaderService service;
+	ResourceLoader rl;
+
+	public void connectService(IResourceLoaderService service) {
 		this.service = service;
 		rl = new ResourceLoader(service);
 	}
 
-	/**
-	 * Disconnect service.
-	 */
 	public void disconnectService() {
 		this.service = null;
 		rl.freeService();
@@ -91,22 +64,11 @@ public class ImageManager extends Thread {
 		rl = null;
 	}
 
-	/**
-	 * Gets the bitmap.
-	 *
-	 * @param name the name
-	 * @return the bitmap
-	 */
-	Bitmap getBitmap(final String name) {
+	Bitmap getBitmap(String name) {
 		return rl.getBitmapResource(name, false);
 	}
 
-	/**
-	 * Sets the resource loader.
-	 *
-	 * @param rl2 the new resource loader
-	 */
-	public void setResourceLoader(final ResourceLoader rl2) {
+	public void setResourceLoader(ResourceLoader rl2) {
 		this.rl = rl2;
 	}
 

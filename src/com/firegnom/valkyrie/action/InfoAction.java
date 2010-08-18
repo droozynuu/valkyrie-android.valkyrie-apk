@@ -23,30 +23,16 @@ package com.firegnom.valkyrie.action;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.engine.Gui;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class InfoAction.
- */
 public class InfoAction implements ActionTask {
-	
-	/** The action. */
 	ContextAction action;
 
-	/**
-	 * Instantiates a new info action.
-	 *
-	 * @param action the action
-	 */
-	public InfoAction(final ContextAction action) {
+	public InfoAction(ContextAction action) {
 		this.action = action;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.firegnom.valkyrie.action.ActionTask#execute()
-	 */
 	@Override
 	public void execute() {
-		final GameController gc = GameController.getInstance();
+		GameController gc = GameController.getInstance();
 		if (gc.gui.question("are you sure ?")) {
 			Gui.toast("player info !!!!");
 		}
