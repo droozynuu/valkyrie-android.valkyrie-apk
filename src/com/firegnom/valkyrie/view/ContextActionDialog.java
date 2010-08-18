@@ -39,10 +39,23 @@ import android.widget.TextView;
 import com.firegnom.valkyrie.action.ContextAction;
 import com.firegnom.valkyrie.engine.GameController;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ContextActionDialog.
+ */
 public class ContextActionDialog extends Dialog {
+	
+	/** The array list. */
 	ArrayList<ContextAction> arrayList;
+	
+	/** The context action view. */
 	ContextActionView contextActionView;
 
+	/**
+	 * Instantiates a new context action dialog.
+	 *
+	 * @param context the context
+	 */
 	public ContextActionDialog(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -84,6 +97,9 @@ public class ContextActionDialog extends Dialog {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Dialog#onWindowFocusChanged(boolean)
+	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
@@ -96,28 +112,43 @@ public class ContextActionDialog extends Dialog {
 		}
 	}
 
+	/**
+	 * The Class MyListAdapter.
+	 */
 	public class MyListAdapter extends BaseAdapter {
 		// Sample data set. children[i] contains the children (String[]) for
 		// groups[i].
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getCount()
+		 */
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
 			return arrayList.size();
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItem(int)
+		 */
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
 			return arrayList.get(position);
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItemId(int)
+		 */
 		@Override
 		public long getItemId(int position) {
 			// TODO Auto-generated method stub
 			return arrayList.get(position).getId();
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LinearLayout ll = new LinearLayout(parent.getContext());

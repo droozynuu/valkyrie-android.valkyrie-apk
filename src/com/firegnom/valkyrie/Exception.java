@@ -22,30 +22,49 @@ package com.firegnom.valkyrie;
 
 import com.firegnom.rat.ExceptionActivity;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Exception.
+ */
 public class Exception extends ExceptionActivity {
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.rat.ExceptionActivity#getMessage()
+	 */
 	@Override
 	public String getMessage() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.rat.ExceptionActivity#getMoreDetails()
+	 */
 	@Override
 	public String getMoreDetails() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.rat.ExceptionActivity#isSend()
+	 */
 	@Override
 	public boolean isSend() {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.rat.ExceptionActivity#getSecurityToken()
+	 */
 	@Override
 	public String getSecurityToken() {
 		return "9823745653213099872193";
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.rat.ExceptionActivity#getUrl()
+	 */
 	@Override
 	public String getUrl() {
 		return "http://valkyrie.firegnom.com/exceptions/post.php";

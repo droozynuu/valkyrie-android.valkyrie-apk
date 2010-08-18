@@ -22,24 +22,37 @@ package com.firegnom.valkyrie.map;
 
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Layer.
+ */
 public class Layer {
-	/** The index of this layer */
+	
+	/** The index of this layer. */
 	public int index;
-	/** The name of this layer - read from the XML */
+	
+	/** The name of this layer - read from the XML. */
 	public String name;
-	/**
-	 * The tile data representing this data, index 0 = tileset, index 1 = tile
-	 * id
-	 */
+	
+	/** The tile data representing this data, index 0 = tileset, index 1 = tile id. */
 	public int[][] data;
-	/** The width of this layer */
+	
+	/** The width of this layer. */
 	public int width;
-	/** The height of this layer */
+	
+	/** The height of this layer. */
 	public int height;
 
-	/** the properties of this layer */
+	/** the properties of this layer. */
 	public Properties props;
 
+	/**
+	 * Instantiates a new layer.
+	 *
+	 * @param name the name
+	 * @param width the width
+	 * @param height the height
+	 */
 	public Layer(String name, int width, int height) {
 		this.name = name;
 		this.width = width;
@@ -48,12 +61,10 @@ public class Layer {
 	}
 
 	/**
-	 * Get the gloal ID of the tile at the specified location in this layer
-	 * 
-	 * @param x
-	 *            The x coorindate of the tile
-	 * @param y
-	 *            The y coorindate of the tile
+	 * Get the gloal ID of the tile at the specified location in this layer.
+	 *
+	 * @param x The x coorindate of the tile
+	 * @param y The y coorindate of the tile
 	 * @return The global ID of the tile
 	 */
 	public int getTileID(int x, int y) {

@@ -28,8 +28,15 @@ import android.widget.Button;
 
 import com.firegnom.valkyrie.engine.GameController;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PackageLoaderActivity.
+ */
 public class PackageLoaderActivity extends ValkyrieActivity {
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

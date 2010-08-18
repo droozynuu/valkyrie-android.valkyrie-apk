@@ -41,25 +41,50 @@ import com.firegnom.valkyrie.net.AsyncDownload;
 import com.firegnom.valkyrie.service.ILoaderCallback;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ResourceLoader.
+ */
 public class ResourceLoader {
 	// public static final String SD_CACHE_FOLDER =
 	// "/sdcard/com.firegnom.valkyrie/cache/";
 	// TODO test maybe will be faster
+	/** The Constant SD_CACHE_FOLDER. */
 	public static final String SD_CACHE_FOLDER = "/data/data/com.firegnom.valkyrie/cache/";
+	
+	/** The Constant DATA_CACHE_FOLDER. */
 	public static final String DATA_CACHE_FOLDER = "/data/data/com.firegnom.valkyrie/cache/";
+	
+	/** The Constant URL. */
 	public static final String URL = "http://valkyrie.firegnom.com/data/";
+	
+	/** The Constant TAG. */
 	private static final String TAG = ResourceLoader.class.getName();
+	
+	/** The Constant SERVICE_TIMEOUT. */
 	private static final int SERVICE_TIMEOUT = 200;
 
+	/** The bitmap cache. */
 	public static HashMap<String, Bitmap> bitmapCache = new HashMap<String, Bitmap>();
 
+	/** The cache location. */
 	public static String cacheLocation = null;
+	
+	/** The m service. */
 	IResourceLoaderService mService;
 
+	/**
+	 * Free service.
+	 */
 	public void freeService() {
 		mService = null;
 	}
 
+	/**
+	 * Instantiates a new resource loader.
+	 *
+	 * @param mService the m service
+	 */
 	public ResourceLoader(IResourceLoaderService mService) {
 		Log.d(TAG, "ResourceLoader - create");
 
@@ -68,10 +93,16 @@ public class ResourceLoader {
 		// emptyCache();
 	}
 
+	/**
+	 * Instantiates a new resource loader.
+	 */
 	public ResourceLoader() {
 		initCacheLocation();
 	}
 
+	/**
+	 * Inits the cache location.
+	 */
 	private static void initCacheLocation() {
 		File cache = new File(SD_CACHE_FOLDER);
 		if (cache.exists()) {
@@ -103,6 +134,13 @@ public class ResourceLoader {
 
 	}
 
+	/**
+	 * Gets the resource as stream.
+	 *
+	 * @param ref the ref
+	 * @param download the download
+	 * @return the resource as stream
+	 */
 	public InputStream getResourceAsStream(String ref, boolean download) {
 		InputStream in = getResourceFromCache(ref);
 		if (in == null && download) {
@@ -112,20 +150,41 @@ public class ResourceLoader {
 		return in;
 	}
 
+	/**
+	 * Gets the resource as stream download.
+	 *
+	 * @param ref the ref
+	 * @return the resource as stream download
+	 */
 	public InputStream getResourceAsStreamDownload(String ref) {
 		deleteFile(ref);
 		downloadService(ref);
 		return getResourceFromCache(ref);
 	}
 
+	/**
+	 * Delete file.
+	 *
+	 * @param ref the ref
+	 */
 	private void deleteFile(String ref) {
 		new File(cacheLocation + ref).delete();
 
 	}
 
+	/** The lastloadedref. */
 	String lastloadedref = "";
+	
+	/** The last loadedimg. */
 	Bitmap lastLoadedimg = null;
 
+	/**
+	 * Gets the bitmap resource.
+	 *
+	 * @param ref the ref
+	 * @param waitForDownload the wait for download
+	 * @return the bitmap resource
+	 */
 	public Bitmap getBitmapResource(String ref, boolean waitForDownload) {
 		// BitmapFactory.Options options = new BitmapFactory.Options();
 		// options.inSampleSize = 10;
@@ -202,6 +261,9 @@ public class ResourceLoader {
 		return ret;
 	}
 
+	/**
+	 * Empty bitmap cache.
+	 */
 	public static void emptyBitmapCache() {
 		for (Entry<String, Bitmap> s : bitmapCache.entrySet()) {
 			s.getValue().recycle();
@@ -210,6 +272,12 @@ public class ResourceLoader {
 		System.gc();
 	}
 
+	/**
+	 * Gets the resource from cache.
+	 *
+	 * @param ref the ref
+	 * @return the resource from cache
+	 */
 	private InputStream getResourceFromCache(String ref) {
 		try {
 			File file = new File(cacheLocation, ref);
@@ -222,6 +290,9 @@ public class ResourceLoader {
 		}
 	}
 
+	/**
+	 * Empty cache.
+	 */
 	public void emptyCache() {
 		File dir = new File(cacheLocation);
 		deleteDir(dir);
@@ -229,6 +300,12 @@ public class ResourceLoader {
 
 	}
 
+	/**
+	 * Delete dir.
+	 *
+	 * @param dir the dir
+	 * @return true, if successful
+	 */
 	public static boolean deleteDir(File dir) {
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
@@ -244,6 +321,11 @@ public class ResourceLoader {
 		return dir.delete();
 	}
 
+	/**
+	 * Adds the to download queue.
+	 *
+	 * @param ref the ref
+	 */
 	public void addToDownloadQueue(String ref) {
 		if (mService == null) {
 			return;
@@ -256,6 +338,12 @@ public class ResourceLoader {
 		}
 	}
 
+	/**
+	 * Download service.
+	 *
+	 * @param name the name
+	 * @return true, if successful
+	 */
 	public boolean downloadService(String name) {
 		int time = 0;
 		answer = false;
@@ -292,8 +380,13 @@ public class ResourceLoader {
 
 	}
 
+	/** The answer. */
 	boolean answer = false;
+	
+	/** The failed. */
 	boolean failed = false;
+	
+	/** The callback. */
 	ILoaderCallback.Stub callback = new ILoaderCallback.Stub() {
 		@Override
 		public void loadFailed() throws RemoteException {
@@ -309,6 +402,13 @@ public class ResourceLoader {
 		}
 	};
 
+	/**
+	 * Download.
+	 *
+	 * @param name the name
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	public boolean download(String name, Observer o) {
 		InputStream in = getResourceFromCache(name);
 		if (in == null) {
@@ -323,6 +423,13 @@ public class ResourceLoader {
 		return true;
 	}
 
+	/**
+	 * Download service.
+	 *
+	 * @param imageName the image name
+	 * @param maxX the max x
+	 * @param maxY the max y
+	 */
 	public void downloadService(String imageName, int maxX, int maxY) {
 		for (int x = 0; x < maxX; x++) {
 			for (int y = 0; y < maxY; y++) {
@@ -331,6 +438,11 @@ public class ResourceLoader {
 		}
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
 	public static String getPath() {
 		initCacheLocation();
 		return cacheLocation;

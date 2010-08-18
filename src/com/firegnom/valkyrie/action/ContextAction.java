@@ -20,36 +20,88 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.action;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ContextAction.
+ */
 public class ContextAction {
+	
+	/** The currentid. */
 	private static int currentid = 0;
+	
+	/** The id. */
 	private int id;
+	
+	/** The x. */
 	public float x;
+	
+	/** The y. */
 	public float y;
+	
+	/** The height. */
 	public float height;
+	
+	/** The width. */
 	public float width;
+	
+	/** The script. */
 	public byte[] script;
+	
+	/** The name. */
 	public String name;
+	
+	/** The container. */
 	public String container;
+	
+	/** The type. */
 	public int type = 0;
+	
+	/** The action id. */
 	public int actionId;
+	
+	/** The Constant SCRIPT_ACTION. */
 	public static final int SCRIPT_ACTION = 0;
+	
+	/** The Constant DEBUG_SCRIPT_EDITOR. */
 	public static final int DEBUG_SCRIPT_EDITOR = 1;
+	
+	/** The Constant ACTION_MANAGER. */
 	public static final int ACTION_MANAGER = 2;
 
+	/**
+	 * Instantiates a new context action.
+	 */
 	public ContextAction() {
 		currentid++;
 		id = currentid;
 	}
 
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the type
+	 * @return the context action
+	 */
 	public ContextAction setType(int type) {
 		this.type = type;
 		return this;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the name
+	 * @return the context action
+	 */
 	public ContextAction setName(String name) {
 		currentid++;
 		id = currentid;

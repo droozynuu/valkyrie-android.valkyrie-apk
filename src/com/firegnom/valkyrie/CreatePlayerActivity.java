@@ -43,11 +43,24 @@ import android.widget.TextView;
 import com.firegnom.valkyrie.service.ICreateUserCallback;
 import com.firegnom.valkyrie.service.IGameService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CreatePlayerActivity.
+ */
 public class CreatePlayerActivity extends ValkyrieActivity {
+	
+	/** The selected class. */
 	private int selectedClass = 0;
+	
+	/** The Constant TAG. */
 	private static final String TAG = CreatePlayerActivity.class.getName();
+	
+	/** The m service. */
 	IGameService mService = null;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +69,9 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		bindService(new Intent(IGameService.class.getName()), mConnection, 0);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy");
@@ -71,6 +87,7 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		super.onDestroy();
 	}
 
+	/** The create button listener. */
 	private OnClickListener createButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -85,6 +102,7 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		}
 	};
 
+	/** The callback. */
 	ICreateUserCallback callback = new ICreateUserCallback.Stub() {
 		@Override
 		public void goToMap() throws RemoteException {
@@ -92,6 +110,9 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		}
 	};
 
+	/**
+	 * Start game.
+	 */
 	private void startGame() {
 		Log.d(TAG, "startGame");
 		Intent myIntent = new Intent(getApplicationContext(),
@@ -100,6 +121,7 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		finish();
 	}
 
+	/** The m connection. */
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = IGameService.Stub.asInterface(service);
@@ -147,9 +169,19 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 		}
 	};
 
+	/**
+	 * The Class ImageAdapter.
+	 */
 	class ImageAdapter extends BaseAdapter {
+		
+		/** The m gallery item background. */
 		int mGalleryItemBackground;
 
+		/**
+		 * Instantiates a new image adapter.
+		 *
+		 * @param c the c
+		 */
 		public ImageAdapter(Context c) {
 			mContext = c;
 			// See res/values/attrs.xml for the <declare-styleable> that defines
@@ -160,18 +192,30 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 			a.recycle();
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getCount()
+		 */
 		public int getCount() {
 			return mImageIds.length;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItem(int)
+		 */
 		public Object getItem(int position) {
 			return position;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItemId(int)
+		 */
 		public long getItemId(int position) {
 			return position;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView i = new ImageView(mContext);
@@ -186,8 +230,10 @@ public class CreatePlayerActivity extends ValkyrieActivity {
 			return i;
 		}
 
+		/** The m context. */
 		private Context mContext;
 
+		/** The m image ids. */
 		private Integer[] mImageIds = {
 
 		R.drawable.knight, R.drawable.archer, R.drawable.barbarian,

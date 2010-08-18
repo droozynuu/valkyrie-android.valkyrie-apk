@@ -24,20 +24,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+// TODO: Auto-generated Javadoc
 /**
- * A resource location that searches the classpath
- * 
+ * A resource location that searches the classpath.
+ *
  * @author kevin
  */
 
 public class NetworkLocation implements ResourceLocation {
+	
+	/** The link. */
 	private String link;
 
+	/**
+	 * Instantiates a new network location.
+	 *
+	 * @param string the string
+	 */
 	public NetworkLocation(String string) {
 		link = string;
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.util.ResourceLocation#getResourceAsStream(java.lang.String)
+	 */
 	public InputStream getResourceAsStream(String ref) {
 		try {
 			return new URL(link + ref).openStream();

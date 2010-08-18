@@ -25,7 +25,15 @@ import android.os.Bundle;
 
 import com.firegnom.rat.ExceptionHandler;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ValkyrieActivity.
+ */
 public class ValkyrieActivity extends Activity {
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

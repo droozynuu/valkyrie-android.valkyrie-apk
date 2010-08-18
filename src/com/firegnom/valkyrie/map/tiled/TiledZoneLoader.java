@@ -59,12 +59,26 @@ import com.firegnom.valkyrie.map.ZoneLoader;
 import com.firegnom.valkyrie.util.Base64;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TiledZoneLoader.
+ */
 public class TiledZoneLoader implements ZoneLoader {
 
+	/** The Constant TAG. */
 	private static final String TAG = "TiledZoneLoader";
+	
+	/** The rl. */
 	ResourceLoader rl;
+	
+	/** The c. */
 	Context c;
 
+	/**
+	 * Instantiates a new tiled zone loader.
+	 *
+	 * @param context the context
+	 */
 	public TiledZoneLoader(Context context) {
 		c = context;
 		rl = new ResourceLoader(
@@ -72,6 +86,9 @@ public class TiledZoneLoader implements ZoneLoader {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.ZoneLoader#load(java.lang.String)
+	 */
 	@Override
 	public Zone load(String name) {
 		long startTime, stopTime;
@@ -189,6 +206,13 @@ public class TiledZoneLoader implements ZoneLoader {
 
 	}
 
+	/**
+	 * Gets the zone properties.
+	 *
+	 * @param zone the zone
+	 * @param docElement the doc element
+	 * @return the zone properties
+	 */
 	private void getZoneProperties(Zone zone, Element docElement) {
 		Element propsElement = (Element) docElement.getElementsByTagName(
 				"properties").item(0);
@@ -207,12 +231,24 @@ public class TiledZoneLoader implements ZoneLoader {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.ZoneLoader#load(java.lang.String, int)
+	 */
 	@Override
 	public Zone load(String name, int version) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Gets the tile set.
+	 *
+	 * @param map the map
+	 * @param element the element
+	 * @param c the c
+	 * @return the tile set
+	 * @throws TiledLoaderException the tiled loader exception
+	 */
 	public StringTileSet getTileSet(Zone map, Element element, Context c)
 			throws TiledLoaderException {
 		// TileSet = new com.firegnom.valkyrie.map.TileSet(tiles, tileWidth,
@@ -296,6 +332,14 @@ public class TiledZoneLoader implements ZoneLoader {
 		// }
 	}
 
+	/**
+	 * Gets the layer.
+	 *
+	 * @param map the map
+	 * @param element the element
+	 * @return the layer
+	 * @throws TiledLoaderException the tiled loader exception
+	 */
 	public Layer getLayer(Zone map, Element element)
 			throws TiledLoaderException {
 		// this.map = map;
@@ -388,6 +432,13 @@ public class TiledZoneLoader implements ZoneLoader {
 		}
 	}
 
+	/**
+	 * Gets the action index.
+	 *
+	 * @param element the element
+	 * @return the action index
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	public ActionIndex getActionIndex(Element element)
 			throws UnsupportedEncodingException {
 		ActionIndex ret = new ActionIndex();
@@ -443,6 +494,12 @@ public class TiledZoneLoader implements ZoneLoader {
 
 	}
 
+	/**
+	 * Append map objects.
+	 *
+	 * @param element the element
+	 * @param mapObjects the map objects
+	 */
 	private void appendMapObjects(Element element, MapObjectsIndex mapObjects) {
 		// right now i am not reading object group fields
 		NodeList objectNodes = element.getElementsByTagName("object");
@@ -468,12 +525,21 @@ public class TiledZoneLoader implements ZoneLoader {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.ZoneLoader#load(java.lang.String, android.content.Context)
+	 */
 	@Override
 	public Zone load(String name, Context c) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Convert stream to string.
+	 *
+	 * @param is the is
+	 * @return the string
+	 */
 	public String convertStreamToString(InputStream is) {
 		/*
 		 * To convert the InputStream to String we use the

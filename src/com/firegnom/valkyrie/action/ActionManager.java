@@ -22,16 +22,32 @@ package com.firegnom.valkyrie.action;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ActionManager.
+ */
 public class ActionManager extends Thread {
+	
+	/** The Constant INFO. */
 	public static final int INFO = 0;
+	
+	/** The Constant ATTACK. */
 	public static final int ATTACK = 1;
+	
+	/** The queue. */
 	LinkedBlockingQueue<ActionTask> queue;
 
+	/**
+	 * Instantiates a new action manager.
+	 */
 	public ActionManager() {
 		queue = new LinkedBlockingQueue<ActionTask>();
 		start();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		while (true) {
@@ -47,6 +63,11 @@ public class ActionManager extends Thread {
 		}
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @param action the action
+	 */
 	public void execute(ContextAction action) {
 		switch (action.actionId) {
 		case INFO:

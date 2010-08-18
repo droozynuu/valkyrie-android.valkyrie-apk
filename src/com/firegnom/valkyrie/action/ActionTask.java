@@ -20,6 +20,14 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.action;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface ActionTask.
+ */
 public interface ActionTask {
+	
+	/**
+	 * Execute.
+	 */
 	public void execute();
 }

@@ -30,21 +30,45 @@ import com.firegnom.valkyrie.map.pathfinding.Mover;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.map.pathfinding.Pathfindable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FightMap.
+ */
 public class FightMap implements Pathfindable {
 
+	/** The width. */
 	int width = 8;
+	
+	/** The height. */
 	int height = 8;
 
+	/** The tile width. */
 	int tileWidth = 64;
+	
+	/** The tile height. */
 	int tileHeight = 48;
 
+	/** The finder. */
 	AStarPathFinder finder;
+	
+	/** The TAG. */
 	private String TAG = FightMap.class.getName();
 
+	/**
+	 * Instantiates a new fight map.
+	 */
 	public FightMap() {
 		finder = new AStarPathFinder(this, 3, 10000, false);
 	}
 
+	/**
+	 * Find path.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param player the player
+	 * @return the path
+	 */
 	public Path findPath(int x, int y, Player player) {
 		int cX = player.fightPosition.x, cY = player.fightPosition.y;
 		if (player.moverThread.isMoveing()) {
@@ -64,6 +88,9 @@ public class FightMap implements Pathfindable {
 		return p;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#blocked(com.firegnom.valkyrie.map.pathfinding.Mover, int, int)
+	 */
 	@Override
 	public boolean blocked(Mover mover, int x, int y) {
 		// if (x == 4&&y==3) return true;
@@ -77,30 +104,51 @@ public class FightMap implements Pathfindable {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getCost(com.firegnom.valkyrie.map.pathfinding.Mover, int, int, int, int)
+	 */
 	@Override
 	public float getCost(Mover mover, int sx, int sy, int tx, int ty) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getHeightInTiles()
+	 */
 	@Override
 	public int getHeightInTiles() {
 		// TODO Auto-generated method stub
 		return height;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#getWidthInTiles()
+	 */
 	@Override
 	public int getWidthInTiles() {
 		// TODO Auto-generated method stub
 		return width;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.map.pathfinding.Pathfindable#pathFinderVisited(int, int)
+	 */
 	@Override
 	public void pathFinderVisited(int x, int y) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Find range.
+	 *
+	 * @param mover the mover
+	 * @param sx the sx
+	 * @param sy the sy
+	 * @param maxSearchDistance the max search distance
+	 * @return the sets the
+	 */
 	public Set<Position> findRange(Mover mover, int sx, int sy,
 			int maxSearchDistance) {
 		return finder.findRange(mover, sx, sy, maxSearchDistance);

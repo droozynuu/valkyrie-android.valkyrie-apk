@@ -34,23 +34,50 @@ import com.firegnom.valkyrie.GameActivity;
 import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.action.ActionTask;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Gui.
+ */
 public class Gui {
+	
+	/** The Constant TAG. */
 	private static final String TAG = Gui.class.getName();
+	
+	/** The answer. */
 	private int answer = 0;
+	
+	/** The queue. */
 	LinkedBlockingQueue<ActionTask> queue;
 
 	// LinkedList<Message>
 
+	/**
+	 * Toast.
+	 *
+	 * @param resource the resource
+	 */
 	public static void toast(int resource) {
 		toast(resource, GameController.getInstance().view,
 				GameController.getInstance().context);
 	}
 
+	/**
+	 * Toast.
+	 *
+	 * @param msg the msg
+	 */
 	public static void toast(final String msg) {
 		toast(msg, GameController.getInstance().view,
 				GameController.getInstance().context);
 	}
 
+	/**
+	 * Toast.
+	 *
+	 * @param resource the resource
+	 * @param view the view
+	 * @param context the context
+	 */
 	public static void toast(int resource, View view, Context context) {
 		if (view == null) {
 			Log.w(TAG,
@@ -62,6 +89,13 @@ public class Gui {
 				R.string.pathfinding_how_to_get_there), view, context);
 	}
 
+	/**
+	 * Toast.
+	 *
+	 * @param msg the msg
+	 * @param view the view
+	 * @param context the context
+	 */
 	public static void toast(final String msg, View view, final Context context) {
 
 		if (view == null) {
@@ -78,6 +112,12 @@ public class Gui {
 		});
 	}
 
+	/**
+	 * Question.
+	 *
+	 * @param question the question
+	 * @return true, if successful
+	 */
 	public boolean question(final String question) {
 		GameController.getInstance().view.post(new Runnable() {
 			@Override
@@ -123,6 +163,13 @@ public class Gui {
 		return false;
 	}
 
+	/**
+	 * Info.
+	 *
+	 * @param title the title
+	 * @param msg the msg
+	 * @param blocking the blocking
+	 */
 	public void info(final String title, final String msg, boolean blocking) {
 		GameController.getInstance().view.post(new Runnable() {
 			@Override
@@ -160,14 +207,29 @@ public class Gui {
 
 	}
 
+	/**
+	 * Info.
+	 *
+	 * @param msg the msg
+	 */
 	public void info(final String msg) {
 		info(null, msg, true);
 	}
 
+	/**
+	 * Info async.
+	 *
+	 * @param msg the msg
+	 */
 	public void infoAsync(final String msg) {
 		info(null, msg, false);
 	}
 
+	/**
+	 * Draw log.
+	 *
+	 * @param c the c
+	 */
 	static void drawLog(Canvas c) {
 
 	}

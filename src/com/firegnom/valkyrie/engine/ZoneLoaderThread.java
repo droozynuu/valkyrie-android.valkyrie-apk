@@ -26,11 +26,28 @@ import android.util.Log;
 import com.firegnom.valkyrie.map.ZoneLoader;
 import com.firegnom.valkyrie.map.tiled.TiledZoneLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ZoneLoaderThread.
+ */
 public class ZoneLoaderThread extends Thread {
+	
+	/** The Constant TAG. */
 	private static final String TAG = ZoneLoaderThread.class.getName();
+	
+	/** The name. */
 	private String name;
+	
+	/** The y. */
 	int x, y;
 
+	/**
+	 * Load.
+	 *
+	 * @param name the name
+	 * @param x the x
+	 * @param y the y
+	 */
 	public void load(String name, int x, int y) {
 		this.name = name;
 		this.x = x;
@@ -38,6 +55,9 @@ public class ZoneLoaderThread extends Thread {
 		this.start();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		Log.d(TAG, "jestem");

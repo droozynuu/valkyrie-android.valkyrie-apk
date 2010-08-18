@@ -29,17 +29,36 @@ import android.widget.Toast;
 import com.firegnom.valkyrie.GameActivity;
 import com.firegnom.valkyrie.scripting.SGui;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SGuiImpl.
+ */
 public class SGuiImpl implements SGui {
+	
+	/** The context. */
 	private final Context context;
+	
+	/** The v. */
 	private final View v;
+	
+	/** The answer. */
 	private int answer = 0;
 
+	/**
+	 * Instantiates a new s gui impl.
+	 *
+	 * @param context the context
+	 * @param v the v
+	 */
 	public SGuiImpl(Context context, View v) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.v = v;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGui#toast(java.lang.String)
+	 */
 	@Override
 	public void toast(final String msg) {
 		v.post(new Runnable() {
@@ -50,6 +69,9 @@ public class SGuiImpl implements SGui {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGui#question(java.lang.String)
+	 */
 	@Override
 	public boolean question(final String question) {
 		v.post(new Runnable() {
@@ -95,6 +117,9 @@ public class SGuiImpl implements SGui {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGui#info(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void info(final String title, final String msg) {
 		v.post(new Runnable() {
@@ -129,6 +154,9 @@ public class SGuiImpl implements SGui {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGui#info(java.lang.String)
+	 */
 	public void info(final String msg) {
 		info(null, msg);
 	}

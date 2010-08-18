@@ -24,13 +24,25 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SplashView.
+ */
 public class SplashView extends View {
 
+	/**
+	 * Instantiates a new splash view.
+	 *
+	 * @param context the context
+	 */
 	public SplashView(Context context) {
 
 		super(context);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View#onDraw(android.graphics.Canvas)
+	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// ScreenController.getInstance().doDraw(canvas);

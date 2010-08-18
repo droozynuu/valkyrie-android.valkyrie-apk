@@ -28,13 +28,27 @@ import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.engine.Player;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AttackAction.
+ */
 public class AttackAction implements ActionTask {
+	
+	/** The action. */
 	ContextAction action;
 
+	/**
+	 * Instantiates a new attack action.
+	 *
+	 * @param action the action
+	 */
 	public AttackAction(ContextAction action) {
 		this.action = action;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.action.ActionTask#execute()
+	 */
 	@Override
 	public void execute() {
 		GameController gc = GameController.getInstance();

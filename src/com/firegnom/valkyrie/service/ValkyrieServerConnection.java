@@ -50,43 +50,81 @@ import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.simple.SimpleClient;
 import com.sun.sgs.client.simple.SimpleClientListener;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ValkyrieServerConnection.
+ */
 public class ValkyrieServerConnection extends ServerMesageListener implements
 		SimpleClientListener {
 	// protected static final String SERVER_PORT = "1139";
+	/** The Constant SERVER_PORT. */
 	protected static final String SERVER_PORT = "59000";
+	
+	/** The Constant SERVER_IP. */
 	private static final String SERVER_IP = "74.213.176.198";
 	// private static final String SERVER_IP = "192.168.1.5";
 
 	// private static final String SERVER_IP = "9.161.215.65";
 	// private static final String SERVER_IP = "84.203.32.34";
 
+	/** The Constant TAG. */
 	private static final String TAG = "ValkyrieServerConnection";
+	
+	/** The service. */
 	ValkyrieService service;
 
+	/** The upload. */
 	static int upload = 0;
+	
+	/** The download. */
 	static int download = 0;
+	
+	/** The protocol. */
 	Protocol protocol;
+	
+	/** The logged in. */
 	boolean loggedIn = false;
+	
+	/** The game mode. */
 	public int gameMode;
+	
+	/** The simple client. */
 	SimpleClient simpleClient;
 
 	// callbacks
+	/** The login callback. */
 	ILoginCallback loginCallback = null;
+	
+	/** The gc. */
 	IGameServiceCallback gc = null;
 
+	/** The channel number sequence. */
 	protected final AtomicInteger channelNumberSequence = new AtomicInteger(1);
 
+	/**
+	 * Send exception.
+	 *
+	 * @param e the e
+	 */
 	private void sendException(Exception e) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "FIXME !!!!  handle sendException", e);
 	}
 
+	/**
+	 * Instantiates a new valkyrie server connection.
+	 *
+	 * @param service the service
+	 */
 	public ValkyrieServerConnection(ValkyrieService service) {
 		this.service = service;
 		protocol = new Protocol();
 		protocol.registerMessageListener(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.simple.SimpleClientListener#getPasswordAuthentication()
+	 */
 	public PasswordAuthentication getPasswordAuthentication() {
 		Random random = new Random();
 		String player;
@@ -102,12 +140,18 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		return new PasswordAuthentication(player, password.toCharArray());
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.simple.SimpleClientListener#loggedIn()
+	 */
 	@Override
 	public void loggedIn() {
 		loggedIn = true;
 		Log.d(TAG, "loggedIn");
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.simple.SimpleClientListener#loginFailed(java.lang.String)
+	 */
 	@Override
 	public void loginFailed(String arg0) {
 		loggedIn = false;
@@ -123,6 +167,13 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Move.
+	 *
+	 * @param p the p
+	 * @param playerClass the player class
+	 * @throws RemoteException the remote exception
+	 */
 	public void move(ParcelablePath p, int playerClass) throws RemoteException {
 		Log.d(TAG, p.toString());
 		PlayerMove pm = new PlayerMove();
@@ -141,6 +192,11 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Log upload.
+	 *
+	 * @param bytes the bytes
+	 */
 	void logUpload(int bytes) {
 		upload += bytes;
 		if (gc == null) {
@@ -154,6 +210,11 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Log download.
+	 *
+	 * @param bytes the bytes
+	 */
 	void logDownload(int bytes) {
 		download += bytes;
 		if (gc == null) {
@@ -168,6 +229,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.ServerSessionListener#disconnected(boolean, java.lang.String)
+	 */
 	@Override
 	public void disconnected(boolean arg0, String arg1) {
 		loggedIn = false;
@@ -193,11 +257,17 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.ServerSessionListener#joinedChannel(com.sun.sgs.client.ClientChannel)
+	 */
 	@Override
 	public ClientChannelListener joinedChannel(ClientChannel channel) {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.ServerSessionListener#receivedMessage(java.nio.ByteBuffer)
+	 */
 	@Override
 	public void receivedMessage(ByteBuffer arg0) {
 		Log.d(TAG, "receivedMessage");
@@ -205,17 +275,26 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		protocol.decode(arg0);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.ServerSessionListener#reconnected()
+	 */
 	@Override
 	public void reconnected() {
 		Log.d(TAG, "reconnected");
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sun.sgs.client.ServerSessionListener#reconnecting()
+	 */
 	@Override
 	public void reconnecting() {
 		Log.d(TAG, "reconnecting");
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.PlayerMove)
+	 */
 	@Override
 	public void received(PlayerMove pm) {
 		if (pm.playerName.equals(service.username)) {
@@ -237,6 +316,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.PlayerDisconnected)
+	 */
 	@Override
 	public void received(PlayerDisconnected customType) {
 		Log.d(TAG, "received - PlayerDisconnected");
@@ -250,6 +332,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.ChatMessage)
+	 */
 	@Override
 	public void received(ChatMessage cm) {
 		if (service.chatCallback == null) {
@@ -269,6 +354,13 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Login.
+	 *
+	 * @param cb the cb
+	 * @param username the username
+	 * @param password the password
+	 */
 	public void login(ILoginCallback cb, String username, String password) {
 		loginCallback = cb;
 		simpleClient = new SimpleClient(this);
@@ -285,6 +377,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Logout.
+	 */
 	public void logout() {
 		if (loggedIn) {
 			simpleClient.logout(true);
@@ -292,11 +387,21 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Register game service callback.
+	 *
+	 * @param callback the callback
+	 */
 	public void registerGameServiceCallback(IGameServiceCallback callback) {
 		gc = callback;
 
 	}
 
+	/**
+	 * Send chat message.
+	 *
+	 * @param message the message
+	 */
 	public void sendChatMessage(String message) {
 		ChatMessage cm = new ChatMessage();
 		cm.username = service.username;
@@ -312,6 +417,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.ChatUserJoined)
+	 */
 	@Override
 	public void received(ChatUserJoined cuj) {
 		if (service.chatCallback == null) {
@@ -329,6 +437,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Sendjoin chat message.
+	 */
 	public void sendjoinChatMessage() {
 		ChatUserJoined cuj = new ChatUserJoined();
 		cuj.username = service.username;
@@ -342,6 +453,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Sendleave chat message.
+	 */
 	public void sendleaveChatMessage() {
 		ChatUserLeft cul = new ChatUserLeft();
 		cul.username = service.username;
@@ -355,6 +469,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.ChatUserLeft)
+	 */
 	@Override
 	public void received(ChatUserLeft cul) {
 		if (service.chatCallback == null) {
@@ -371,6 +488,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.ChangeGameMode)
+	 */
 	@Override
 	public void received(ChangeGameMode customType) {
 		Log.d(TAG, "received ChangeGameMode");
@@ -403,6 +523,11 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Creates the user.
+	 *
+	 * @param selectedClass the selected class
+	 */
 	public void createUser(int selectedClass) {
 		CreateUserMessage cum = new CreateUserMessage();
 		cum.playerClass = selectedClass;
@@ -414,11 +539,17 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Unregister game service callback.
+	 */
 	public void unregisterGameServiceCallback() {
 		gc = null;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.PlayerInfoMessage)
+	 */
 	@Override
 	public void received(PlayerInfoMessage pim) {
 		Log.d(TAG, "received PlayerInfoMessage");
@@ -431,6 +562,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.PlayerPositionMessage)
+	 */
 	@Override
 	public void received(PlayerPositionMessage pos) {
 		Log.d(TAG, "received PlayerPositionMessage");
@@ -442,6 +576,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Send request player info.
+	 */
 	public void sendRequestPlayerInfo() {
 		RequestPlayerInfoMessage cum = new RequestPlayerInfoMessage();
 		try {
@@ -453,6 +590,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.ServerMesageListener#received(com.firegnom.valkyrie.net.protocol.PlayerPositionsMessage)
+	 */
 	@Override
 	public void received(PlayerPositionsMessage customType) {
 		Log.d(TAG, "recieaved PlayerPositionsMessage");
@@ -478,6 +618,9 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 		}
 	}
 
+	/**
+	 * Request players positions.
+	 */
 	public void requestPlayersPositions() {
 		RequestPlayersPositionMessage rppm = new RequestPlayersPositionMessage();
 		try {
@@ -489,6 +632,11 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 
 	}
 
+	/**
+	 * Send change game mode.
+	 *
+	 * @param type the type
+	 */
 	public void sendChangeGameMode(int type) {
 		ChangeGameMode cgm = new ChangeGameMode();
 		cgm.type = type;

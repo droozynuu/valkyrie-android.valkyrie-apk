@@ -23,11 +23,21 @@ package com.firegnom.valkyrie.engine.fight;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.engine.Gui;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NotImplementedAction.
+ */
 public class NotImplementedAction implements FightAction {
 
+	/** The Constant TAG. */
 	private static final String TAG = NotImplementedAction.class.getName();
+	
+	/** The active. */
 	private boolean active = false;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#activated()
+	 */
 	@Override
 	public void activated() {
 		GameController gc = GameController.getInstance();
@@ -38,22 +48,34 @@ public class NotImplementedAction implements FightAction {
 		gc.fightController.action = null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#deactivated()
+	 */
 	@Override
 	public void deactivated() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#onSingleTapUp(int, int)
+	 */
 	@Override
 	public void onSingleTapUp(int x, int y) {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#finished()
+	 */
 	@Override
 	public void finished() {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#isActive()
+	 */
 	@Override
 	public boolean isActive() {
 		return active;

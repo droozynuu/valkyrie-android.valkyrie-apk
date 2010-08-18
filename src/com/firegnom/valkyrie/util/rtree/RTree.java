@@ -52,6 +52,7 @@ import com.firegnom.valkyrie.util.Point;
 import com.firegnom.valkyrie.util.Rectangle;
 import com.firegnom.valkyrie.util.SpatialIndex;
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>
  * This is a lightweight RTree implementation, specifically designed for the
@@ -76,48 +77,74 @@ import com.firegnom.valkyrie.util.SpatialIndex;
  */
 public class RTree implements SpatialIndex {
 
+	/** The Constant version. */
 	private static final String version = "1.0b2";
 
 	// parameters of the tree
+	/** The Constant DEFAULT_MAX_NODE_ENTRIES. */
 	private final static int DEFAULT_MAX_NODE_ENTRIES = 10;
+	
+	/** The max node entries. */
 	int maxNodeEntries;
+	
+	/** The min node entries. */
 	int minNodeEntries;
 
 	// map of nodeId -> node object
 	// [x] TODO eliminate this map - it should not be needed. Nodes
 	// can be found by traversing the tree.
+	/** The node map. */
 	private TIntObjectHashMap<Node> nodeMap = new TIntObjectHashMap<Node>();
 
 	// internal consistency checking - set to true if debugging tree corruption
+	/** The Constant INTERNAL_CONSISTENCY_CHECKING. */
 	private final static boolean INTERNAL_CONSISTENCY_CHECKING = false;
 
 	// used to mark the status of entries during a node split
+	/** The Constant ENTRY_STATUS_ASSIGNED. */
 	private final static int ENTRY_STATUS_ASSIGNED = 0;
+	
+	/** The Constant ENTRY_STATUS_UNASSIGNED. */
 	private final static int ENTRY_STATUS_UNASSIGNED = 1;
+	
+	/** The entry status. */
 	private byte[] entryStatus = null;
+	
+	/** The initial entry status. */
 	private byte[] initialEntryStatus = null;
 
 	// stacks used to store nodeId and entry index of each node
 	// from the root down to the leaf. Enables fast lookup
 	// of nodes when a split is propagated up the tree.
+	/** The parents. */
 	private TIntStack parents = new TIntStack();
+	
+	/** The parents entry. */
 	private TIntStack parentsEntry = new TIntStack();
 
 	// initialisation
+	/** The tree height. */
 	private int treeHeight = 1; // leaves are always level 1
+	
+	/** The root node id. */
 	private int rootNodeId = 0;
+	
+	/** The size. */
 	private int size = 0;
 
 	// Enables creation of new nodes
+	/** The highest used node id. */
 	private int highestUsedNodeId = rootNodeId;
 
 	// Deleted node objects are retained in the nodeMap,
 	// so that they can be reused. Store the IDs of nodes
 	// which can be reused.
+	/** The deleted node ids. */
 	private TIntStack deletedNodeIds = new TIntStack();
 
 	// List of nearest rectangles. Use a member variable to
 	// avoid recreating the object each time nearest() is called.
+	/** The nearest ids. */
 	private TIntArrayList nearestIds = new TIntArrayList();
 
 	// Inner class used as a bridge between the trove4j TIntProcedure
@@ -127,19 +154,33 @@ public class RTree implements SpatialIndex {
 	//
 	// A single instance of this class is used to avoid creating a new
 	// one every time nearest() is called.
+	/**
+	 * The Class TIntProcedureVisit.
+	 */
 	private class TIntProcedureVisit implements TIntProcedure {
+		
+		/** The m_int procedure. */
 		public IntProcedure m_intProcedure = null;
 
+		/**
+		 * Sets the procedure.
+		 *
+		 * @param ip the new procedure
+		 */
 		public void setProcedure(IntProcedure ip) {
 			m_intProcedure = ip;
 		}
 
+		/* (non-Javadoc)
+		 * @see gnu.trove.TIntProcedure#execute(int)
+		 */
 		public boolean execute(int i) {
 			m_intProcedure.execute(i);
 			return true;
 		}
 	};
 
+	/** The visit proc. */
 	private TIntProcedureVisit visitProc = new TIntProcedureVisit();
 
 	/**
@@ -172,7 +213,8 @@ public class RTree implements SpatialIndex {
 	 * down), which is used if the property is not specified or is less than 1.
 	 * </ul>
 	 * </p>
-	 * 
+	 *
+	 * @param props the props
 	 * @see com.infomatiq.jsi.SpatialIndex#init(Properties)
 	 */
 	public void init(Properties props) {
@@ -214,6 +256,10 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Adds the.
+	 *
+	 * @param r the r
+	 * @param id the id
 	 * @see com.infomatiq.jsi.SpatialIndex#add(Rectangle, int)
 	 */
 	public void add(Rectangle r, int id) {
@@ -227,7 +273,11 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
-	 * Adds a new entry at a specified level in the tree
+	 * Adds a new entry at a specified level in the tree.
+	 *
+	 * @param r the r
+	 * @param id the id
+	 * @param level the level
 	 */
 	private void add(Rectangle r, int id, int level) {
 		// I1 [Find position for new record] Invoke ChooseLeaf to select a
@@ -269,6 +319,11 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Delete.
+	 *
+	 * @param r the r
+	 * @param id the id
+	 * @return true, if successful
 	 * @see com.infomatiq.jsi.SpatialIndex#delete(Rectangle, int)
 	 */
 	public boolean delete(Rectangle r, int id) {
@@ -332,6 +387,11 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Nearest.
+	 *
+	 * @param p the p
+	 * @param v the v
+	 * @param furthestDistance the furthest distance
 	 * @see com.infomatiq.jsi.SpatialIndex#nearest(Point, IntProcedure, float)
 	 */
 	public void nearest(Point p, IntProcedure v, float furthestDistance) {
@@ -345,6 +405,10 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Intersects.
+	 *
+	 * @param r the r
+	 * @param v the v
 	 * @see com.infomatiq.jsi.SpatialIndex#intersects(Rectangle, IntProcedure)
 	 */
 	public void intersects(Rectangle r, IntProcedure v) {
@@ -353,6 +417,10 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Contains.
+	 *
+	 * @param r the r
+	 * @param v the v
 	 * @see com.infomatiq.jsi.SpatialIndex#contains(Rectangle, IntProcedure)
 	 */
 	public void contains(Rectangle r, IntProcedure v) {
@@ -408,6 +476,9 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Size.
+	 *
+	 * @return the int
 	 * @see com.infomatiq.jsi.SpatialIndex#size()
 	 */
 	public int size() {
@@ -415,6 +486,9 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Gets the bounds.
+	 *
+	 * @return the bounds
 	 * @see com.infomatiq.jsi.SpatialIndex#getBounds()
 	 */
 	public Rectangle getBounds() {
@@ -428,6 +502,9 @@ public class RTree implements SpatialIndex {
 	}
 
 	/**
+	 * Gets the version.
+	 *
+	 * @return the version
 	 * @see com.infomatiq.jsi.SpatialIndex#getVersion()
 	 */
 	public String getVersion() {
@@ -440,6 +517,8 @@ public class RTree implements SpatialIndex {
 
 	/**
 	 * Get the next available node ID. Reuse deleted node IDs if possible
+	 *
+	 * @return the next node id
 	 */
 	private int getNextNodeId() {
 		int nextNodeId = 0;
@@ -453,20 +532,27 @@ public class RTree implements SpatialIndex {
 
 	/**
 	 * Get a node object, given the ID of the node.
+	 *
+	 * @param index the index
+	 * @return the node
 	 */
 	public Node getNode(int index) {
 		return (Node) nodeMap.get(index);
 	}
 
 	/**
-	 * Get the highest used node ID
+	 * Get the highest used node ID.
+	 *
+	 * @return the highest used node id
 	 */
 	public int getHighestUsedNodeId() {
 		return highestUsedNodeId;
 	}
 
 	/**
-	 * Get the root node ID
+	 * Get the root node ID.
+	 *
+	 * @return the root node id
 	 */
 	public int getRootNodeId() {
 		return rootNodeId;
@@ -475,7 +561,10 @@ public class RTree implements SpatialIndex {
 	/**
 	 * Split a node. Algorithm is taken pretty much verbatim from Guttman's
 	 * original paper.
-	 * 
+	 *
+	 * @param n the n
+	 * @param newRect the new rect
+	 * @param newId the new id
 	 * @return new node object.
 	 */
 	private Node splitNode(Node n, Rectangle newRect, int newId) {
@@ -563,6 +652,11 @@ public class RTree implements SpatialIndex {
 	/**
 	 * Pick the seeds used to split a node. Select two entries to be the first
 	 * elements of the groups
+	 *
+	 * @param n the n
+	 * @param newRect the new rect
+	 * @param newId the new id
+	 * @param newNode the new node
 	 */
 	private void pickSeeds(Node n, Rectangle newRect, int newId, Node newNode) {
 		// Find extreme rectangles along all dimension. Along each dimension,
@@ -666,6 +760,10 @@ public class RTree implements SpatialIndex {
 	 * [Determine cost of putting each entry in each group] For each entry not
 	 * yet in a group, calculate the area increase required in the covering
 	 * rectangles of each group
+	 *
+	 * @param n the n
+	 * @param newNode the new node
+	 * @return the int
 	 */
 	private int pickNext(Node n, Node newNode) {
 		float maxDifference = Float.NEGATIVE_INFINITY;
@@ -739,6 +837,11 @@ public class RTree implements SpatialIndex {
 	 * nearest entry IDs.
 	 * 
 	 * [x] TODO rewrite this to be non-recursive?
+	 *
+	 * @param p the p
+	 * @param n the n
+	 * @param nearestDistance the nearest distance
+	 * @return the float
 	 */
 	private float nearest(Point p, Node n, float nearestDistance) {
 		for (int i = 0; i < n.entryCount; i++) {
@@ -772,6 +875,10 @@ public class RTree implements SpatialIndex {
 	 * 
 	 * [x] TODO rewrite this to be non-recursive? Make sure it doesn't slow it
 	 * down.
+	 *
+	 * @param r the r
+	 * @param v the v
+	 * @param n the n
 	 */
 	private void intersects(Rectangle r, IntProcedure v, Node n) {
 		for (int i = 0; i < n.entryCount; i++) {
@@ -795,6 +902,11 @@ public class RTree implements SpatialIndex {
 	 */
 	private Rectangle oldRectangle = new Rectangle(0, 0, 0, 0);
 
+	/**
+	 * Condense tree.
+	 *
+	 * @param l the l
+	 */
 	private void condenseTree(Node l) {
 		// CT1 [Initialize] Set n=l. Set the list of eliminated
 		// nodes to be empty.
@@ -851,6 +963,10 @@ public class RTree implements SpatialIndex {
 
 	/**
 	 * Used by add(). Chooses a leaf to add the rectangle to.
+	 *
+	 * @param r the r
+	 * @param level the level
+	 * @return the node
 	 */
 	private Node chooseNode(Rectangle r, int level) {
 		// CL1 [Initialize] Set N to be the root node
@@ -897,6 +1013,10 @@ public class RTree implements SpatialIndex {
 	/**
 	 * Ascend from a leaf node L to the root, adjusting covering rectangles and
 	 * propagating node splits as necessary.
+	 *
+	 * @param n the n
+	 * @param nn the nn
+	 * @return the node
 	 */
 	private Node adjustTree(Node n, Node nn) {
 		// AT1 [Initialize] Set N=L. If L was split previously, set NN to be
@@ -959,6 +1079,10 @@ public class RTree implements SpatialIndex {
 
 	/**
 	 * Check the consistency of the tree.
+	 *
+	 * @param nodeId the node id
+	 * @param expectedLevel the expected level
+	 * @param expectedMBR the expected mbr
 	 */
 	private void checkConsistency(int nodeId, int expectedLevel,
 			Rectangle expectedMBR) {
@@ -1009,6 +1133,9 @@ public class RTree implements SpatialIndex {
 	/**
 	 * Given a node object, calculate the node MBR from it's entries. Used in
 	 * consistency checking
+	 *
+	 * @param n the n
+	 * @return the rectangle
 	 */
 	private Rectangle calculateMBR(Node n) {
 		Rectangle mbr = new Rectangle(n.entries[0].min, n.entries[0].max);

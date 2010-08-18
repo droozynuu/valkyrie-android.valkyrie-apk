@@ -26,14 +26,30 @@ import android.graphics.Paint;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ImageManager.
+ */
 public class ImageManager extends Thread {
+	
+	/** The Constant instance. */
 	private static final ImageManager instance = new ImageManager();
+	
+	/** The out of memory paint. */
 	public Paint outOfMemoryPaint;
 
+	/**
+	 * Gets the single instance of ImageManager.
+	 *
+	 * @return single instance of ImageManager
+	 */
 	public static ImageManager getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Instantiates a new image manager.
+	 */
 	private ImageManager() {
 		outOfMemoryPaint = new Paint();
 		outOfMemoryPaint.setAntiAlias(true);
@@ -49,14 +65,25 @@ public class ImageManager extends Thread {
 	//
 	// };
 
+	/** The service. */
 	IResourceLoaderService service;
+	
+	/** The rl. */
 	ResourceLoader rl;
 
+	/**
+	 * Connect service.
+	 *
+	 * @param service the service
+	 */
 	public void connectService(IResourceLoaderService service) {
 		this.service = service;
 		rl = new ResourceLoader(service);
 	}
 
+	/**
+	 * Disconnect service.
+	 */
 	public void disconnectService() {
 		this.service = null;
 		rl.freeService();
@@ -64,10 +91,21 @@ public class ImageManager extends Thread {
 		rl = null;
 	}
 
+	/**
+	 * Gets the bitmap.
+	 *
+	 * @param name the name
+	 * @return the bitmap
+	 */
 	Bitmap getBitmap(String name) {
 		return rl.getBitmapResource(name, false);
 	}
 
+	/**
+	 * Sets the resource loader.
+	 *
+	 * @param rl2 the new resource loader
+	 */
 	public void setResourceLoader(ResourceLoader rl2) {
 		this.rl = rl2;
 	}

@@ -25,20 +25,38 @@ import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ParcelablePath.
+ */
 public class ParcelablePath implements Parcelable {
 
+	/**
+	 * Instantiates a new parcelable path.
+	 *
+	 * @param p the p
+	 */
 	public ParcelablePath(Path p) {
 		path = p;
 	}
 
+	/** The path. */
 	public Path path;
 
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
+	 */
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * Instantiates a new parcelable path.
+	 *
+	 * @param p the p
+	 */
 	public ParcelablePath(com.firegnom.valkyrie.net.protocol.Path p) {
 		path = new Path();
 		for (int i = 0; i < p.step.length; i++) {
@@ -46,6 +64,12 @@ public class ParcelablePath implements Parcelable {
 		}
 	}
 
+	/**
+	 * Read from parcel.
+	 *
+	 * @param in the in
+	 * @return the parcelable path
+	 */
 	static public ParcelablePath readFromParcel(Parcel in) {
 		ParcelablePath ret = new ParcelablePath(new Path());
 		ArrayList<Integer> x = new ArrayList<Integer>();
@@ -59,6 +83,9 @@ public class ParcelablePath implements Parcelable {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		ArrayList<Integer> x = new ArrayList<Integer>();
@@ -71,10 +98,16 @@ public class ParcelablePath implements Parcelable {
 		dest.writeList(y);
 	}
 
+	/**
+	 * Instantiates a new parcelable path.
+	 *
+	 * @param in the in
+	 */
 	public ParcelablePath(Parcel in) {
 		path = readFromParcel(in).path;
 	}
 
+	/** The Constant CREATOR. */
 	public static final Parcelable.Creator<ParcelablePath> CREATOR = new Parcelable.Creator<ParcelablePath>() {
 
 		@Override
@@ -97,6 +130,11 @@ public class ParcelablePath implements Parcelable {
 	// }
 
 	// TODO: not optimised
+	/**
+	 * Convert to net path.
+	 *
+	 * @return the com.firegnom.valkyrie.net.protocol. path
+	 */
 	public com.firegnom.valkyrie.net.protocol.Path convertToNetPath() {
 		com.firegnom.valkyrie.net.protocol.Path p = new com.firegnom.valkyrie.net.protocol.Path();
 		com.firegnom.valkyrie.net.protocol.Step[] st = new com.firegnom.valkyrie.net.protocol.Step[path.steps

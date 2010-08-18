@@ -45,37 +45,86 @@ import com.firegnom.valkyrie.graphics.DrawableFeature;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FightController.
+ */
 public class FightController {
+	
+	/** The map. */
 	FightMap map;
+	
+	/** The executor. */
 	ScheduledThreadPoolExecutor executor;
 
+	/** The Constant TAG. */
 	protected static final String TAG = FightController.class.getName();
+	
+	/** The can move. */
 	boolean canMove = false;
+	
+	/** The screen width. */
 	int screenWidth = 0;
+	
+	/** The screen height. */
 	int screenHeight = 0;
+	
+	/** The paint. */
 	Paint paint;
+	
+	/** The background. */
 	Picture background = null;
+	
+	/** The range. */
 	Picture range = null;
+	
+	/** The limit scroll dist. */
 	int limitScrollDist = 30;
+	
+	/** The action. */
 	public FightAction action;
 
+	/** The picture size. */
 	int pictureSize = 96;
+	
+	/** The s x. */
 	private float sX;
+	
+	/** The s y. */
 	private float sY;
+	
+	/** The turn thread. */
 	TurnThread turnThread;
+	
+	/** The features. */
 	ArrayList<DrawableFeature> features;
 
+	/** The view. */
 	View view;
+	
+	/** The context. */
 	Context context;
 
+	/** The enemy. */
 	public Player enemy;
+	
+	/** The time left. */
 	private int timeLeft = 1000;
 
+	/**
+	 * Connect.
+	 *
+	 * @param v the v
+	 * @param c the c
+	 */
 	public void connect(View v, Context c) {
 		view = v;
 		context = c;
 	}
 
+	/**
+	 * Inits the.
+	 */
 	public void init() {
 		if (map == null) {
 			map = new FightMap();
@@ -91,14 +140,23 @@ public class FightController {
 		}, timeLeft);
 	}
 
+	/**
+	 * Finish.
+	 */
 	public void finish() {
 	}
 
+	/**
+	 * Disconnect.
+	 */
 	public void disconnect() {
 		view = null;
 		context = null;
 	}
 
+	/**
+	 * Instantiates a new fight controller.
+	 */
 	public FightController() {
 		features = new ArrayList<DrawableFeature>();
 		turnThread = new TurnThread();
@@ -112,6 +170,12 @@ public class FightController {
 		executor = new ScheduledThreadPoolExecutor(1);
 	}
 
+	/**
+	 * Gets the screen position.
+	 *
+	 * @param user the user
+	 * @return the screen position
+	 */
 	public Position getScreenPosition(Player user) {
 		Position p = user.fightPosition;
 		Position ret = new Position();
@@ -122,6 +186,11 @@ public class FightController {
 		return ret;
 	}
 
+	/**
+	 * Do draw.
+	 *
+	 * @param canvas the canvas
+	 */
 	public void doDraw(Canvas canvas) {
 		Player user = GameController.getInstance().user;
 		if (background == null) {
@@ -144,6 +213,9 @@ public class FightController {
 
 	}
 
+	/**
+	 * Prepare range.
+	 */
 	public void prepareRange() {
 		range = new Picture();
 		Canvas canvas = range.beginRecording(3 * map.tileWidth,
@@ -172,6 +244,9 @@ public class FightController {
 
 	}
 
+	/**
+	 * Render background.
+	 */
 	private void renderBackground() {
 		background = new Picture();
 		ResourceLoader rl = new ResourceLoader();
@@ -197,11 +272,24 @@ public class FightController {
 
 	}
 
+	/**
+	 * Sets the screen size.
+	 *
+	 * @param w the w
+	 * @param h the h
+	 */
 	public void setScreenSize(int w, int h) {
 		screenWidth = w;
 		screenHeight = h;
 	}
 
+	/**
+	 * Do scroll.
+	 *
+	 * @param distanceX the distance x
+	 * @param distanceY the distance y
+	 * @return true, if successful
+	 */
 	public boolean doScroll(float distanceX, float distanceY) {
 		int xmin = 0 - 96, xmax = map.width * map.tileWidth + screenWidth + 96, ymin = 0 - 96, ymax = map.height
 				* map.tileHeight + screenHeight + 96;
@@ -241,6 +329,12 @@ public class FightController {
 		return true;
 	}
 
+	/**
+	 * On single tap up.
+	 *
+	 * @param e the e
+	 * @return true, if successful
+	 */
 	public boolean onSingleTapUp(MotionEvent e) {
 		int x = (int) (((-1 * sX) + e.getX()) / map.tileWidth);
 		int y = (int) (((-1 * sY) + e.getY() - FightActivity.progressHeight) / map.tileHeight);
@@ -250,6 +344,11 @@ public class FightController {
 		return true;
 	}
 
+	/**
+	 * Change action.
+	 *
+	 * @param action the action
+	 */
 	public void changeAction(FightAction action) {
 		if (this.action != null) {
 			if (this.action.isActive()) {
@@ -262,6 +361,9 @@ public class FightController {
 		this.action.activated();
 	}
 
+	/**
+	 * Exit.
+	 */
 	public void exit() {
 		sX = 0;
 		sY = 0;
@@ -274,6 +376,14 @@ public class FightController {
 		((FightActivity) context).finish();
 	}
 
+	/**
+	 * Post invalidate scroll.
+	 *
+	 * @param rLeft the r left
+	 * @param rTop the r top
+	 * @param rRight the r right
+	 * @param rBottom the r bottom
+	 */
 	public void postInvalidateScroll(int rLeft, int rTop, int rRight,
 			int rBottom) {
 		if (view == null) {
@@ -286,11 +396,21 @@ public class FightController {
 		view.postInvalidate(rLeft, rTop, rRight, rBottom);
 	}
 
+	/**
+	 * Post invalidate scroll.
+	 *
+	 * @param bounds the bounds
+	 */
 	public void postInvalidateScroll(Rect bounds) {
 		postInvalidateScroll(bounds.left, bounds.top, bounds.right,
 				bounds.bottom);
 	}
 
+	/**
+	 * Post invalidate.
+	 *
+	 * @param i the i
+	 */
 	public void postInvalidate(int i) {
 		if (view == null) {
 			return;
@@ -298,6 +418,9 @@ public class FightController {
 		view.postInvalidateDelayed(i);
 	}
 
+	/**
+	 * Post invalidate.
+	 */
 	public void postInvalidate() {
 		if (view == null) {
 			return;
@@ -305,6 +428,11 @@ public class FightController {
 		view.postInvalidate();
 	}
 
+	/**
+	 * Post invalidate.
+	 *
+	 * @param bounds the bounds
+	 */
 	public void postInvalidate(Rect bounds) {
 		if (view == null) {
 			return;
@@ -313,6 +441,11 @@ public class FightController {
 				bounds.bottom);
 	}
 
+	/**
+	 * Post invalidate.
+	 *
+	 * @param pl the pl
+	 */
 	public void postInvalidate(Player pl) {
 		if (view == null) {
 			return;

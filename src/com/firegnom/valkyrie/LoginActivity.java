@@ -42,10 +42,21 @@ import com.firegnom.valkyrie.service.ILoginCallback;
 import com.firegnom.valkyrie.service.ILoginService;
 import com.firegnom.valkyrie.share.constant.GameModes;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LoginActivity.
+ */
 public class LoginActivity extends ValkyrieActivity {
+	
+	/** The Constant TAG. */
 	private static final String TAG = LoginActivity.class.getName();
+	
+	/** The is exit. */
 	private boolean isExit = false;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,6 +66,9 @@ public class LoginActivity extends ValkyrieActivity {
 		bindService(new Intent(ILoginService.class.getName()), mConnection, 0);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy");
@@ -74,6 +88,7 @@ public class LoginActivity extends ValkyrieActivity {
 		super.onDestroy();
 	};
 
+	/** The loginbutton listener. */
 	private OnClickListener loginbuttonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -90,6 +105,9 @@ public class LoginActivity extends ValkyrieActivity {
 		}
 	};
 
+	/**
+	 * Start game.
+	 */
 	private void startGame() {
 		Log.d(TAG, "startGame");
 		Intent myIntent = new Intent(getApplicationContext(),
@@ -98,6 +116,9 @@ public class LoginActivity extends ValkyrieActivity {
 		finish();
 	}
 
+	/**
+	 * Creates the player.
+	 */
 	private void createPlayer() {
 		Log.d(TAG, "createPlayer");
 		Intent myIntent = new Intent(getApplicationContext(),
@@ -106,6 +127,9 @@ public class LoginActivity extends ValkyrieActivity {
 		finish();
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -119,11 +143,17 @@ public class LoginActivity extends ValkyrieActivity {
 
 	}
 
+	/**
+	 * Exit.
+	 */
 	private void exit() {
 		isExit = true;
 		finish();
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, 1, 0, "Exit");
@@ -161,7 +191,11 @@ public class LoginActivity extends ValkyrieActivity {
 			mService = null;
 		}
 	};
+	
+	/** The message. */
 	String message = "";
+	
+	/** The m callback. */
 	protected ILoginCallback.Stub mCallback = new ILoginCallback.Stub() {
 
 		@Override
@@ -193,6 +227,8 @@ public class LoginActivity extends ValkyrieActivity {
 		}
 
 	};
+	
+	/** The hand. */
 	Handler hand = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

@@ -26,18 +26,33 @@ import android.view.View;
 
 import com.firegnom.valkyrie.engine.GameController;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FightView.
+ */
 public class FightView extends View {
 
+	/**
+	 * Instantiates a new fight view.
+	 *
+	 * @param context the context
+	 */
 	public FightView(Context context) {
 		super(context);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View#onDraw(android.graphics.Canvas)
+	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		GameController.getInstance().fightController.doDraw(canvas);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View#onSizeChanged(int, int, int, int)
+	 */
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		GameController.getInstance().fightController.setScreenSize(w, h);

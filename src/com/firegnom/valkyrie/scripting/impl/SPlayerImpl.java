@@ -27,31 +27,54 @@ import com.firegnom.valkyrie.engine.Player;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.scripting.SPlayer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SPlayerImpl.
+ */
 public class SPlayerImpl implements SPlayer {
+	
+	/** The v. */
 	private final View v;
 
+	/**
+	 * Instantiates a new s player impl.
+	 *
+	 * @param v the v
+	 */
 	public SPlayerImpl(View v) {
 		this.v = v;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#goTo(int, int)
+	 */
 	@Override
 	public void goTo(int x, int y) {
 		GameController.getInstance().user.setPosition(x, y);
 		v.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#move(int, int)
+	 */
 	@Override
 	public void move(int x, int y) {
 		GameController.getInstance().user.goTo(x, y, v);
 		v.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#moveW(int, int)
+	 */
 	@Override
 	public void moveW(int x, int y) {
 		move(x, y);
 		waitForMove();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#canReach(int, int)
+	 */
 	@Override
 	public boolean canReach(int x, int y) {
 
@@ -59,6 +82,9 @@ public class SPlayerImpl implements SPlayer {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#getPath(int, int)
+	 */
 	@Override
 	public com.firegnom.valkyrie.net.protocol.Path getPath(int x, int y) {
 		// return GameController.getInstance().user.getPathTo(x, y,
@@ -66,17 +92,26 @@ public class SPlayerImpl implements SPlayer {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#show()
+	 */
 	@Override
 	public void show() {
 		GameController.getInstance().user.showMe(GameController.getInstance());
 		v.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#speed(int)
+	 */
 	@Override
 	public void speed(int s) {
 		Player.MOVE_SPEED = s;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#waitForMove()
+	 */
 	@Override
 	public void waitForMove() {
 		try {
@@ -89,6 +124,9 @@ public class SPlayerImpl implements SPlayer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SPlayer#distance(int, int)
+	 */
 	@Override
 	public int distance(int x, int y) {
 		Player p = GameController.getInstance().user;
@@ -97,6 +135,12 @@ public class SPlayerImpl implements SPlayer {
 		return (int) (Math.sqrt((dx * dx) + (dy * dy)));
 	}
 
+	/**
+	 * Distance.
+	 *
+	 * @param p the p
+	 * @return the int
+	 */
 	public int distance(Position p) {
 		return distance(p.x, p.y);
 	}

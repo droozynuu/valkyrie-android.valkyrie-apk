@@ -42,17 +42,34 @@ import com.firegnom.valkyrie.engine.fight.RunAwayAction;
 import com.firegnom.valkyrie.engine.fight.WalkAction;
 import com.firegnom.valkyrie.view.FightView;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FightActivity.
+ */
 public class FightActivity extends ValkyrieActivity implements
 		OnGestureListener {
 
+	/** The progress. */
 	public ProgressBar progress;
+	
+	/** The Constant progressHeight. */
 	public static final int progressHeight = 5;
+	
+	/** The Constant PLAYER_EXTRA. */
 	public static final String PLAYER_EXTRA = "PLAYER_EXTRA";
+	
+	/** The enemy name. */
 	private String enemyName;
+	
+	/** The walk b. */
 	public Button walkB;
 
+	/** The gesture scanner. */
 	private GestureDetector gestureScanner;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Intent i = getIntent();
@@ -158,11 +175,17 @@ public class FightActivity extends ValkyrieActivity implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		return gestureScanner.onTouchEvent(event);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float)
+	 */
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
@@ -170,12 +193,18 @@ public class FightActivity extends ValkyrieActivity implements
 				distanceY);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onDown(MotionEvent e) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.MotionEvent, android.view.MotionEvent, float, float)
+	 */
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
@@ -183,23 +212,35 @@ public class FightActivity extends ValkyrieActivity implements
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onLongPress(android.view.MotionEvent)
+	 */
 	@Override
 	public void onLongPress(MotionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onShowPress(android.view.MotionEvent)
+	 */
 	@Override
 	public void onShowPress(MotionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onSingleTapUp(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
 		return GameController.getInstance().fightController.onSingleTapUp(e);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub

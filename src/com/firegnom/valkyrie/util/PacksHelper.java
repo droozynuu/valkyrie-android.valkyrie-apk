@@ -34,9 +34,19 @@ import org.json.JSONObject;
 
 import com.firegnom.valkyrie.net.Download;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PacksHelper.
+ */
 public class PacksHelper {
 	// static String path = "/sdcard/com.firegnom.valkyrie/cache/";
 
+	/**
+	 * Packs avilable.
+	 *
+	 * @param path the path
+	 * @return true, if successful
+	 */
 	public static boolean packsAvilable(String path) {
 		Download packsDownload;
 		try {
@@ -73,10 +83,21 @@ public class PacksHelper {
 		return false;
 	}
 
+	/**
+	 * Download packs.
+	 *
+	 * @param path the path
+	 */
 	public static void downloadPacks(String path) {
 		downloadPacks(path, null);
 	}
 
+	/**
+	 * Download packs.
+	 *
+	 * @param path the path
+	 * @param o the o
+	 */
 	public static void downloadPacks(String path, Observer o) {
 		Download packsDownload;
 		try {

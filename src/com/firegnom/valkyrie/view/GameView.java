@@ -26,18 +26,33 @@ import android.view.View;
 
 import com.firegnom.valkyrie.engine.GameController;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GameView.
+ */
 public class GameView extends View {
 
+	/**
+	 * Instantiates a new game view.
+	 *
+	 * @param context the context
+	 */
 	public GameView(Context context) {
 		super(context);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View#onDraw(android.graphics.Canvas)
+	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		GameController.getInstance().doDraw(canvas);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View#onSizeChanged(int, int, int, int)
+	 */
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		GameController.getInstance().setScreenSize(w, h);

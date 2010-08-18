@@ -41,19 +41,33 @@ import android.widget.EditText;
 import com.firegnom.valkyrie.service.IChatService;
 import com.firegnom.valkyrie.service.IChatServiceCallback;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Chat.
+ */
 public class Chat extends ListActivity implements OnKeyListener {
 
+	/** The Constant TAG. */
 	private static final String TAG = Chat.class.getName();
 
+	/** The m user text. */
 	private EditText mUserText;
 
+	/** The m adapter. */
 	private ArrayAdapter<String> mAdapter;
 
+	/** The m strings. */
 	private ArrayList<String> mStrings = new ArrayList<String>();
 
+	/** The chat service. */
 	IChatService chatService;
+	
+	/** The username. */
 	String username = null;
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +75,9 @@ public class Chat extends ListActivity implements OnKeyListener {
 		bindService(new Intent(IChatService.class.getName()), chatConnection, 0);
 	}
 
+	/**
+	 * Send text.
+	 */
 	private void sendText() {
 		try {
 			String text = mUserText.getText().toString();
@@ -72,11 +89,20 @@ public class Chat extends ListActivity implements OnKeyListener {
 		}
 	}
 
+	/**
+	 * Write message.
+	 *
+	 * @param username the username
+	 * @param msg the msg
+	 */
 	private void writeMessage(String username, String msg) {
 		Chat.this.mAdapter.add(username + ": " + msg);
 		mUserText.setText(null);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.view.View.OnKeyListener#onKey(android.view.View, int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -90,6 +116,9 @@ public class Chat extends ListActivity implements OnKeyListener {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy");
@@ -103,6 +132,7 @@ public class Chat extends ListActivity implements OnKeyListener {
 		super.onDestroy();
 	};
 
+	/** The chat connection. */
 	private ServiceConnection chatConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.d(TAG, "onServiceConnected");
@@ -143,6 +173,7 @@ public class Chat extends ListActivity implements OnKeyListener {
 		}
 	};
 
+	/** The callback. */
 	IChatServiceCallback.Stub callback = new IChatServiceCallback.Stub() {
 		@Override
 		public void messageRecieaved(String username, String message)
@@ -168,7 +199,11 @@ public class Chat extends ListActivity implements OnKeyListener {
 
 		}
 	};
+	
+	/** The send_m. */
 	String send_u, send_m;
+	
+	/** The hand. */
 	Handler hand = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

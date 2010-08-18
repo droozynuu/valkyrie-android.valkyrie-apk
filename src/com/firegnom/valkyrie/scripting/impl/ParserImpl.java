@@ -32,6 +32,10 @@ import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.scripting.Parser;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ParserImpl.
+ */
 public class ParserImpl implements Parser {
 
 	/*
@@ -49,6 +53,11 @@ public class ParserImpl implements Parser {
 		}
 	}
 
+	/**
+	 * Post message.
+	 *
+	 * @param msg the msg
+	 */
 	public void postMessage(final String msg) {
 		GameController.getInstance().getView().post((new Runnable() {
 			public void run() {

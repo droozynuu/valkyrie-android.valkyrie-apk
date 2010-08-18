@@ -34,24 +34,48 @@ import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.map.pathfinding.ParcelablePath;
 import com.firegnom.valkyrie.share.constant.GameModes;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ValkyrieService.
+ */
 public class ValkyrieService extends Service {
 
+	/** The Constant TAG. */
 	private final static String TAG = "ValkyrieService";
+	
+	/** The Constant MSG_LOGGED_IN. */
 	public static final int MSG_LOGGED_IN = 0;
+	
+	/** The Constant MSG_LOGIN_FAILED. */
 	public static final int MSG_LOGIN_FAILED = 1;
 
+	/** The chat callback. */
 	IChatServiceCallback chatCallback;
+	
+	/** The create user callback. */
 	ICreateUserCallback createUserCallback;
 
+	/** The username. */
 	String username;
+	
+	/** The password. */
 	private String password;
 
+	/** The m nm. */
 	NotificationManager mNM;
+	
+	/** The notification. */
 	Notification notification;
 
+	/** The server connection. */
 	ValkyrieServerConnection serverConnection;
+	
+	/** The resource loader service. */
 	ResourceLoaderService resourceLoaderService;
 
+	/* (non-Javadoc)
+	 * @see android.app.Service#onCreate()
+	 */
 	@Override
 	public void onCreate() {
 		serverConnection = new ValkyrieServerConnection(this);
@@ -61,11 +85,17 @@ public class ValkyrieService extends Service {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Service#onStart(android.content.Intent, int)
+	 */
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Service#onDestroy()
+	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -73,6 +103,9 @@ public class ValkyrieService extends Service {
 		serverConnection.logout();
 	}
 
+	/**
+	 * Show notification.
+	 */
 	private void showNotification() {
 		CharSequence text = getText(R.string.valkyrie_service_started);
 		notification = new Notification(R.drawable.stat_sample, text,
@@ -86,6 +119,9 @@ public class ValkyrieService extends Service {
 		mNM.notify(R.string.valkyrie_service_started, notification);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Service#onBind(android.content.Intent)
+	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		if (ILoginService.class.getName().equals(intent.getAction())) {
@@ -107,6 +143,7 @@ public class ValkyrieService extends Service {
 		return null;
 	}
 
+	/** The login binder. */
 	private final ILoginService.Stub loginBinder = new ILoginService.Stub() {
 
 		@Override
@@ -131,6 +168,7 @@ public class ValkyrieService extends Service {
 		}
 	};
 
+	/** The game binder. */
 	private final IGameService.Stub gameBinder = new IGameService.Stub() {
 		@Override
 		public void move(ParcelablePath p, int playerClass)
@@ -193,6 +231,7 @@ public class ValkyrieService extends Service {
 
 	};
 
+	/** The chat binder. */
 	private final IChatService.Stub chatBinder = new IChatService.Stub() {
 		@Override
 		public void send(String message) throws RemoteException {

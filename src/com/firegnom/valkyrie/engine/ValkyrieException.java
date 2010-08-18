@@ -20,9 +20,20 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.engine;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ValkyrieException.
+ */
 public class ValkyrieException extends Exception {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new valkyrie exception.
+	 *
+	 * @param message the message
+	 */
 	public ValkyrieException(String message) {
 		super(message);
 	}

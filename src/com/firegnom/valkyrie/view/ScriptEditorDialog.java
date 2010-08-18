@@ -35,11 +35,21 @@ import com.firegnom.valkyrie.R;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.map.Position;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ScriptEditorDialog.
+ */
 public class ScriptEditorDialog extends Dialog {
 
+	/** The text. */
 	EditText text;
+	
+	/** The spinner. */
 	Spinner spinner;
 
+	/* (non-Javadoc)
+	 * @see android.app.Dialog#onWindowFocusChanged(boolean)
+	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
@@ -59,6 +69,11 @@ public class ScriptEditorDialog extends Dialog {
 		}
 	}
 
+	/**
+	 * Instantiates a new script editor dialog.
+	 *
+	 * @param context the context
+	 */
 	public ScriptEditorDialog(Context context) {
 		super(context);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

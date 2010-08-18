@@ -28,44 +28,96 @@ import com.firegnom.valkyrie.action.ContextAction;
 import com.firegnom.valkyrie.common.Constants;
 import com.firegnom.valkyrie.map.Position;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PlayersTable.
+ */
 public class PlayersTable {
+	
+	/** The players. */
 	Hashtable<String, Player> players;
 
+	/**
+	 * Instantiates a new players table.
+	 */
 	public PlayersTable() {
 		players = new Hashtable<String, Player>();
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param username the username
+	 * @return the player
+	 */
 	public Player get(String username) {
 		return players.get(username);
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param username the username
+	 * @param pl the pl
+	 */
 	public void put(String username, Player pl) {
 		players.put(username, pl);
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param username the username
+	 */
 	public void remove(String username) {
 		players.remove(username);
 
 	}
 
+	/**
+	 * Clear.
+	 */
 	public void clear() {
 		players.clear();
 
 	}
 
+	/**
+	 * New tab.
+	 *
+	 * @param newp the newp
+	 */
 	public void newTab(Hashtable<String, Player> newp) {
 		players.clear();
 		players = newp;
 	}
 
+	/**
+	 * Elements.
+	 *
+	 * @return the enumeration
+	 */
 	public Enumeration<Player> elements() {
 		return players.elements();
 	}
 
+	/**
+	 * Contains player.
+	 *
+	 * @param p the p
+	 * @return true, if successful
+	 */
 	public boolean containsPlayer(Player p) {
 		return players.containsKey(p.name);
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param p the p
+	 * @param range the range
+	 * @return the array list
+	 */
 	public ArrayList<Player> get(Position p, int range) {
 
 		ArrayList<Player> list = new ArrayList<Player>();
@@ -80,6 +132,13 @@ public class PlayersTable {
 		return list;
 	}
 
+	/**
+	 * Gets the actions.
+	 *
+	 * @param p the p
+	 * @param range the range
+	 * @return the actions
+	 */
 	public ArrayList<ContextAction> getActions(Position p, int range) {
 		ArrayList<ContextAction> list = new ArrayList<ContextAction>();
 		Enumeration<Player> elements = players.elements();
@@ -93,6 +152,9 @@ public class PlayersTable {
 		return list;
 	}
 
+	/**
+	 * Clean.
+	 */
 	public void clean() {
 		Position userpos = GameController.getInstance().user.position;
 		Position userdest = GameController.getInstance().user.destination();

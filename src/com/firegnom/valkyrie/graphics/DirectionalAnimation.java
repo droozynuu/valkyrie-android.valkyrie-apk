@@ -31,28 +31,71 @@ import android.graphics.Rect;
 import com.firegnom.valkyrie.common.Dir;
 import com.firegnom.valkyrie.map.Position;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DirectionalAnimation.
+ */
 public class DirectionalAnimation implements DrawableFeature {
 
+	/** The dir frames. */
 	private ArrayList<ArrayList<Image>> dirFrames;
+	
+	/** The position. */
 	private short position = 0;
+	
+	/** The direction. */
 	private short direction = 0;
+	
+	/** The num of frames. */
 	private short numOfFrames = 0;
+	
+	/** The width. */
 	private int width;
+	
+	/** The height. */
 	private int height;
+	
+	/** The speed. */
 	private int speed = 80;
+	
+	/** The name. */
 	private String name;
+	
+	/** The pos. */
 	private Position pos = new Position();
 
+	/**
+	 * Sets the x.
+	 *
+	 * @param x the x
+	 * @return the directional animation
+	 */
 	public DirectionalAnimation setX(int x) {
 		pos.x = x;
 		return this;
 	}
 
+	/**
+	 * Sets the y.
+	 *
+	 * @param y the y
+	 * @return the directional animation
+	 */
 	public DirectionalAnimation setY(int y) {
 		pos.y = y;
 		return this;
 	}
 
+	/**
+	 * Instantiates a new directional animation.
+	 *
+	 * @param name the name
+	 * @param numOfFrames the num of frames
+	 * @param width the width
+	 * @param height the height
+	 * @param xOffset the x offset
+	 * @param yOffset the y offset
+	 */
 	public DirectionalAnimation(String name, short numOfFrames, int width,
 			int height, int xOffset, int yOffset) {
 		this.setName(name);
@@ -71,25 +114,42 @@ public class DirectionalAnimation implements DrawableFeature {
 		}
 	}
 
+	/**
+	 * Gets the bitmap.
+	 *
+	 * @return the bitmap
+	 */
 	public Image getBitmap() {
 		return dirFrames.get(direction).get(position);
 	}
 
 	/**
-	 * Use directions from class Dir in commons
-	 * 
+	 * Use directions from class Dir in commons.
+	 *
+	 * @param dir the dir
 	 * @see Dir
 	 */
 	public void changeDir(short dir) {
 		direction = dir;
 	}
 
+	/**
+	 * Sets the position.
+	 *
+	 * @param pos the new position
+	 */
 	public void setPosition(short pos) {
 		position = pos;
 	}
 
+	/** The forward. */
 	private boolean forward = true;
 
+	/**
+	 * Next frame.
+	 *
+	 * @return the short
+	 */
 	public short nextFrame() {
 		position++;
 		if (position >= getNumOfFrames()) {
@@ -99,28 +159,42 @@ public class DirectionalAnimation implements DrawableFeature {
 		return position;
 	}
 
+	/**
+	 * Reset frame.
+	 */
 	public void resetFrame() {
 		position = 0;
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * Sets the name.
+	 *
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
+	 * Gets the name.
+	 *
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
+	/** The animation task. */
 	AnimationTask animationTask;
+	
+	/** The submit. */
 	Future<?> submit;
 
+	/**
+	 * Start.
+	 *
+	 * @param executor the executor
+	 */
 	public void start(ScheduledThreadPoolExecutor executor) {
 		// TODO Auto-generated method stub
 		if (animationTask == null) {
@@ -132,6 +206,9 @@ public class DirectionalAnimation implements DrawableFeature {
 
 	}
 
+	/**
+	 * Stop.
+	 */
 	public void stop() {
 		// there was a null pointer here it happend when in fight mode you click
 		// on
@@ -143,11 +220,17 @@ public class DirectionalAnimation implements DrawableFeature {
 		// resetFrame();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#draw(android.graphics.Canvas)
+	 */
 	@Override
 	public void draw(Canvas canvas) {
 		getBitmap().setX(pos.x).setY(pos.y).draw(canvas);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.graphics.DrawableFeature#getBounds()
+	 */
 	@Override
 	public Rect getBounds() {
 		// TODO Auto-generated method stub
@@ -156,14 +239,17 @@ public class DirectionalAnimation implements DrawableFeature {
 	}
 
 	/**
-	 * @param numOfFrames
-	 *            the numOfFrames to set
+	 * Sets the num of frames.
+	 *
+	 * @param numOfFrames the numOfFrames to set
 	 */
 	public void setNumOfFrames(short numOfFrames) {
 		this.numOfFrames = numOfFrames;
 	}
 
 	/**
+	 * Gets the num of frames.
+	 *
 	 * @return the numOfFrames
 	 */
 	public short getNumOfFrames() {

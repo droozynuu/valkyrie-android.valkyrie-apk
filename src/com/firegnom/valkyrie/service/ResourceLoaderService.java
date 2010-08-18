@@ -39,19 +39,47 @@ import com.firegnom.valkyrie.net.DownloadQueue;
 import com.firegnom.valkyrie.util.PacksHelper;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ResourceLoaderService.
+ */
 public final class ResourceLoaderService extends IResourceLoaderService.Stub {
+	
+	/** The Constant TAG. */
 	protected static final String TAG = ResourceLoaderService.class.getName();
+	
+	/** The Constant CUSTOM_VIEW_ID. */
 	private static final int CUSTOM_VIEW_ID = 2;
+	
+	/** The service. */
 	ValkyrieService service;
+	
+	/** The rl. */
 	ResourceLoader rl;
+	
+	/** The complete. */
 	boolean complete = false;
+	
+	/** The error. */
 	private boolean error = false;
 
+	/** The notification. */
 	Notification notification;
+	
+	/** The download queue. */
 	DownloadQueue downloadQueue;
+	
+	/** The listener. */
 	IQueuleChangeListener listener = null;
+	
+	/** The downloading packs. */
 	private boolean downloadingPacks = false;
 
+	/**
+	 * Instantiates a new resource loader service.
+	 *
+	 * @param service the service
+	 */
 	public ResourceLoaderService(final ValkyrieService service) {
 		this.service = service;
 		notification = new Notification(R.drawable.stat_sample, "",
@@ -78,6 +106,9 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#download(java.lang.String, com.firegnom.valkyrie.service.ILoaderCallback)
+	 */
 	@Override
 	public void download(final String name, ILoaderCallback callback)
 			throws RemoteException {
@@ -136,6 +167,12 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 		cancelNotification();
 	}
 
+	/**
+	 * Show notification.
+	 *
+	 * @param percentage the percentage
+	 * @param msg the msg
+	 */
 	void showNotification(int percentage, String msg) {
 		RemoteViews contentView = new RemoteViews(service.getPackageName(),
 				R.layout.custom_notification);
@@ -153,10 +190,16 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 
 	}
 
+	/**
+	 * Cancel notification.
+	 */
 	void cancelNotification() {
 		service.mNM.cancel(CUSTOM_VIEW_ID);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#addToDownloadQueue(java.lang.String)
+	 */
 	@Override
 	public void addToDownloadQueue(String name) throws RemoteException {
 		try {
@@ -167,12 +210,18 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#registerQueuleChangeListener(com.firegnom.valkyrie.service.IQueuleChangeListener)
+	 */
 	@Override
 	public void registerQueuleChangeListener(IQueuleChangeListener listener)
 			throws RemoteException {
 		this.listener = listener;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IResourceLoaderService#downloadPacks(com.firegnom.valkyrie.service.IPackLoadListener)
+	 */
 	@Override
 	public void downloadPacks(IPackLoadListener listener)
 			throws RemoteException {
@@ -184,15 +233,29 @@ public final class ResourceLoaderService extends IResourceLoaderService.Stub {
 		}
 	}
 
+	/** The load listener. */
 	IPackLoadListener loadListener;
 
+	/**
+	 * The Class TestRun.
+	 */
 	class TestRun extends Thread {
+		
+		/** The path. */
 		String path;
 
+		/**
+		 * Instantiates a new test run.
+		 *
+		 * @param path the path
+		 */
 		public TestRun(String path) {
 			this.path = path;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
 		@Override
 		public void run() {
 			PacksHelper.downloadPacks(path, new Observer() {

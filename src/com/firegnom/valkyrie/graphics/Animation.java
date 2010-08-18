@@ -24,13 +24,31 @@ import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Animation.
+ */
 public abstract class Animation {
+	
+	/** The frames. */
 	private ArrayList<Image> frames;
+	
+	/** The position. */
 	private int position = 0;
 
+	/**
+	 * Gets the frame.
+	 *
+	 * @return the frame
+	 */
 	public Bitmap getFrame() {
 		return null;
 	}
 
+	/**
+	 * Next frame.
+	 *
+	 * @return the short
+	 */
 	public abstract short nextFrame();
 }

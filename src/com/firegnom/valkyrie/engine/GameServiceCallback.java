@@ -30,10 +30,18 @@ import com.firegnom.valkyrie.map.pathfinding.ParcelablePath;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.service.IGameServiceCallback;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GameServiceCallback.
+ */
 public class GameServiceCallback extends IGameServiceCallback.Stub {
 
+	/** The TAG. */
 	private String TAG = GameServiceCallback.class.getName();
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerMoved(java.lang.String, int, com.firegnom.valkyrie.map.pathfinding.ParcelablePath)
+	 */
 	@Override
 	public void playerMoved(String username, int playerClass, ParcelablePath pa)
 			throws RemoteException {
@@ -54,12 +62,18 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 		pl.paths.add(p);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#disconnected()
+	 */
 	@Override
 	public void disconnected() throws RemoteException {
 		GameController gc = GameController.getInstance();
 		gc.goToLogin();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerDisconnected(java.lang.String)
+	 */
 	@Override
 	public void playerDisconnected(String username) throws RemoteException {
 		GameController gc = GameController.getInstance();
@@ -68,18 +82,27 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 		gc.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#downloadChanged(int)
+	 */
 	@Override
 	public void downloadChanged(int bytes) throws RemoteException {
 		GameController gc = GameController.getInstance();
 		gc.networkDownload = bytes;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#uploadChanged(int)
+	 */
 	@Override
 	public void uploadChanged(int bytes) throws RemoteException {
 		GameController gc = GameController.getInstance();
 		gc.networkUpload = bytes;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#positionChanged(java.lang.String, int, int, int)
+	 */
 	@Override
 	public void positionChanged(String userName, int x, int y, int playerClass)
 			throws RemoteException {
@@ -107,6 +130,9 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerInfoReciaved(int, java.lang.String, int, int)
+	 */
 	@Override
 	public void playerInfoReciaved(int playerClass, String zone, int x, int y)
 			throws RemoteException {
@@ -127,6 +153,9 @@ public class GameServiceCallback extends IGameServiceCallback.Stub {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.service.IGameServiceCallback#playerPositionsMessageRecieaved(java.lang.String[], int[], int[], int[])
+	 */
 	@Override
 	public void playerPositionsMessageRecieaved(String[] userNames, int[] x,
 			int[] y, int[] playerClass) throws RemoteException {

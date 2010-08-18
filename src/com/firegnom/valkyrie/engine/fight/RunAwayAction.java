@@ -24,12 +24,24 @@ import com.firegnom.valkyrie.common.Dir;
 import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.graphics.DrawablePath;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RunAwayAction.
+ */
 public class RunAwayAction implements FightAction {
 
+	/** The Constant TAG. */
 	private static final String TAG = RunAwayAction.class.getName();
+	
+	/** The active. */
 	private boolean active = false;
+	
+	/** The dp. */
 	private DrawablePath dp;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#activated()
+	 */
 	@Override
 	public void activated() {
 		GameController gc = GameController.getInstance();
@@ -40,22 +52,34 @@ public class RunAwayAction implements FightAction {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#deactivated()
+	 */
 	@Override
 	public void deactivated() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#onSingleTapUp(int, int)
+	 */
 	@Override
 	public void onSingleTapUp(int x, int y) {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#finished()
+	 */
 	@Override
 	public void finished() {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#isActive()
+	 */
 	@Override
 	public boolean isActive() {
 		return active;

@@ -24,38 +24,85 @@ import android.graphics.Bitmap;
 
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class StringTileSet.
+ */
 public class StringTileSet {
+	
+	/** The Constant TAG. */
 	private static final String TAG = "StringTileSet";
+	
+	/** The image name. */
 	public String imageName;
+	
+	/** The tile width. */
 	public int tileWidth;
+	
+	/** The tile height. */
 	public int tileHeight;
+	
+	/** The max x. */
 	public int maxX;
+	
+	/** The max y. */
 	public int maxY;
+	
+	/** The name. */
 	public String name;
-	/** The index of the tile set */
+	
+	/** The index of the tile set. */
 	public int index;
-	/** The first global tile id in the set */
+	
+	/** The first global tile id in the set. */
 	public int firstGID;
-	/** The local global tile id in the set */
+	
+	/** The local global tile id in the set. */
 	public int lastGID;
+	
+	/** The image width. */
 	private int imageWidth;
+	
+	/** The image height. */
 	private int imageHeight;
 
-	/** The width of the tiles */
+	/**
+	 * The width of the tiles.
+	 */
 
 	public StringTileSet() {
 
 	}
 
+	/**
+	 * Instantiates a new string tile set.
+	 *
+	 * @param first the first
+	 * @param last the last
+	 */
 	public StringTileSet(int first, int last) {
 		firstGID = first;
 		lastGID = last;
 	}
 
+	/**
+	 * Gets the tile name png.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the tile name png
+	 */
 	public String getTileNamePng(int x, int y) {
 		return imageName.replace(".png", ",") + x + "," + y + ".png";
 	}
 
+	/**
+	 * Gets the tile name png.
+	 *
+	 * @param gid the gid
+	 * @return the tile name png
+	 * @throws IndexOutOfBoundsException the index out of bounds exception
+	 */
 	public String getTileNamePng(int gid) throws IndexOutOfBoundsException {
 		if (!contains(gid)) {
 			throw new IndexOutOfBoundsException("Wrong position in tileset");
@@ -66,6 +113,15 @@ public class StringTileSet {
 		return imageName.replace(".png", ",") + x + "," + y + ".png";
 	}
 
+	/**
+	 * Instantiates a new string tile set.
+	 *
+	 * @param imageName the image name
+	 * @param tileWidth the tile width
+	 * @param tileHeight the tile height
+	 * @param imageHeight the image height
+	 * @param imageWidth the image width
+	 */
 	public StringTileSet(String imageName, int tileWidth, int tileHeight,
 			int imageHeight, int imageWidth) {
 		if (imageName == null) {
@@ -87,6 +143,15 @@ public class StringTileSet {
 	 * in get bitmap function and unnecessary memory allocation this will take
 	 * additional memory but might improve performance
 	 */
+	/**
+	 * Gets the bitmap.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param rl the rl
+	 * @return the bitmap
+	 * @throws IndexOutOfBoundsException the index out of bounds exception
+	 */
 	public Bitmap getBitmap(int x, int y, ResourceLoader rl)
 			throws IndexOutOfBoundsException {
 		if (x >= maxX || y >= maxY) {
@@ -97,10 +162,23 @@ public class StringTileSet {
 				false);
 	}
 
+	/**
+	 * Download all.
+	 *
+	 * @param rl the rl
+	 */
 	public void downloadAll(ResourceLoader rl) {
 		rl.downloadService(imageName, maxX, maxY);
 	}
 
+	/**
+	 * Gets the bitmap.
+	 *
+	 * @param gid the gid
+	 * @param rl the rl
+	 * @return the bitmap
+	 * @throws IndexOutOfBoundsException the index out of bounds exception
+	 */
 	public Bitmap getBitmap(int gid, ResourceLoader rl)
 			throws IndexOutOfBoundsException {
 		if (!contains(gid)) {
@@ -114,10 +192,9 @@ public class StringTileSet {
 	}
 
 	/**
-	 * Check if this tileset contains a particular tile
-	 * 
-	 * @param gid
-	 *            The global id to seach for
+	 * Check if this tileset contains a particular tile.
+	 *
+	 * @param gid The global id to seach for
 	 * @return True if the ID is contained in this tileset
 	 */
 	public boolean contains(int gid) {

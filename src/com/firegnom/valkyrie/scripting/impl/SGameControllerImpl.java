@@ -27,13 +27,34 @@ import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.engine.ZoneLoaderThread;
 import com.firegnom.valkyrie.scripting.SGameController;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SGameControllerImpl.
+ */
 public class SGameControllerImpl implements SGameController {
+	
+	/** The sc. */
 	private final GameController sc;
+	
+	/** The context. */
 	private final Context context;
+	
+	/** The Constant z1. */
 	public static final String z1 = "test4";
+	
+	/** The Constant z2. */
 	public static final String z2 = "test6";
+	
+	/** The v. */
 	private final View v;
 
+	/**
+	 * Instantiates a new s game controller impl.
+	 *
+	 * @param sc the sc
+	 * @param context the context
+	 * @param v the v
+	 */
 	public SGameControllerImpl(GameController sc, Context context, View v) {
 		this.sc = sc;
 		// TODO Auto-generated constructor stub
@@ -41,6 +62,9 @@ public class SGameControllerImpl implements SGameController {
 		this.v = v;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGameController#load(java.lang.String)
+	 */
 	@Override
 	public void load(String name) {
 		// sc.loadZone(name, context);
@@ -48,12 +72,18 @@ public class SGameControllerImpl implements SGameController {
 		v.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGameController#moves()
+	 */
 	@Override
 	public void moves() {
 		sc.toogleMoveMatrix();
 		v.postInvalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGameController#sleep(int)
+	 */
 	@Override
 	public void sleep(int time) {
 		try {
@@ -64,6 +94,9 @@ public class SGameControllerImpl implements SGameController {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.scripting.SGameController#followPlayer(boolean)
+	 */
 	@Override
 	public void followPlayer(boolean b) {
 		GameController.followPlayer = b;

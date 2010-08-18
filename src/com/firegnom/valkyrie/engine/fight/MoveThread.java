@@ -26,15 +26,32 @@ import com.firegnom.valkyrie.engine.Player;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 import com.firegnom.valkyrie.map.pathfinding.Step;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MoveThread.
+ */
 public class MoveThread extends Thread {
+	
+	/** The player. */
 	Player player;
+	
+	/** The path. */
 	Path path;
 
+	/**
+	 * Instantiates a new move thread.
+	 *
+	 * @param player the player
+	 * @param path the path
+	 */
 	public MoveThread(Player player, Path path) {
 		this.player = player;
 		this.path = path;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		FightController fc = GameController.getInstance().fightController;

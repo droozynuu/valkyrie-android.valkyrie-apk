@@ -30,13 +30,30 @@ import com.firegnom.valkyrie.util.Point;
 import com.firegnom.valkyrie.util.Rectangle;
 import com.firegnom.valkyrie.util.rtree.RTree;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MapObjectsIndex.
+ */
 public class MapObjectsIndex implements IntProcedure {
+	
+	/** The actiontree. */
 	private RTree actiontree;
+	
+	/** The map. */
 	private TIntObjectHashMap<MapObject> map;
+	
+	/** The ret. */
 	private ArrayList<MapObject> ret;
+	
+	/** The retindex. */
 	private int retindex;
+	
+	/** The showeditor. */
 	public boolean showeditor = true;
 
+	/**
+	 * Instantiates a new map objects index.
+	 */
 	public MapObjectsIndex() {
 		actiontree = new RTree();
 		Properties p = new Properties();
@@ -47,12 +64,25 @@ public class MapObjectsIndex implements IntProcedure {
 
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param ca the ca
+	 */
 	public void put(MapObject ca) {
 		map.put(ca.getId(), ca);
 		actiontree.add(new Rectangle(ca.x, ca.y, ca.x + ca.width, ca.y
 				+ ca.height), ca.getId());
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param radius the radius
+	 * @return the array list
+	 */
 	public ArrayList<MapObject> get(int x, int y, int radius) {
 		ret = new ArrayList<MapObject>();
 		retindex = 0;
@@ -60,6 +90,9 @@ public class MapObjectsIndex implements IntProcedure {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.util.IntProcedure#execute(int)
+	 */
 	@Override
 	public boolean execute(int id) {
 		ret.add(map.get(id));
@@ -67,6 +100,12 @@ public class MapObjectsIndex implements IntProcedure {
 		return false;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param r the r
+	 * @return the array list
+	 */
 	public ArrayList<MapObject> get(Rectangle r) {
 		ret = new ArrayList<MapObject>();
 		retindex = 0;

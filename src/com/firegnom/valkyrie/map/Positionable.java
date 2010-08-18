@@ -20,9 +20,24 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.map;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface Positionable.
+ */
 public interface Positionable {
+	
+	/**
+	 * Gets the position.
+	 *
+	 * @return the position
+	 */
 	public Position getPosition();
 
+	/**
+	 * Sets the position.
+	 *
+	 * @param p the new position
+	 */
 	public void setPosition(Position p);
 
 }

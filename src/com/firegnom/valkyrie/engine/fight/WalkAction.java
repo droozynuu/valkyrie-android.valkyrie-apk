@@ -30,12 +30,24 @@ import com.firegnom.valkyrie.graphics.DrawablePath;
 import com.firegnom.valkyrie.map.Position;
 import com.firegnom.valkyrie.map.pathfinding.Path;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WalkAction.
+ */
 public class WalkAction implements FightAction {
 
+	/** The Constant TAG. */
 	private static final String TAG = WalkAction.class.getName();
+	
+	/** The active. */
 	private boolean active = false;
+	
+	/** The dp. */
 	private DrawablePath dp;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#activated()
+	 */
 	@Override
 	public void activated() {
 		GameController.getInstance().fightController.prepareRange();
@@ -48,6 +60,9 @@ public class WalkAction implements FightAction {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#deactivated()
+	 */
 	@Override
 	public void deactivated() {
 		GameController.getInstance().fightController.view.post(new Runnable() {
@@ -60,6 +75,9 @@ public class WalkAction implements FightAction {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#onSingleTapUp(int, int)
+	 */
 	@Override
 	public void onSingleTapUp(int x, int y) {
 		if (active) {
@@ -88,6 +106,9 @@ public class WalkAction implements FightAction {
 		gc.fightController.view.invalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#finished()
+	 */
 	@Override
 	public void finished() {
 		GameController gc = GameController.getInstance();
@@ -106,6 +127,9 @@ public class WalkAction implements FightAction {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.engine.fight.FightAction#isActive()
+	 */
 	@Override
 	public boolean isActive() {
 		return active;

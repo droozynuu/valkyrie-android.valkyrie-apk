@@ -20,15 +20,30 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.util;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NativeUnzip.
+ */
 public class NativeUnzip {
 	static {
 		System.loadLibrary("miniunz");
 	}
 
+	/**
+	 * Dounzip.
+	 *
+	 * @param fileName the file name
+	 * @param dest the dest
+	 */
 	public void dounzip(String fileName, String dest) {
 		unzip();
 	}
 
+	/**
+	 * Unzip.
+	 *
+	 * @return the int
+	 */
 	private static native int unzip();
 
 }

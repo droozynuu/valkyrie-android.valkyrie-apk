@@ -65,74 +65,158 @@ import com.firegnom.valkyrie.service.IResourceLoaderService;
 import com.firegnom.valkyrie.share.constant.GameModes;
 import com.firegnom.valkyrie.util.ResourceLoader;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GameController.
+ */
 public class GameController {
+	
+	/** The zone. */
 	public Zone zone;
+	
+	/** The user. */
 	public User user;
+	
+	/** The players. */
 	public PlayersTable players;
 
+	/** The fight controller. */
 	public FightController fightController;
 
+	/** The service. */
 	public IGameService service = null;
+	
+	/** The login service. */
 	public ILoginService loginService = null;
 
+	/** The s y. */
 	public int sX = 0, sY = 0;
+	
+	/** The screen width. */
 	public int screenWidth;
+	
+	/** The screen height. */
 	public int screenHeight;
 
 	// stats
+	/** The network upload. */
 	static double networkUpload = 0;
+	
+	/** The network download. */
 	static double networkDownload = 0;
 
+	/** The background. */
 	private Picture background;
+	
+	/** The m paint. */
 	private Paint mPaint;
+	
+	/** The out of memory paint. */
 	public Paint outOfMemoryPaint;
+	
+	/** The player label. */
 	Paint playerLabel = new Paint();
 
+	/** The pa. */
 	android.graphics.Path pa = new android.graphics.Path();
+	
+	/** The long press position. */
 	public Position longPressPosition;
+	
+	/** The long press position map. */
 	public Position longPressPositionMap;
+	
+	/** The parser. */
 	public ParserImpl parser;
+	
+	/** The zone loading. */
 	public boolean zoneLoading = false;
 	// if 0 no limit
+	/** The limit scroll dist. */
 	public static int limitScrollDist = 3;
+	
+	/** The rendering. */
 	private boolean rendering = false;
 
+	/** The disable input. */
 	public static boolean disableInput = false;
+	
+	/** The disable scroll. */
 	public static boolean disableScroll = false;
+	
+	/** The disable context. */
 	public static boolean disableContext = false;
 
 	// preferences
+	/** The follow player. */
 	public static boolean followPlayer = false;
+	
+	/** The SHO w_ mov e_ matrix. */
 	public static boolean SHOW_MOVE_MATRIX = false;
+	
+	/** The global chat. */
 	public static boolean globalChat = false;
 	// performance
+	/** The sort players. */
 	public static boolean sortPlayers = true;
+	
+	/** The draw range. */
 	public static boolean drawRange = true;
+	
+	/** The draw stats. */
 	public static boolean drawStats = false;
 
+	/** The change move images. */
 	public static boolean changeMoveImages = true;
+	
+	/** The jumpy moves. */
 	public static boolean jumpyMoves = false;
+	
+	/** The full invalidate. */
 	public static boolean fullInvalidate = true;
 
+	/** The Constant TAG. */
 	private static final String TAG = "GameController";
+	
+	/** The me. */
 	private static GameController me;
 
+	/** The view. */
 	public View view;
+	
+	/** The context. */
 	public Context context;
 
+	/** The finishing. */
 	public boolean finishing = false;
 	// TileSet wait;
+	/** The remaining images. */
 	private int remainingImages = 0;
+	
+	/** The rl. */
 	public ResourceLoader rl;
 
+	/** The papks loading. */
 	public boolean papksLoading = false;
+	
+	/** The download packages. */
 	public boolean downloadPackages = true;
+	
+	/** The packs downloading. */
 	public boolean packsDownloading = false;
+	
+	/** The Constant viewRange. */
 	public static final int viewRange = (int) (Constants.VISIBILITY_RANGE * 0.8);
 
+	/** The gui. */
 	public Gui gui;
+	
+	/** The action manager. */
 	public ActionManager actionManager;
 
+	/**
+	 * Instantiates a new game controller.
+	 */
 	private GameController() {
 		iGameServiceCallback = new GameServiceCallback();
 		players = new PlayersTable();
@@ -159,6 +243,11 @@ public class GameController {
 
 	}
 
+	/**
+	 * Bind services.
+	 *
+	 * @param c the c
+	 */
 	public void bindServices(Context c) {
 		if (resourceLoaderService == null) {
 			c.bindService(new Intent(IResourceLoaderService.class.getName()),
@@ -179,6 +268,11 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Unbind services.
+	 *
+	 * @param context the context
+	 */
 	public void unbindServices(Context context) {
 		changeGamemode(GameModes.BACKGROUND);
 		Log.d(TAG, "unbindServices");
@@ -197,7 +291,10 @@ public class GameController {
 
 	}
 
+	/** The resource loader service. */
 	public IResourceLoaderService resourceLoaderService;
+	
+	/** The resource loader connection. */
 	private ServiceConnection resourceLoaderConnection = new ServiceConnection() {
 
 		@Override
@@ -224,6 +321,7 @@ public class GameController {
 
 	};
 
+	/** The game service connection. */
 	private ServiceConnection gameServiceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.d(TAG, "Game controler connected to game service");
@@ -268,6 +366,7 @@ public class GameController {
 		}
 	};
 
+	/** The login service connection. */
 	private ServiceConnection loginServiceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.d(TAG, "loginServiceConnection onServiceConnected");
@@ -289,8 +388,12 @@ public class GameController {
 		}
 	};
 
+	/** The i game service callback. */
 	IGameServiceCallback.Stub iGameServiceCallback;
 
+	/**
+	 * Go to login.
+	 */
 	void goToLogin() {
 		if (finishing || context == null) {
 			return;
@@ -304,6 +407,12 @@ public class GameController {
 		((GameActivity) context).finish();
 	}
 
+	/**
+	 * Connect view.
+	 *
+	 * @param view the view
+	 * @param c the c
+	 */
 	public void connectView(View view, Context c) {
 		this.view = view;
 		this.context = c;
@@ -320,6 +429,9 @@ public class GameController {
 		renderScreen();
 	}
 
+	/**
+	 * Disconnect view.
+	 */
 	public void disconnectView() {
 
 		this.view = null;
@@ -329,6 +441,11 @@ public class GameController {
 		System.gc();
 	}
 
+	/**
+	 * Change gamemode.
+	 *
+	 * @param mode the mode
+	 */
 	public void changeGamemode(int mode) {
 		if (service == null) {
 			Log.d(TAG, "FAILED - changeGamemode :" + mode);
@@ -343,6 +460,14 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Post invalidate scroll.
+	 *
+	 * @param rLeft the r left
+	 * @param rTop the r top
+	 * @param rRight the r right
+	 * @param rBottom the r bottom
+	 */
 	public void postInvalidateScroll(int rLeft, int rTop, int rRight,
 			int rBottom) {
 		if (view == null) {
@@ -355,6 +480,11 @@ public class GameController {
 		view.postInvalidate(rLeft, rTop, rRight, rBottom);
 	}
 
+	/**
+	 * Post invalidate.
+	 *
+	 * @param i the i
+	 */
 	public void postInvalidate(int i) {
 		if (view == null) {
 			return;
@@ -362,6 +492,9 @@ public class GameController {
 		view.postInvalidateDelayed(i);
 	}
 
+	/**
+	 * Post invalidate.
+	 */
 	public void postInvalidate() {
 
 		if (view == null) {
@@ -370,6 +503,11 @@ public class GameController {
 		view.postInvalidate();
 	}
 
+	/**
+	 * Gets the single instance of GameController.
+	 *
+	 * @return single instance of GameController
+	 */
 	public static GameController getInstance() {
 		if (me == null) {
 			me = new GameController();
@@ -377,6 +515,13 @@ public class GameController {
 		return me;
 	}
 
+	/**
+	 * _perform load.
+	 *
+	 * @param name the name
+	 * @param x the x
+	 * @param y the y
+	 */
 	public void _performLoad(String name, int x, int y) {
 		Log.d(TAG, "jestem");
 		// ((GameActivity)context).setContentView(R.layout.please_wait);
@@ -395,8 +540,12 @@ public class GameController {
 		// ((GameActivity)context).setContentView(view);
 	}
 
+	/** The last render. */
 	long lastRender = 0;
 
+	/**
+	 * Render screen.
+	 */
 	synchronized public void renderScreen() {
 		if (!rendering) {
 			rendering = true;
@@ -412,8 +561,14 @@ public class GameController {
 		}
 	}
 
+	/** The wait_pos. */
 	int wait_pos = 0;
 
+	/**
+	 * Do draw.
+	 *
+	 * @param c the c
+	 */
 	synchronized public void doDraw(Canvas c) {
 		if (user == null) {
 			return;
@@ -478,6 +633,11 @@ public class GameController {
 
 	}
 
+	/**
+	 * Draw global chat.
+	 *
+	 * @param c the c
+	 */
 	private void drawGlobalChat(Canvas c) {
 		// c.drawRect(0,0,screenWidth,120, outOfMemoryPaint);
 		// Gui.drawLog(c);
@@ -492,6 +652,11 @@ public class GameController {
 
 	}
 
+	/**
+	 * Draw range.
+	 *
+	 * @param c the c
+	 */
 	private void drawRange(Canvas c) {
 		fullInvalidate = true;
 		Position p = user.getOnscreenPositionCenter(zone);
@@ -500,6 +665,12 @@ public class GameController {
 
 	}
 
+	/**
+	 * Sets the screen size.
+	 *
+	 * @param width the width
+	 * @param height the height
+	 */
 	public void setScreenSize(int width, int height) {
 		DisplayMetrics dm = new DisplayMetrics();
 		((GameActivity) context).getWindowManager().getDefaultDisplay()
@@ -513,8 +684,14 @@ public class GameController {
 		renderScreen();
 	}
 
+	/** The format. */
 	NumberFormat format = NumberFormat.getInstance();
 
+	/**
+	 * Draw stats.
+	 *
+	 * @param c the c
+	 */
 	public void drawStats(Canvas c) {
 		format.setMaximumFractionDigits(2);
 		StringBuffer text = new StringBuffer();
@@ -530,6 +707,14 @@ public class GameController {
 		c.drawText(text, 0, text.length(), 0, 25, playerLabel);
 	}
 
+	/**
+	 * Do scroll.
+	 *
+	 * @param distanceX the distance x
+	 * @param distanceY the distance y
+	 * @param view the view
+	 * @return true, if successful
+	 */
 	public boolean doScroll(float distanceX, float distanceY, View view) {
 		if (zone == null) {
 			Log.w(TAG, "doScroll dropped : zone is null");
@@ -578,6 +763,12 @@ public class GameController {
 		return true;
 	}
 
+	/**
+	 * Do single tap up.
+	 *
+	 * @param e the e
+	 * @return true, if successful
+	 */
 	public boolean doSingleTapUp(MotionEvent e) {
 		if (zone == null) {
 			Log.w(TAG, "doSingleTapUp dropped zone is null");
@@ -602,17 +793,28 @@ public class GameController {
 		return true;
 	}
 
+	/**
+	 * Toogle move matrix.
+	 */
 	public void toogleMoveMatrix() {
 		SHOW_MOVE_MATRIX = !SHOW_MOVE_MATRIX;
 		renderScreen();
 		view.invalidate();
 	}
 
+	/**
+	 * Exit.
+	 *
+	 * @param context the context
+	 */
 	public void exit(Context context) {
 		finishing = true;
 		context.stopService(new Intent(ILoginService.class.getName()));
 	}
 
+	/**
+	 * Reload preferences.
+	 */
 	public void reloadPreferences() {
 		Log.d(TAG, "reloadPreferences");
 		SharedPreferences pref = PreferenceManager
@@ -629,18 +831,32 @@ public class GameController {
 
 	}
 
+	/**
+	 * Removes the downloads.
+	 */
 	public void removeDownloads() {
 		new ResourceLoader().emptyCache();
 	}
 
+	/**
+	 * Gets the view.
+	 *
+	 * @return the view
+	 */
 	public View getView() {
 		return view;
 	}
 
+	/**
+	 * Gets the context.
+	 *
+	 * @return the context
+	 */
 	public Context getContext() {
 		return context;
 	}
 
+	/** The download listener. */
 	IQueuleChangeListener.Stub downloadListener = new IQueuleChangeListener.Stub() {
 
 		@Override
@@ -654,6 +870,11 @@ public class GameController {
 		}
 	};
 
+	/**
+	 * On long press.
+	 *
+	 * @param e the e
+	 */
 	public void onLongPress(MotionEvent e) {
 
 		int x = (int) (((-1 * sX) + e.getX()) / zone.tileWidth * 2);
@@ -665,6 +886,12 @@ public class GameController {
 
 	}
 
+	/**
+	 * Gets the string.
+	 *
+	 * @param resId the res id
+	 * @return the string
+	 */
 	public String getString(int resId) {
 		return context.getString(resId);
 	}

@@ -35,11 +35,21 @@ import com.firegnom.valkyrie.engine.GameController;
 import com.firegnom.valkyrie.service.IPackLoadListener;
 import com.firegnom.valkyrie.service.IResourceLoaderService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PackageDownloadActivity.
+ */
 public class PackageDownloadActivity extends ValkyrieActivity {
 
+	/** The Constant TAG. */
 	protected static final String TAG = PackageDownloadActivity.class.getName();
+	
+	/** The Constant GO_TO_GAME. */
 	protected static final int GO_TO_GAME = 0;
 
+	/* (non-Javadoc)
+	 * @see com.firegnom.valkyrie.ValkyrieActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +61,9 @@ public class PackageDownloadActivity extends ValkyrieActivity {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		unbindService(resourceLoaderConnection);
@@ -59,7 +72,10 @@ public class PackageDownloadActivity extends ValkyrieActivity {
 		super.onDestroy();
 	}
 
+	/** The resource loader service. */
 	public IResourceLoaderService resourceLoaderService;
+	
+	/** The resource loader connection. */
 	private ServiceConnection resourceLoaderConnection = new ServiceConnection() {
 
 		@Override
@@ -84,12 +100,16 @@ public class PackageDownloadActivity extends ValkyrieActivity {
 		}
 
 	};
+	
+	/** The load listener. */
 	IPackLoadListener.Stub loadListener = new IPackLoadListener.Stub() {
 		@Override
 		public void finished() throws RemoteException {
 			mHandler.sendEmptyMessage(GO_TO_GAME);
 		}
 	};
+	
+	/** The m handler. */
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

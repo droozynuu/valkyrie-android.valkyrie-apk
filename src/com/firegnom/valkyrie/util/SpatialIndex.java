@@ -40,6 +40,7 @@ package com.firegnom.valkyrie.util;
 
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
 /**
  * Defines methods that must be implemented by all spatial indexes. This
  * includes the RTree and its variants.
@@ -59,51 +60,40 @@ public interface SpatialIndex {
 	public void init(Properties props);
 
 	/**
-	 * Adds a new rectangle to the spatial index
-	 * 
-	 * @param r
-	 *            The rectangle to add to the spatial index.
-	 * @param id
-	 *            The ID of the rectangle to add to the spatial index. The
-	 *            result of adding more than one rectangle with the same ID is
-	 *            undefined.
+	 * Adds a new rectangle to the spatial index.
+	 *
+	 * @param r The rectangle to add to the spatial index.
+	 * @param id The ID of the rectangle to add to the spatial index. The
+	 * result of adding more than one rectangle with the same ID is
+	 * undefined.
 	 */
 	public void add(Rectangle r, int id);
 
 	/**
-	 * Deletes a rectangle from the spatial index
-	 * 
-	 * @param r
-	 *            The rectangle to delete from the spatial index
-	 * @param id
-	 *            The ID of the rectangle to delete from the spatial index
-	 * 
+	 * Deletes a rectangle from the spatial index.
+	 *
+	 * @param r The rectangle to delete from the spatial index
+	 * @param id The ID of the rectangle to delete from the spatial index
 	 * @return true if the rectangle was deleted false if the rectangle was not
-	 *         found, or the rectangle was found but with a different ID
+	 * found, or the rectangle was found but with a different ID
 	 */
 	public boolean delete(Rectangle r, int id);
 
 	/**
 	 * Finds all rectangles that are nearest to the passed rectangle, and calls
 	 * execute() on the passed IntProcedure for each one.
+	 *
+	 * @param p The point for which this method finds the nearest neighbours.
+	 * @param v the v
+	 * @param distance The furthest distance away from the rectangle to search.
+	 * Rectangles further than this will not be found.
 	 * 
-	 * @param p
-	 *            The point for which this method finds the nearest neighbours.
+	 * This should be as small as possible to minimise the search
+	 * time.
 	 * 
-	 * @param ip
-	 *            The IntProcedure whose execute() method is is called for each
-	 *            nearest neighbour.
-	 * 
-	 * @param distance
-	 *            The furthest distance away from the rectangle to search.
-	 *            Rectangles further than this will not be found.
-	 * 
-	 *            This should be as small as possible to minimise the search
-	 *            time.
-	 * 
-	 *            Use Float.POSITIVE_INFINITY to guarantee that the nearest
-	 *            rectangle is found, no matter how far away, although this will
-	 *            slow down the algorithm.
+	 * Use Float.POSITIVE_INFINITY to guarantee that the nearest
+	 * rectangle is found, no matter how far away, although this will
+	 * slow down the algorithm.
 	 */
 	public void nearest(Point p, IntProcedure v, float distance);
 
@@ -122,31 +112,33 @@ public interface SpatialIndex {
 
 	/**
 	 * Finds all rectangles contained by the passed rectangle.
-	 * 
-	 * @param r
-	 *            The rectangle for which this method finds contained
-	 *            rectangles.
-	 * 
-	 * @param v
-	 *            The visitor whose visit() method is is called for each
-	 *            contained rectangle.
+	 *
+	 * @param r The rectangle for which this method finds contained
+	 * rectangles.
+	 * @param ip the ip
 	 */
 	public void contains(Rectangle r, IntProcedure ip);
 
 	/**
-	 * Returns the number of entries in the spatial index
+	 * Returns the number of entries in the spatial index.
+	 *
+	 * @return the int
 	 */
 	public int size();
 
 	/**
 	 * Returns the bounds of all the entries in the spatial index, or null if
 	 * there are no entries.
+	 *
+	 * @return the bounds
 	 */
 	public Rectangle getBounds();
 
 	/**
 	 * Returns a string identifying the type of spatial index, and the version
 	 * number, eg "SimpleIndex-0.1"
+	 *
+	 * @return the version
 	 */
 	public String getVersion();
 

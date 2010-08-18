@@ -20,22 +20,52 @@
  ******************************************************************************/
 package com.firegnom.valkyrie.map;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MapObject.
+ */
 public class MapObject {
+	
+	/** The currentid. */
 	private static int currentid = 0;
+	
+	/** The id. */
 	private int id;
+	
+	/** The x. */
 	public int x;
+	
+	/** The y. */
 	public int y;
+	
+	/** The height. */
 	public int height;
+	
+	/** The width. */
 	public int width;
+	
+	/** The name. */
 	public String name;
+	
+	/** The image. */
 	public String image;
+	
+	/** The visible. */
 	boolean visible;
 
+	/**
+	 * Instantiates a new map object.
+	 */
 	public MapObject() {
 		currentid++;
 		id = currentid;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
