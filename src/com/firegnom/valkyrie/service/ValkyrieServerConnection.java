@@ -369,6 +369,7 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 			Properties connectProps = new Properties();
 			connectProps.put("host", SERVER_IP);
 			connectProps.put("port", SERVER_PORT);
+			System.setProperty("java.net.preferIPv6Addresses", "false");
 			simpleClient.login(connectProps);
 		} catch (Exception e) {
 			e.printStackTrace();

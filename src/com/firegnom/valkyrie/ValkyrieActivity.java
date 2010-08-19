@@ -37,6 +37,7 @@ public class ValkyrieActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//		System.setProperty("java.net.preferIPv6Addresses", "false");
 		if (android.os.Build.VERSION.RELEASE != "2.2")
 			ExceptionHandler.register(this, Exception.class);
 	}
