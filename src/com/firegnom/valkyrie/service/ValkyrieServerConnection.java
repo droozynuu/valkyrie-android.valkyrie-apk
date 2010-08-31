@@ -61,8 +61,8 @@ public class ValkyrieServerConnection extends ServerMesageListener implements
 	protected static final String SERVER_PORT = "59000";
 	
 	/** The Constant SERVER_IP. */
-	private static final String SERVER_IP = "74.213.176.198";
-	// private static final String SERVER_IP = "192.168.1.5";
+	//private static final String SERVER_IP = "74.213.176.198";
+	 private static final String SERVER_IP = "192.168.1.2";
 
 	// private static final String SERVER_IP = "9.161.215.65";
 	// private static final String SERVER_IP = "84.203.32.34";

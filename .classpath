@@ -6,12 +6,12 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/bsh-core-2.0b4.jar"/>
 	<classpathentry kind="lib" path="lib/trove-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/sgs-client.jar"/>
-	<classpathentry kind="lib" path="lib/sgs-shared-1.9.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/android-rat-0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/sgs-client-0.10.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/valkyrie-common"/>
 	<classpathentry kind="lib" path="lib/mina-core-1.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/sgs-shared-1.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
