@@ -83,8 +83,10 @@ public class ZoneLoaderThread extends Thread {
 			
 			//TODO throws a null pointer exception here can lose service during load it might be better to create function in gc 
 			//which will check if service is connected if not put request on the queue and as soon it conects again execute it
-			
-			gc.service.requestPlayersPositions();
+
+			//quick fix
+			if (gc.service != null )
+				gc.service.requestPlayersPositions();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
