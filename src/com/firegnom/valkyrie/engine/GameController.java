@@ -718,6 +718,7 @@ public class GameController {
 	public boolean doScroll(float distanceX, float distanceY, View view) {
 		if (zone == null) {
 			Log.w(TAG, "doScroll dropped : zone is null");
+			return true;
 		}
 		if (disableScroll) {
 			return true;
